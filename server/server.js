@@ -6,10 +6,11 @@ import bodyparser from 'body-parser';
 import sanitizer from 'express-sanitizer';
 import dotenv from 'dotenv';
 
+import RegisterRoute from './Routes/register-route.js';
+
 dotenv.config()
 
 const app = express()
-const PORT = 8000
 const server = http.createServer(app)
 const io = socket(server)
 
@@ -24,6 +25,9 @@ io.on('connection', (socket)=>{
     })
 })
 
+// api Endpoints
+app.use('/register', RegisterRoute);
+
 // DB connection
 mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(()=>{
     console.log('Connected to mongoDB')
@@ -32,6 +36,6 @@ mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: tr
 })
 
 // listener
-server.listen(PORT, ()=>{
+server.listen(process.env.PORT, ()=>{
     console.log('Listening to localhost:8000')
 })
