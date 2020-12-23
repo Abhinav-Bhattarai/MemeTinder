@@ -24,6 +24,6 @@
     "nodemailer": "^6.4.17",
     "nodemon": "^2.0.6",
     "redis": "^3.0.2",
-    "socket.io": "^3.0.4"
+    "socket.io": "^2.3.0"
   }
 }

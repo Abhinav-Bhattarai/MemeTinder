@@ -18,7 +18,6 @@ app.use(bodyparser.json({limit: '50mb'}))
 app.use(sanitizer())
 
 // Socket Connection
-
 io.on('connection', (socket)=>{
     socket.on('disconnect', ()=>{
         console.log('user disconnect')
