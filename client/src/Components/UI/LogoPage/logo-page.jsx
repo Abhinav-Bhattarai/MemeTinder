@@ -9,7 +9,7 @@ const LogoPage = () => {
     return (
         <Fragment>
             <div className='logo-page-container' style={{height: `${view}px`}}>
-                <Logo type='logo-2'/>
+                <Logo/>
                 <Spinner/>
             </div>
         </Fragment>
