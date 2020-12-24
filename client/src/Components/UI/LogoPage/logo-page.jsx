@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import Logo from '../../Logo/logo';
+import Logo from '../Logo/logo';
 import Spinner from '../Spinner/spinner';
 import './logo-page.scss';
 
