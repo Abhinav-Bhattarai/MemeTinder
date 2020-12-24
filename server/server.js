@@ -7,6 +7,7 @@ import sanitizer from 'express-sanitizer';
 import dotenv from 'dotenv';
 
 import RegisterRoute from './Routes/register-route.js';
+import CheckJWTRoute from './Routes/check-jwt-route.js';
 
 dotenv.config()
 
@@ -27,6 +28,7 @@ io.on('connection', (socket)=>{
 
 // api Endpoints
 app.use('/register', RegisterRoute);
+app.use('/check', CheckJWTRoute);
 
 // DB connection
 mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(()=>{

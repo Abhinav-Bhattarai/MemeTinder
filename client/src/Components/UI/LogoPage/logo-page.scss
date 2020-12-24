@@ -1,0 +1,9 @@
+@import '/client/src/variables';
+
+.logo-page-container{
+    width: 100%;
+    background-color: $theme_color;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

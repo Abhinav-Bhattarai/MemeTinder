@@ -31,6 +31,11 @@ const Schema = new SchemaObject({
     Gender: {
         type: String,
         required: true
+    },
+
+    ActiveStatus: {
+        type: Boolean,
+        default: true
     }
 
 })
