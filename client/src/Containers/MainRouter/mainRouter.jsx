@@ -21,51 +21,65 @@ class MainRouter extends Component {
     componentDidMount(){
         const token = localStorage.getItem('auth-token')
         const auth_status = JSON.parse(localStorage.getItem('auth-status'))
-        if(auth_status === undefined){
+        if(!auth_status){
             localStorage.setItem('auth-status', false)
             this.setState({
                 authentication_status: false
             })
-        }
-        if(token && auth_status){
-            // axios request for jwt check
-            this.setState({
-                authentication_status: true
-            })
+        }else{
+            if(auth_status === false){
+                this.setState({
+                    authentication_status: false
+                })
+            }
+
+            if(token && auth_status){
+                // axios request for jwt check
+                this.setState({
+                    authentication_status: true
+                })
+            }
         }
     }
 
     render() {
+        console.log(this.state.authentication_status)
         return (
             <Fragment>
                 <MainPageGuard auth_status={this.state.authentication_status}>
                     <Switch>
                         <Route path='/mainPage' render={()=>{
-                            <Suspense fallback={<LogoPage/>}>
+                            return (<Suspense fallback={<LogoPage/>}>
                                 <AsyncMainPage/>
-                            </Suspense>
+                            </Suspense>)
                         }}/>
 
                         <Route render={()=>{
-                            <Suspense fallback={<LogoPage/>}>
+                            return (<Suspense fallback={<LogoPage/>}>
                                 <AsyncMainPage/>
-                            </Suspense>
+                            </Suspense>)
                         }}/>
                         
                     </Switch>
                 </MainPageGuard>
 
-                <LandingPageGuard>
+                <LandingPageGuard auth_status={this.state.authentication_status}>
                         <Route path='/landingPage' render={()=>{
-                            <Suspense fallback={<LogoPage/>}>
+                            return (<Suspense fallback={<LogoPage/>}>
                                 <AsyncLandingPage/>
-                            </Suspense>
+                            </Suspense>)
                         }}/>
-                        <Route render={()=>{
-                            <Suspense fallback={<LogoPage/>}>
-                                <AsyncLandingPage/>
-                            </Suspense>
-                        }}/>
+
+                        <Route render={
+                            ()=>{
+                                return(
+                                    <Suspense fallback={<LogoPage/>}>
+                                        <AsyncLandingPage/>
+                                    </Suspense>
+                                )
+                            }
+                        }/>
+                        
                 </LandingPageGuard>
             </Fragment>
         );
