@@ -43,7 +43,6 @@ class MainRouter extends Component {
     }
 
     render() {
-        console.log(this.state.authentication_status)
         return (
             <Fragment>
                 <MainPageGuard auth_status={this.state.authentication_status}>

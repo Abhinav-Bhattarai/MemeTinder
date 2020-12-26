@@ -5,10 +5,9 @@ import './logo-page.scss';
 
 // E-COMMERCE LOGO and Name like that of native apps
 const LogoPage = () => {
-    const view = window.innerHeight
     return (
         <Fragment>
-            <div className='logo-page-container' style={{height: `${view}px`}}>
+            <div className='logo-page-container'>
                 <Logo/>
                 <Spinner/>
             </div>

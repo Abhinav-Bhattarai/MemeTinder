@@ -1,6 +1,10 @@
 @import '../../../_variables';
 
 .logo-page-container{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
     width: 100%;
     background-color: $theme_color;
     display: flex;
