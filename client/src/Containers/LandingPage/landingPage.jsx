@@ -18,6 +18,8 @@ const LandingPage = () => {
     const [signup_email, SetSignupEmail] = useState('')
     const [signin_username, SetSigninUsername] = useState('')
     const [signin_password, SetSigninPassword] = useState('')
+    const [signin_cred_error, SetSigninCredError] = useState([])
+    const [signup_cred_error, SetSignupCredError] = useState([])
 
     const SignupCardHandler = ()=>{
         SetSignupCard(!signup_card)
@@ -56,6 +58,57 @@ const LandingPage = () => {
         SetSigninPassword(value)
     }
 
+    const LoginCredentialSubmitHandler = (event)=>{
+        event.preventDefault();
+        
+        if(signin_username.length > 3 && signin_password.length > 7){
+            const number_regex = /[0-9]/;
+            const value = signin_password
+            if(number_regex.exec(value) !== null){
+                // further axis request
+            }
+        }else{
+            const dummy = [...signin_cred_error]
+            if(signin_username.length < 4){
+                dummy.push({error_type: 'Username', message: 'The username should be atleast 4 characters'})
+            }
+            if(signin_password.length < 8){
+                dummy.push({error_type: 'Password', message: 'Password must contain number and should be atleast 8 characters'})
+            }
+
+            SetSigninCredError(dummy)
+        }
+    }
+
+    const SignupCredentialSubmitHandler = (event)=>{
+        event.preventDefault();
+        if(signup_username.length > 3 && signup_password.length >= 8 && signup_email >= 11 && signup_password === signup_confirm){
+            const number_regex = /[0-9]/;
+            if(number_regex.exec(signup_password) !== null){
+                // further axios request
+                
+            }
+        }else{
+            const dummy = [...signup_cred_error];
+            if(signup_username.length < 4){
+                dummy.push({error_type: 'Username', message: 'The username should be atleast 4 characters'})
+            }
+
+            if(signup_password.length < 8){
+                dummy.push({error_type: 'Password', message: 'Password must contain number and should be atleast 8 characters'})
+            }
+
+            if(signup_password !== signup_confirm){
+                dummy.push({error_type: 'Confirm', message: 'Password do not match'})
+            }
+            
+            if(signup_email.length < 11){
+                dummy.push({error_type: 'Email', message: 'Invalid Email credentials'})
+            }
+            SetSignupCredError(dummy)
+        }
+    }
+
     return (
         <Fragment>
             <main onClick={
@@ -79,6 +132,7 @@ const LandingPage = () => {
                     <button id='middle-flex-btn' onClick={SignupCardHandler}>CREATE ACCOUNT</button>
                 </main>
             </main>
+
             {(signup_card || login_card)?
             (
                 <LandingPageContext.Provider value={{
@@ -96,8 +150,8 @@ const LandingPage = () => {
                     ChangeSigninPassword: (e)=>ChangeSigninPassword(e)
                 }}>
     
-                    {(signup_card)?<Signup/>:null}
-                    {(login_card)?<Login/>:null}
+                    {(signup_card)?<Signup ErrorContainer={signup_cred_error} SignupCardHandler={SignupCardHandler} Register={SignupCredentialSubmitHandler}/>:null}
+                    {(login_card)?<Login ErrorContainer={signin_cred_error} LoginCardHandler={LoginCardHandler} Logger={LoginCredentialSubmitHandler}/>:null}
     
                 </LandingPageContext.Provider>
             )
