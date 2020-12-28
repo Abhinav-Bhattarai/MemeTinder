@@ -36,6 +36,11 @@ const Schema = new SchemaObject({
     ActiveStatus: {
         type: Boolean,
         default: true
+    },
+    
+    AccountConfirmed: {
+        type: Boolean,
+        default: false
     }
 
 })

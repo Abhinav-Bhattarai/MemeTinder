@@ -9,7 +9,7 @@ dotenv.config()
 
 const router = express.Router()
 
-router.post('/', (req, res)=>{
+router.post('/', (req, res)=>{  
     const Username = req.body.Username
     const Password = req.body.Password
     const Confirm = req.body.Confirm

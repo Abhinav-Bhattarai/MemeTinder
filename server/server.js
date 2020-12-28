@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 
 import RegisterRoute from './Routes/register-route.js';
 import CheckJWTRoute from './Routes/check-jwt-route.js';
+import ForgetPasswordRoute from './Routes/Password-confirmation-route.js';
 
 dotenv.config()
 
@@ -29,6 +30,7 @@ io.on('connection', (socket)=>{
 // api Endpoints
 app.use('/register', RegisterRoute);
 app.use('/check', CheckJWTRoute);
+app.use('/forget', ForgetPasswordRoute);
 
 // DB connection
 mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(()=>{
