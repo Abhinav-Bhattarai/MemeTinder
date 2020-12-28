@@ -10,11 +10,11 @@ dotenv.config()
 const router = express.Router()
 
 router.post('/', (req, res)=>{  
-    const Username = req.body.Username
-    const Password = req.body.Password
-    const Confirm = req.body.Confirm
-    const Email = req.body.Email
-    const Gender = req.body.Gender
+    const Username = req.body.Username;
+    const Password = req.body.Password;
+    const Confirm = req.body.Confirm;
+    const Email = req.body.Email;
+    const Gender = req.body.Gender;
 
     if(Username.length >= 1 && Password.length >= 8 && Confirm === Password && Email.length >= 11 && Gender.length >= 4){
         const number_regex = /[0-9]/
@@ -52,7 +52,7 @@ router.post('/', (req, res)=>{
                         } 
                     })
                 }else{
-                    return res.json({type: 'Username_redundant', error: 'Username Already exists'})
+                    return res.json({error_type: 'Username', message: 'Username Already exists'})
                 }
             })
         }

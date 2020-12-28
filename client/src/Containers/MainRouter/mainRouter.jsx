@@ -43,19 +43,32 @@ class MainRouter extends Component {
     }
 
     render() {
+
+        const ChangeAuthentication = (status)=>{
+            if(status){
+                this.setState({
+                    authentication_status: false
+                })
+            }else{
+                this.setState({
+                    authentication_status: true
+                })
+            }
+        }
+
         return (
             <Fragment>
                 <MainPageGuard auth_status={this.state.authentication_status}>
                     <Switch>
                         <Route path='/mainPage' render={()=>{
                             return (<Suspense fallback={<LogoPage/>}>
-                                <AsyncMainPage/>
+                                <AsyncMainPage authenticate={ (status)=>ChangeAuthentication(status) }/>
                             </Suspense>)
                         }}/>
 
                         <Route render={()=>{
                             return (<Suspense fallback={<LogoPage/>}>
-                                <AsyncMainPage/>
+                                <AsyncMainPage authenticate={ (status)=>ChangeAuthentication(status) }/>
                             </Suspense>)
                         }}/>
                         
@@ -65,7 +78,7 @@ class MainRouter extends Component {
                 <LandingPageGuard auth_status={this.state.authentication_status}>
                         <Route path='/landingPage' render={()=>{
                             return (<Suspense fallback={<LogoPage/>}>
-                                <AsyncLandingPage/>
+                                <AsyncLandingPage authenticate={ (status)=>ChangeAuthentication(status) }/>
                             </Suspense>)
                         }}/>
 
@@ -73,7 +86,7 @@ class MainRouter extends Component {
                             ()=>{
                                 return(
                                     <Suspense fallback={<LogoPage/>}>
-                                        <AsyncLandingPage/>
+                                        <AsyncLandingPage authenticate={ (status)=>ChangeAuthentication(status) }/>
                                     </Suspense>
                                 )
                             }

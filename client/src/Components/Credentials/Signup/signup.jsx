@@ -32,7 +32,7 @@ const Error = ({ error_msg })=>{
     )
 } 
 
-const Signup = ({SignupCardHandler, ErrorContainer, Register}) => {
+const Signup = ({SignupCardHandler, ErrorContainer, Register, ChangeRadio}) => {
 
     const Context = useContext(LandingPageContext);
     const UsernameRef = useRef(null);
@@ -108,6 +108,29 @@ const Signup = ({SignupCardHandler, ErrorContainer, Register}) => {
                             ref={EmailRef}/>
                         </div>
                         {email_error}
+
+                        <div className='signup-radio-container'>
+
+                            <div className='radio-container'>
+                                <header>MALE</header>
+                                <input 
+                                    type= 'radio'
+                                    value= 'male'
+                                    name= 'gender'
+                                    onChange={ ChangeRadio }
+                                />
+                            </div>
+
+                            <div className='radio-container'>
+                                <header>FEMALE</header>
+                                <input 
+                                    type= 'radio'
+                                    value= 'female'
+                                    name= 'gender'
+                                    onChange={ ChangeRadio }
+                                />
+                            </div>
+                        </div>
                     </main>
                     <button className='signup-btn'>Continue</button>
                 </form>                

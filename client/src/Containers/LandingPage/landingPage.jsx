@@ -11,7 +11,7 @@ import LandingPageContext from './landingpage-context';
 import './landingPage.scss';
 import ForgetPassword from '../../Components/Credentials/Login/forget-password';
 
-const LandingPage = () => {
+const LandingPage = ({ authenticate }) => {
 
     const [signup_card, SetSignupCard] = useState(false);
     const [login_card, SetLoginCard] = useState(false);
@@ -20,6 +20,7 @@ const LandingPage = () => {
     const [signup_password, SetSignupPassword] = useState('');
     const [signup_confirm, SetSignupConfirm] = useState('');
     const [signup_email, SetSignupEmail] = useState('');
+    const [signup_gender, SetSignupGender] = useState(null)
     const [signin_username, SetSigninUsername] = useState('');
     const [signin_password, SetSigninPassword] = useState('');
     const [forget_number, SetForgetNumber] = useState('');
@@ -69,6 +70,11 @@ const LandingPage = () => {
         SetForgetNumber(value)
     }
 
+    const ChangeSignupGender = (event)=>{
+        const value = event.target.value;
+        SetSignupGender(value)
+    }
+
     const LoginCredentialSubmitHandler = (event)=>{
         event.preventDefault();
         
@@ -76,7 +82,28 @@ const LandingPage = () => {
             const number_regex = /[0-9]/;
             const value = signin_password
             if(number_regex.exec(value) !== null){
-                // further axis request
+                // further axis request;
+                const context = {
+                    Username: signin_username,
+                    Password: signin_password
+                }
+                axios.post('/login', context).then((response)=>{
+                    const username_err = {error_type: 'Password', message: 'Password Do not match'};
+
+                    const password_err = {error_type: 'Username', message: 'No such Username registered'};
+
+                    const data = response.data;
+
+                    if(JSON.stringify(data) === JSON.stringify(username_err) || JSON.stringify(data) === JSON.stringify(password_err)){
+                        // error handling in the form bootstrap invalid one;
+                    }else{
+                        // storing jwt token and other cred information;
+                        localStorage.setItem('user-data', JSON.stringify(response.data.data));
+                        localStorage.setItem('auth-token', response.data.token);
+                        authenticate(false)
+                        // changing the parent class authentication state to true;
+                    }
+                })
             }
         }else{
             const dummy = [...signin_cred_error]
@@ -93,11 +120,29 @@ const LandingPage = () => {
 
     const SignupCredentialSubmitHandler = (event)=>{
         event.preventDefault();
-        if(signup_username.length > 3 && signup_password.length >= 8 && signup_email >= 11 && signup_password === signup_confirm){
+        if(signup_username.length > 3 && signup_password.length >= 8 && signup_email >= 11 && signup_password === signup_confirm && signup_gender){
             const number_regex = /[0-9]/;
             if(number_regex.exec(signup_password) !== null){
                 // further axios request
-                
+                const context = {
+                    Username: signup_username,
+                    Email: signup_email,
+                    Password: signup_password,
+                    Confirm: signup_confirm,
+                    Gender: signup_gender
+                }
+                axios.post('/register', context).then((response)=>{
+                    const error = {error_type: 'Username_redundant', message: 'Username Already exists'}
+                    if(JSON.stringify(response.data) !== JSON.stringify(error)){
+                        // storing jwt token and other cred information;
+                        localStorage.setItem('user-data', JSON.stringify(response.data.data));
+                        localStorage.setItem('auth-token', response.data.token);
+                        authenticate(false)
+                        // changing the parent class authentication state to true;
+                    }else{
+                        SetSignupCredError(error)
+                    }
+                })
             }
         }else{
             const dummy = [...signup_cred_error];
@@ -123,7 +168,7 @@ const LandingPage = () => {
     const TriggerForgetPassword = (type)=>{
         if(type !== true){
             // axios request to get pass-token;
-            axios.get(`http://localhost:8000/forget/${signin_username}`).then((response)=>{
+            axios.get(`/forget/${signin_username}`).then((response)=>{
                 const data = response.data;
                 const error = {error_type: 'Username', error: 'Username not found'}
                 if(JSON.stringify(data) !== JSON.stringify(error)){
@@ -207,8 +252,9 @@ const LandingPage = () => {
                     <Signup 
                         ErrorContainer= { signup_cred_error } 
                         SignupCardHandler= { SignupCardHandler } 
-                        Register= { SignupCredentialSubmitHandler }/>
-                    :null}
+                        Register= { SignupCredentialSubmitHandler }
+                        ChangeRadio = { (e)=>ChangeSignupGender(e) }
+                    />:null}
 
                     {(login_card)?
                     <Login 

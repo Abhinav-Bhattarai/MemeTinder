@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-const MainPage = () => {
+const MainPage = ({ authenticate }) => {
     return (
         <Fragment>
             <h1>MainPage</h1>
