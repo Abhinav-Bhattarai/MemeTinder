@@ -12,8 +12,7 @@ const LandingPageContext = React.createContext({
     signup_confirm: '',
     signup_email: '',
     signin_username: '',
-    signin_password: '',
-    hi: ''
+    signin_password: ''
 });
 
 export default LandingPageContext

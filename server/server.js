@@ -5,6 +5,7 @@ import socket from 'socket.io';
 import bodyparser from 'body-parser';
 import sanitizer from 'express-sanitizer';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 import RegisterRoute from './Routes/register-route.js';
 import CheckJWTRoute from './Routes/check-jwt-route.js';
@@ -19,6 +20,9 @@ const io = socket(server)
 // middleware
 app.use(bodyparser.json({limit: '50mb'}))
 app.use(sanitizer())
+app.use(cors({
+    origin: 'https://localhost:3000'
+}))
 
 // Socket Connection
 io.on('connection', (socket)=>{
@@ -40,6 +44,6 @@ mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: tr
 })
 
 // listener
-server.listen(process.env.PORT, ()=>{
+server.listen(parseInt(process.env.PORT), ()=>{
     console.log('Listening to localhost:8000')
 })

@@ -25,7 +25,7 @@ const Error = ({ error_msg })=>{
     )
 } 
 
-const Login = ({LoginCardHandler, ErrorContainer, Logger}) => {
+const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password}) => {
 
     const Context = useContext(LandingPageContext);
 
@@ -69,6 +69,17 @@ const Login = ({LoginCardHandler, ErrorContainer, Logger}) => {
                     </main>
                     <button className='signup-btn'>Login</button>
                 </form>
+                <div
+                 onClick={forget_password}
+                 style={{
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    padding: '10px 7%',
+                    paddingTop: '5px',
+                    color: 'red',
+                    cursor: 'pointer'
+                }}>Forgot password ?</div>
+
                  <div style={{
                     fontWeight: '500',
                     fontSize: '14px',
@@ -79,4 +90,4 @@ const Login = ({LoginCardHandler, ErrorContainer, Logger}) => {
     )
 }
 
-export default Login
+export default Login;

@@ -1,4 +1,6 @@
 import React, { Fragment, useState } from 'react';
+import axios from 'axios';
+
 import Background from '../../assets/bg.jpg';
 import Login from '../../Components/Credentials/Login/login';
 import Signup from '../../Components/Credentials/Signup/signup';
@@ -7,19 +9,23 @@ import Logo from '../../Components/UI/Logo/logo';
 import LandingPageContext from './landingpage-context';
 
 import './landingPage.scss';
+import ForgetPassword from '../../Components/Credentials/Login/forget-password';
 
 const LandingPage = () => {
 
     const [signup_card, SetSignupCard] = useState(false);
     const [login_card, SetLoginCard] = useState(false);
-    const [signup_username, SetSignupUsername] = useState('')
-    const [signup_password, SetSignupPassword] = useState('')
-    const [signup_confirm, SetSignupConfirm] = useState('')
-    const [signup_email, SetSignupEmail] = useState('')
-    const [signin_username, SetSigninUsername] = useState('')
-    const [signin_password, SetSigninPassword] = useState('')
-    const [signin_cred_error, SetSigninCredError] = useState([])
-    const [signup_cred_error, SetSignupCredError] = useState([])
+    const [forget_password_card, SetForgetCard] = useState(false);
+    const [signup_username, SetSignupUsername] = useState('');
+    const [signup_password, SetSignupPassword] = useState('');
+    const [signup_confirm, SetSignupConfirm] = useState('');
+    const [signup_email, SetSignupEmail] = useState('');
+    const [signin_username, SetSigninUsername] = useState('');
+    const [signin_password, SetSigninPassword] = useState('');
+    const [forget_number, SetForgetNumber] = useState('');
+    const [signin_cred_error, SetSigninCredError] = useState([]);
+    const [signup_cred_error, SetSignupCredError] = useState([]);
+    const [forget_cred_error, SetForgetCredError] = useState(null);
 
     const SignupCardHandler = ()=>{
         SetSignupCard(!signup_card)
@@ -56,6 +62,11 @@ const LandingPage = () => {
     const ChangeSigninPassword = (event)=>{
         const value = event.target.value
         SetSigninPassword(value)
+    }
+
+    const ChangeForgetNumber = (event)=>{
+        const value = event.target.value;
+        SetForgetNumber(value)
     }
 
     const LoginCredentialSubmitHandler = (event)=>{
@@ -109,15 +120,57 @@ const LandingPage = () => {
         }
     }
 
+    const TriggerForgetPassword = (type)=>{
+        if(type !== true){
+            // axios request to get pass-token;
+            axios.get(`http://localhost:8000/forget/${signin_username}`).then((response)=>{
+                const data = response.data;
+                const error = {error_type: 'Username', error: 'Username not found'}
+                if(JSON.stringify(data) !== JSON.stringify(error)){
+                    localStorage.setItem('pass-token', data.pass_token);
+                    SetLoginCard(false)
+                    SetForgetCard(true);
+                }else{
+                    // error about invalid username 
+                }
+            })
+        }else{
+            SetForgetCard(false)
+        }
+    }
+
+    const FrogetPasswordSubmit = (event)=>{
+        event.preventDefault();
+        if(forget_number.length >= 4){
+            const context = {
+                token: localStorage.getItem('pass-token'),
+                number: forget_number
+            };
+            axios.post('/forget', context).then((response)=>{
+                const condition = {access: true} 
+                if(JSON.stringify(response.data) === JSON.stringify(condition)){
+    
+                }else{
+                    SetForgetCredError('Wrong Number input');
+                }
+            })
+        }
+    }
+
     return (
         <Fragment>
             <main onClick={
                 ()=>{
                     if(signup_card){
-                        SignupCardHandler()
+                        SignupCardHandler();
+                        SetSignupCredError([]);
                     }
                     else if(login_card){
-                        LoginCardHandler()
+                        LoginCardHandler();
+                        SetSigninCredError([]);
+                    }
+                    else if(forget_password_card){
+                        TriggerForgetPassword(true)
                     }
                 }
             }>
@@ -133,7 +186,7 @@ const LandingPage = () => {
                 </main>
             </main>
 
-            {(signup_card || login_card)?
+            {(signup_card || login_card || forget_password_card)?
             (
                 <LandingPageContext.Provider value={{
                     signup_username,
@@ -147,11 +200,32 @@ const LandingPage = () => {
                     ChangeSignupConfirm: (e)=>ChangeSignupConfirm(e),
                     ChangeSignupEmail: (e)=>ChangeSignupEmail(e),
                     ChangeSigninUsername: (e)=>ChangeSigninUsername(e),
-                    ChangeSigninPassword: (e)=>ChangeSigninPassword(e)
+                    ChangeSigninPassword: (e)=>ChangeSigninPassword(e),
                 }}>
     
-                    {(signup_card)?<Signup ErrorContainer={signup_cred_error} SignupCardHandler={SignupCardHandler} Register={SignupCredentialSubmitHandler}/>:null}
-                    {(login_card)?<Login ErrorContainer={signin_cred_error} LoginCardHandler={LoginCardHandler} Logger={LoginCredentialSubmitHandler}/>:null}
+                    {(signup_card)?
+                    <Signup 
+                        ErrorContainer= { signup_cred_error } 
+                        SignupCardHandler= { SignupCardHandler } 
+                        Register= { SignupCredentialSubmitHandler }/>
+                    :null}
+
+                    {(login_card)?
+                    <Login 
+                        ErrorContainer={ signin_cred_error } 
+                        LoginCardHandler={ LoginCardHandler } 
+                        Logger={ LoginCredentialSubmitHandler }
+                        forget_password={ TriggerForgetPassword }
+                    />:null}
+
+                    {(forget_password_card)? 
+                    <ForgetPassword
+                        value= { forget_number } 
+                        set_value= { (e)=>ChangeForgetNumber(e) } 
+                        submit= { (e)=>FrogetPasswordSubmit(e) } 
+                        exit= { TriggerForgetPassword }
+                        error= { forget_cred_error } 
+                    />:null}
     
                 </LandingPageContext.Provider>
             )
