@@ -37,16 +37,16 @@ const LandingPage = ({ authenticate }) => {
     }
 
     const ChangeSignupUsername = (event)=>{
-        const value = event.target.value
+        const value = event.target.value;
         SetSignupUsername(value)
     }
     const ChangeSignupPassword = (event)=>{
-        const value = event.target.value
+        const value = event.target.value;
         SetSignupPassword(value)
     }
 
     const ChangeSignupConfirm = (event)=>{
-        const value = event.target.value
+        const value = event.target.value;
         SetSignupConfirm(value)
     }
 
@@ -106,6 +106,7 @@ const LandingPage = ({ authenticate }) => {
                 })
             }
         }else{
+            // Change UX state for form user-experience to show type of error;
             const dummy = [...signin_cred_error]
             if(signin_username.length < 4){
                 dummy.push({error_type: 'Username', message: 'The username should be atleast 4 characters'})
@@ -145,6 +146,7 @@ const LandingPage = ({ authenticate }) => {
                 })
             }
         }else{
+            // Change UX state for form user-experience to show type of error;
             const dummy = [...signup_cred_error];
             if(signup_username.length < 4){
                 dummy.push({error_type: 'Username', message: 'The username should be atleast 4 characters'})
@@ -168,6 +170,7 @@ const LandingPage = ({ authenticate }) => {
     const TriggerForgetPassword = (type)=>{
         if(type !== true){
             // axios request to get pass-token;
+            // triggering get request to receive the token and later comparing thenumber in the token for sort of OTP checking via Email;
             axios.get(`/forget/${signin_username}`).then((response)=>{
                 const data = response.data;
                 const error = {error_type: 'Username', error: 'Username not found'}
@@ -185,6 +188,7 @@ const LandingPage = ({ authenticate }) => {
     }
 
     const FrogetPasswordSubmit = (event)=>{
+        // this executes and checks the OTP verifications and access;
         event.preventDefault();
         if(forget_number.length >= 4){
             const context = {
@@ -223,7 +227,12 @@ const LandingPage = ({ authenticate }) => {
                     TriggerLogin={SetLoginCard}
                 />
                 <main className='background-image-container' style={{height: '100%'}}>
-                    <img src={Background} alt='background'/>
+
+                    <img
+                        src={Background}
+                        alt='background'
+                    />
+
                 </main>
                 <main className='landingpage-middle-flex'>
                     <Logo type='LandingPage'/>

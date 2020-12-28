@@ -10,12 +10,17 @@ const router = express.Router();
 
 router.get('/:Username', (req, res)=>{
     const Username = req.params.Username;
+
+    // Checking for the user;
     RegistrationModel.find().where('Username').equals(Username).then((response)=>{
         if(response.length > 0){
             const Email = response[0].Email;
+            // assigning random 5 digit number for OTP email feature;
             const random_number = Math.ceil(Math.random() * 100000);
+            // signing the info in jsonwebtoken;
             jwt.sign({Email, number: random_number}, process.env.JWT_PASS_KEY, {expiresIn: 60*3}, (err, pass_token)=>{
                 if(!err){
+                    // sending mail via node mailer TLS;
                     const Transporter = nodemailer.createTransport({
                         service: 'gmail',
                         auth: {
@@ -35,9 +40,11 @@ router.get('/:Username', (req, res)=>{
                 }
             })
         }else{
+            // exception
             return res.json({error_type: 'Username', error: 'Username not found'});
         }
     }).catch(()=>{
+        // excention
         return res.json({error_type: 'Username', error: 'Username not found'});
     })
 })
@@ -46,6 +53,7 @@ router.post('/', (req, res)=>{
     const token = req.body.token;
     const number = req.body.number;
     jwt.verify(token, process.env.JWT_PASS_KEY, (err, response)=>{
+        // return the access response if the value received matches with the Random number created in the server; 
         if(!err){
             if(parseInt(response.number) === parseInt(number)){
                 return res.json({access: true})

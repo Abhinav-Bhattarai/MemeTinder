@@ -1,12 +1,12 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-
-dotenv.config()
+dotenv.config();
 
 const router = express.Router()
 
 router.post('/', (req, res)=>{
+    // jwt token checking;
     const token = req.body.token;
     jwt.verify(token, process.env.JWT_AUTH_KEY, (err, response)=>{
         if(err) return res.json({access_denied: true})
@@ -18,4 +18,4 @@ router.post('/', (req, res)=>{
     })
 })
 
-export default router
+export default router;

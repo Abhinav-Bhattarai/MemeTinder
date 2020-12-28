@@ -23,6 +23,7 @@ const ExclamationIcon = ()=>{
     )
 }
 
+// showing jsx for any error in form validations;
 const Error = ({ error_msg })=>{
     return (
         <div className='error-message'>

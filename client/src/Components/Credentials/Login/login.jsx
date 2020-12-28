@@ -34,6 +34,7 @@ const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password}) => {
     let username_error = null;
     let password_error = null;
 
+    // checking for error to add through jsx;
     if(ErrorContainer.length >= 1){
         let i = 0;
         for(i of ErrorContainer){

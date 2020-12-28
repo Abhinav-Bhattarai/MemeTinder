@@ -3,9 +3,9 @@ import Logo from '../Logo/logo';
 import Spinner from '../Spinner/spinner';
 import './logo-page.scss';
 
-// E-COMMERCE LOGO and Name like that of native apps
+// MEME-TINDER LOGO and Name like that of native apps
 const LogoPage = () => {
-    return (
+    return(
         <Fragment>
             <div className='logo-page-container'>
                 <Logo/>

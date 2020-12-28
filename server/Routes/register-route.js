@@ -16,11 +16,14 @@ router.post('/', (req, res)=>{
     const Email = req.body.Email;
     const Gender = req.body.Gender;
 
+    // backend validation cross-checking;
     if(Username.length >= 1 && Password.length >= 8 && Confirm === Password && Email.length >= 11 && Gender.length >= 4){
-        const number_regex = /[0-9]/
+        const number_regex = /[0-9]/;
         if(number_regex.exec(Password) !== null){
             RegistrationModel.find().where('Username').equals(Username).then((response)=>{
                 if(response.length === 0){
+
+                    // hashing the user-password in salt-gen 10;
                     bcypt.hash(Password, 10, (err, hashed_data)=>{
                         if(!err){
                             Password = hashed_data
@@ -30,6 +33,7 @@ router.post('/', (req, res)=>{
                             Data.save().then((user_data)=>{
                                 jwt.sign(user_data, process.env.JWT_AUTH_KEY, (err, token)=>{
                                     if(!err){
+                                        // sending mail asynchronously
                                         const Transporter = nodemailer.createTransport({
                                             service: 'gmail',
                                             auth: {
@@ -52,13 +56,15 @@ router.post('/', (req, res)=>{
                         } 
                     })
                 }else{
+                    // excention
                     return res.json({error_type: 'Username', message: 'Username Already exists'})
                 }
             })
         }
     }else{
+        // exception
         return res.json({type: 'Bypassed', error: 'Fraudulant data'})
     }
 })
 
-export default router
+export default router;

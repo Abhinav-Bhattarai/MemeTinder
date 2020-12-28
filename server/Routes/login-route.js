@@ -11,8 +11,11 @@ const router = express.Router()
 router.post('/', (req, res)=>{
     const Username = req.body.Username;
     const Password = req.body.Password;
+
+    // checking for the existance of the user provided credential;
     RegisterModel.find().where('Username').equals(Username).then((response)=>{
         if(response.length === 1){
+            // bcrypt comparing as the password are hashed
             bcrypt.compare(Password, response[0].Password, (err, state)=>{
                 if(!err){
                     if(state){
@@ -27,6 +30,7 @@ router.post('/', (req, res)=>{
                 }
             })
         }else{
+            // excention
             return res.json({error_type: 'Username', message: 'No such Username registered'})
         }
     })

@@ -5,6 +5,8 @@ import './App.css';
 import MainRouter from './Containers/MainRouter/mainRouter';
 
 function App() {
+
+    //shifing the main handler to mainRouter;
     return (
       <Fragment>
           <Router>

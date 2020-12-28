@@ -19,7 +19,11 @@ const io = socket(server)
 
 // middleware
 app.use(bodyparser.json({limit: '50mb'}))
+
+// XSS prevention;
 app.use(sanitizer())
+
+// disabling Origin change for DDOS;
 app.use(cors({
     origin: 'https://localhost:3000'
 }))
