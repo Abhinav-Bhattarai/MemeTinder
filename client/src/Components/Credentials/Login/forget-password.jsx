@@ -5,7 +5,7 @@ import '../Signup/signup.scss';
 const ForgetPassword = ({ value, set_value, submit, exit, error }) => {
     return (
         <Fragment>
-            <main className='signup-container login-container'>
+            <main className='signup-container login-container forget-container'>
                 <header className='signup-header'>
                     <span onClick={ exit }><TimesIcon/></span>
                     <div style={{

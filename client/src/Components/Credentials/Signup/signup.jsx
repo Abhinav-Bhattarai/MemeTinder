@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment, useContext, useRef } from 'react';
 import './signup.scss';
 import { IconContext } from 'react-icons';
 import { FaTimes, FaExclamationCircle } from 'react-icons/fa';
@@ -27,7 +27,7 @@ const Error = ({ error_msg })=>{
     return (
         <div className='error-message'>
             <ExclamationIcon/>
-            <div> { error_msg } </div>
+            <div style={{marginLeft: '2%'}}> { error_msg } </div>
         </div>
     )
 } 
@@ -35,6 +35,10 @@ const Error = ({ error_msg })=>{
 const Signup = ({SignupCardHandler, ErrorContainer, Register}) => {
 
     const Context = useContext(LandingPageContext);
+    const UsernameRef = useRef(null);
+    const PasswordRef = useRef(null);
+    const ConfirmRef = useRef(null);
+    const EmailRef = useRef(null);
 
     let username_error = null;
     let password_error = null;
@@ -46,14 +50,26 @@ const Signup = ({SignupCardHandler, ErrorContainer, Register}) => {
         // 0(1)
         for(i of ErrorContainer){
             if(i.error_type === 'Username'){
+                if(UsernameRef){
+                    UsernameRef.current.style.border = '1px solid red';
+                }
                 username_error = <Error error_msg={i.message}/>
             }
             else if(i.error_type === 'Password'){
+                if(PasswordRef){
+                    PasswordRef.current.style.border = '1px solid red';
+                }
                 password_error = <Error error_msg={i.message}/>
             }
             else if(i.error_type === 'Confirm'){
+                if(ConfirmRef){
+                    ConfirmRef.current.style.border = '1px solid red';
+                }
                 confirm_error = <Error error_msg={i.message}/>
             }else{
+                if(EmailRef){
+                    EmailRef.current.style.border = '1px solid red';
+                }
                 email_error = <Error error_msg={i.message}/>
             }
         }
@@ -73,22 +89,23 @@ const Signup = ({SignupCardHandler, ErrorContainer, Register}) => {
                     <main className='signup-input-container'>
                         <label>Username</label>
                         <div className='signup-input-rel'>
-                            <input type='text' autoFocus spellCheck='false' className='signup-input' onChange={Context.ChangeSignupUsername} value={Context.signup_username}/>
+                            <input type='text' autoFocus spellCheck='false' className='signup-input' onChange={Context.ChangeSignupUsername} value={Context.signup_username} ref={UsernameRef}/>
                         </div>    
                         {username_error}
                         <label>Password</label>
                         <div className='signup-input-rel'>
-                            <input type='password' className='signup-input' onChange={Context.ChangeSignupPassword} value={Context.signup_password}/>
+                            <input type='password' className='signup-input' onChange={Context.ChangeSignupPassword} value={Context.signup_password} ref={PasswordRef}/>
                         </div>
                         {password_error}
                         <label>Confirm Password</label>
                         <div className='signup-input-rel'>
-                            <input type='password' className='signup-input' onChange={Context.ChangeSignupConfirm} value={Context.signup_confirm}/>
+                            <input type='password' className='signup-input' onChange={Context.ChangeSignupConfirm} value={Context.signup_confirm} ref={ConfirmRef}/>
                         </div>
                         {confirm_error}
                         <label>Email</label>
                         <div className='signup-input-rel'>
-                            <input type='email' spellCheck='false' className='signup-input' onChange={Context.ChangeSignupEmail} value={Context.signup_confirm}/>
+                            <input type='email' spellCheck='false' className='signup-input' onChange={Context.ChangeSignupEmail} value={Context.signup_confirm}
+                            ref={EmailRef}/>
                         </div>
                         {email_error}
                     </main>

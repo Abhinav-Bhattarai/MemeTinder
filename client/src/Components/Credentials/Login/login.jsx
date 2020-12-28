@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment, useContext, useRef } from 'react';
 import { IconContext } from 'react-icons';
 import { FaExclamationCircle } from 'react-icons/fa';
 import LandingPageContext from '../../../Containers/LandingPage/landingpage-context';
@@ -20,7 +20,7 @@ const Error = ({ error_msg })=>{
     return (
         <div className='error-message'>
             <ExclamationIcon/>
-            <div> { error_msg } </div>
+            <div style={{marginLeft: '2%'}}> { error_msg } </div>
         </div>
     )
 } 
@@ -28,6 +28,8 @@ const Error = ({ error_msg })=>{
 const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password}) => {
 
     const Context = useContext(LandingPageContext);
+    const UsernameRef = useRef(null);
+    const PasswordRef = useRef(null);
 
     let username_error = null;
     let password_error = null;
@@ -36,9 +38,15 @@ const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password}) => {
         let i = 0;
         for(i of ErrorContainer){
             if(i.error_type === 'Username'){
+                if(UsernameRef){
+                    UsernameRef.current.style.border = '1px solid red';
+                }
                 username_error = <Error error_msg={i.message}/>
             }
             else if(i.error_type === 'Password'){
+                if(PasswordRef){
+                    PasswordRef.current.style.border = '1px solid red'
+                }
                 password_error = <Error error_msg={i.message}/>
             }
         }
@@ -56,14 +64,14 @@ const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password}) => {
                 </header>
                 <form onSubmit={Logger}>
                     <main className='signup-input-container'>
-                        <label>Email</label>
+                        <label>Username</label>
                         <div className='signup-input-rel'>
-                            <input type='email' spellCheck='false' autoFocus className='signup-input' onChange={Context.ChangeSigninUsername} value={Context.signin_username}/>
+                            <input type='username' spellCheck='false' autoFocus className='signup-input' onChange={Context.ChangeSigninUsername} value={Context.signin_username} ref={UsernameRef}/>
                         </div> 
                         {username_error}   
                         <label>Password</label>
                         <div className='signup-input-rel'>
-                            <input type='password' className='signup-input' onChange={Context.ChangeSigninPassword} value={Context.signin_password}/>
+                            <input type='password' className='signup-input' onChange={Context.ChangeSigninPassword} value={Context.signin_password} ref={PasswordRef}/>
                         </div>
                         {password_error}
                     </main>
@@ -77,7 +85,8 @@ const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password}) => {
                     padding: '10px 7%',
                     paddingTop: '5px',
                     color: 'red',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    textDecoration: 'underline'
                 }}>Forgot password ?</div>
 
                  <div style={{

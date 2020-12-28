@@ -11,10 +11,9 @@ const router = express.Router();
 router.get('/:Username', (req, res)=>{
     const Username = req.params.Username;
     RegistrationModel.find().where('Username').equals(Username).then((response)=>{
-        console.log(response)
         if(response.length > 0){
             const Email = response[0].Email;
-            const random_number = Math.ceil(Math.random() * 10000);
+            const random_number = Math.ceil(Math.random() * 100000);
             jwt.sign({Email, number: random_number}, process.env.JWT_PASS_KEY, {expiresIn: 60*3}, (err, pass_token)=>{
                 if(!err){
                     const Transporter = nodemailer.createTransport({
@@ -38,6 +37,8 @@ router.get('/:Username', (req, res)=>{
         }else{
             return res.json({error_type: 'Username', error: 'Username not found'});
         }
+    }).catch(()=>{
+        return res.json({error_type: 'Username', error: 'Username not found'});
     })
 })
 
