@@ -5,9 +5,9 @@ import bcypt from 'bcrypt';
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
 
-dotenv.config()
+dotenv.config();
 
-const router = express.Router()
+const router = express.Router();
 
 router.post('/', (req, res)=>{  
     const Username = req.body.Username;
@@ -31,7 +31,7 @@ router.post('/', (req, res)=>{
                                 Username, Password, Email, Gender
                             })
                             Data.save().then((user_data)=>{
-                                jwt.sign(user_data, process.env.JWT_AUTH_KEY, (err, token)=>{
+                                jwt.sign(user_data.toJSON(), process.env.JWT_AUTH_KEY, (err, token)=>{
                                     
                                         // sending mail asynchronously
                                         const Transporter = nodemailer.createTransport({

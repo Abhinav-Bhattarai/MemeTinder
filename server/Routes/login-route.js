@@ -19,8 +19,9 @@ router.post('/', (req, res)=>{
             bcrypt.compare(Password, response[0].Password, (err, state)=>{
                 if(!err){
                     if(state){
-                        jwt.sign(response[0], process.env.JWT_AUTH_KEY, (error, token)=>{
-                            return res.json({data: response[0], token})
+                        const data = response[0]
+                        jwt.sign(data.toJSON(), process.env.JWT_AUTH_KEY, {expiresIn: 86400}, (error, auth_token)=>{
+                            if(!error) return res.json({data: response[0], token: auth_token})
                         })
                     }else{
                         return res.json({error_type: 'Password', message: 'Password Do not match'})

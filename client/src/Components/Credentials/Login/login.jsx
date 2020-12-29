@@ -76,15 +76,14 @@ const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password}) => {
                         </div>
                         {password_error}
                     </main>
-                    <button className='signup-btn'>Login</button>
+                    <button className='signup-btn login-btn-form'>Login</button>
                 </form>
                 <div
                  onClick={forget_password}
                  style={{
                     fontWeight: '500',
                     fontSize: '14px',
-                    padding: '10px 7%',
-                    paddingTop: '5px',
+                    padding: '5px 7%',
                     color: 'red',
                     cursor: 'pointer',
                     textDecoration: 'underline'

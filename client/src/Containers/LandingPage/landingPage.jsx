@@ -102,6 +102,7 @@ const LandingPage = ({ authenticate }) => {
                         // storing jwt token and other cred information;
                         localStorage.setItem('user-data', JSON.stringify(response.data.data));
                         localStorage.setItem('auth-token', response.data.token);
+                        localStorage.setItem('auth-status', true);
                         authenticate(false)
                         // changing the parent class authentication state to true;
                     }
@@ -140,7 +141,8 @@ const LandingPage = ({ authenticate }) => {
                         // storing jwt token and other cred information;
                         localStorage.setItem('user-data', JSON.stringify(response.data.data));
                         localStorage.setItem('auth-token', response.data.token);
-                        authenticate(false)
+                        localStorage.setItem('auth-status', true);
+                        authenticate(false);
                         // changing the parent class authentication state to true;
                     }else{
                         SetSignupCredError([error])

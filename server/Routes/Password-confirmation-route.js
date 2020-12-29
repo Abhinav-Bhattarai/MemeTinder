@@ -18,7 +18,9 @@ router.get('/:Username', (req, res)=>{
             // assigning random 5 digit number for OTP email feature;
             const random_number = Math.ceil(Math.random() * 100000);
             // signing the info in jsonwebtoken;
-            jwt.sign({Email, number: random_number}, process.env.JWT_PASS_KEY, {expiresIn: 60*3}, (err, pass_token)=>{
+            const data = {Email, number: random_number};
+            
+            jwt.sign(data.toJSON(), process.env.JWT_PASS_KEY, {expiresIn: 60*3}, (err, pass_token)=>{
                 if(!err){
                     // sending mail via node mailer TLS;
                     const Transporter = nodemailer.createTransport({
