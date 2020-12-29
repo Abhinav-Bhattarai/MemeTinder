@@ -105,7 +105,7 @@ const Signup = ({SignupCardHandler, ErrorContainer, Register, ChangeRadio}) => {
                         {confirm_error}
                         <label>Email</label>
                         <div className='signup-input-rel'>
-                            <input type='email' spellCheck='false' className='signup-input' onChange={Context.ChangeSignupEmail} value={Context.signup_confirm}
+                            <input type='email' spellCheck='false' className='signup-input' onChange={Context.ChangeSignupEmail} value={Context.signup_email}
                             ref={EmailRef}/>
                         </div>
                         {email_error}

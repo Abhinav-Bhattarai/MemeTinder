@@ -87,7 +87,9 @@ const LandingPage = ({ authenticate }) => {
                     Username: signin_username,
                     Password: signin_password
                 }
+                console.log(true)
                 axios.post('/login', context).then((response)=>{
+                    console.log(response.data)
                     const username_err = {error_type: 'Password', message: 'Password Do not match'};
 
                     const password_err = {error_type: 'Username', message: 'No such Username registered'};
@@ -121,7 +123,7 @@ const LandingPage = ({ authenticate }) => {
 
     const SignupCredentialSubmitHandler = (event)=>{
         event.preventDefault();
-        if(signup_username.length > 3 && signup_password.length >= 8 && signup_email >= 11 && signup_password === signup_confirm && signup_gender){
+        if(signup_username.length > 3 && signup_password.length >= 8 && signup_email.length >= 11 && signup_password === signup_confirm && signup_gender.length >= 4){
             const number_regex = /[0-9]/;
             if(number_regex.exec(signup_password) !== null){
                 // further axios request
@@ -133,7 +135,7 @@ const LandingPage = ({ authenticate }) => {
                     Gender: signup_gender
                 }
                 axios.post('/register', context).then((response)=>{
-                    const error = {error_type: 'Username_redundant', message: 'Username Already exists'}
+                    const error = {error_type: "Username", message: "Username Already exists"}
                     if(JSON.stringify(response.data) !== JSON.stringify(error)){
                         // storing jwt token and other cred information;
                         localStorage.setItem('user-data', JSON.stringify(response.data.data));
@@ -141,7 +143,7 @@ const LandingPage = ({ authenticate }) => {
                         authenticate(false)
                         // changing the parent class authentication state to true;
                     }else{
-                        SetSignupCredError(error)
+                        SetSignupCredError([error])
                     }
                 })
             }

@@ -4,7 +4,7 @@ import RegisterModel from '../Models/register-model.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
-dotenv.config()
+dotenv.config();
 
 const router = express.Router()
 
@@ -20,9 +20,7 @@ router.post('/', (req, res)=>{
                 if(!err){
                     if(state){
                         jwt.sign(response[0], process.env.JWT_AUTH_KEY, (error, token)=>{
-                            if(!error){
-                                return res.json({data: response[0], token})
-                            }
+                            return res.json({data: response[0], token})
                         })
                     }else{
                         return res.json({error_type: 'Password', message: 'Password Do not match'})
@@ -33,6 +31,8 @@ router.post('/', (req, res)=>{
             // excention
             return res.json({error_type: 'Username', message: 'No such Username registered'})
         }
+    }).catch(()=>{
+        return res.json({error_type: 'Username', message: 'No such Username registered'})
     })
 
 })

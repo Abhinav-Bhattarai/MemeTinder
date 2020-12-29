@@ -11,7 +11,7 @@ const router = express.Router()
 
 router.post('/', (req, res)=>{  
     const Username = req.body.Username;
-    const Password = req.body.Password;
+    let Password = req.body.Password;
     const Confirm = req.body.Confirm;
     const Email = req.body.Email;
     const Gender = req.body.Gender;
@@ -32,7 +32,7 @@ router.post('/', (req, res)=>{
                             })
                             Data.save().then((user_data)=>{
                                 jwt.sign(user_data, process.env.JWT_AUTH_KEY, (err, token)=>{
-                                    if(!err){
+                                    
                                         // sending mail asynchronously
                                         const Transporter = nodemailer.createTransport({
                                             service: 'gmail',
@@ -50,7 +50,7 @@ router.post('/', (req, res)=>{
                                     
                                         }, (err, info)=>{})
                                         return res.json({data: user_data, token})
-                                    }
+                                    
                                 })
                             })
                         } 
