@@ -1,0 +1,41 @@
+@import '../../../_variables';
+
+.sidebar-nav{
+    display: flex;
+    align-items: center;
+    padding: 5px 2%;
+    position: relative;
+
+    &-element{
+        width: 40%;
+        text-align: center;
+        margin: 0px 5%;
+    }
+
+    a{
+        display: block;
+        font-size: 16px;
+        padding: 5px 1%;
+        font-weight: 700;
+        color: black;
+        text-decoration: none;
+    }
+
+    .navbar-pointer{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        padding: 1.5px 0;
+        background-color: $theme-color;
+        width: 35%;
+        transform: translateX(25%);
+    }
+}
+
+// .match-active{
+//     border-bottom: 3px solid $theme-color
+// }
+
+// .message-active{
+//     @extend .match-active;
+// }

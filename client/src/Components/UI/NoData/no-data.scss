@@ -1,0 +1,24 @@
+@import '../../../_variables';
+
+.no-data{
+    width: 100%;
+    margin-top: 10px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &-box{
+        width: 60%;
+        height: 250px;
+        box-shadow: 10px 10px 10px 0 #ffc0cc;
+        background-image: linear-gradient(-90deg, #ff385c, #ff5638);
+        margin-bottom: 30px;
+    }
+
+    &-remarks{
+        font-weight: 700;
+        font-size: 22px;
+    }
+}

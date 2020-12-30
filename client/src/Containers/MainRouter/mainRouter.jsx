@@ -21,7 +21,7 @@ function MainRouter(){
         if(status){
             SetAuthenticationStatus(false);
         }else{
-            SetAuthenticationStatus(false);
+            SetAuthenticationStatus(true);
         }
     }
 

@@ -1,0 +1,10 @@
+.side-bar-container{
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 28%;
+    height: 100%;
+    flex-direction: column;
+    background-color: rgb(241, 241, 241);
+}
