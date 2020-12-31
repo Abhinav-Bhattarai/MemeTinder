@@ -41,6 +41,13 @@ const Schema = new SchemaObject({
     AccountConfirmed: {
         type: Boolean,
         default: false
+    },
+
+    Requests: {
+        type: [
+            {sender: String, ProfilePicture: {type: String, data: Buffer}, request_date: String}
+            ],
+        default: []
     }
 
 })
