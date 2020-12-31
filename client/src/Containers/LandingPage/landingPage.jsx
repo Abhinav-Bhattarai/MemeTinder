@@ -51,17 +51,17 @@ const LandingPage = ({ authenticate }) => {
     }
 
     const ChangeSignupEmail = (event)=>{
-        const value = event.target.value
+        const value = event.target.value;
         SetSignupEmail(value)
     }
 
     const ChangeSigninUsername = (event)=>{
-        const value = event.target.value
+        const value = event.target.value;
         SetSigninUsername(value)
     }
 
     const ChangeSigninPassword = (event)=>{
-        const value = event.target.value
+        const value = event.target.value;
         SetSigninPassword(value)
     }
 
@@ -101,6 +101,7 @@ const LandingPage = ({ authenticate }) => {
                         localStorage.setItem('user-data', JSON.stringify(response.data.data));
                         localStorage.setItem('auth-token', response.data.token);
                         localStorage.setItem('auth-status', true);
+                        localStorage.setItem('Username', response.data.data.Username)
                         authenticate(false)
                         // changing the parent class authentication state to true;
                     }
