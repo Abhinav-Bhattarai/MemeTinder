@@ -4,7 +4,8 @@ const SchemaObject = mongoose.Schema;
 
 const Schema = new SchemaObject({
     Username: {
-        type: String
+        type: String,
+        required: true
     },
 
     Messages: {

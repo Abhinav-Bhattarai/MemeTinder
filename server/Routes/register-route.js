@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import bcypt from 'bcrypt';
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
+import UserModel from '../Models/user-model.js';
 
 dotenv.config();
 
@@ -49,8 +50,10 @@ router.post('/', (req, res)=>{
                                             html: '<h1 style="margin: 10px auto; text-align: center;">Welcome to Meme Tinder</h1><div style="padding: 10px 2%; margin: 10px auto; font-size: 16px">Please confirm your Email to further continue with MemeTinder.</div><a href="https://localhost:3000" style="width: 95%; display:block; margin:10px auto; padding:18px 4%; background-color: #ff374e; color:#fff; font-size:20px; border: none;  border-radius: 10px; margin-top:30px; text-align: center;">Accept to Confirm</a>'
                                     
                                         }, (err, info)=>{})
-                                        return res.json({data: user_data, token})
-                                    
+                                        const ForeignMessageData = new UserModel({ Username })
+                                        ForeignMessageData.save().then(()=>{
+                                            return res.json({data: user_data, token})
+                                        })
                                 })
                             })
                         } 

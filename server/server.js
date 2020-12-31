@@ -11,6 +11,9 @@ import RegisterRoute from './Routes/register-route.js';
 import CheckJWTRoute from './Routes/check-jwt-route.js';
 import ForgetPasswordRoute from './Routes/Password-confirmation-route.js';
 import LoginRoute from './Routes/login-route.js';
+import MessageRoute from './Routes/login-route.js';
+import MatchesRoute from './Routes/matches-route.js';
+import FriendRequestRoute from './Routes/friend-request.js';
 
 dotenv.config();
 
@@ -41,6 +44,9 @@ app.use('/register', RegisterRoute);
 app.use('/check', CheckJWTRoute);
 app.use('/forget', ForgetPasswordRoute);
 app.use('/login', LoginRoute);
+app.use('/matches', MatchesRoute);
+app.use('/message', MessageRoute);
+app.use('/friend-requests', FriendRequestRoute);
 
 // DB connection
 mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(()=>{

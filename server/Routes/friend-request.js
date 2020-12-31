@@ -3,6 +3,15 @@ import RegisterModel from '../Models/register-model.js';
 
 const router = express.Router();
 
+router.get('/:username', (req, res)=>{
+    const Username = req.params.Username;
+    RegisterModel.find().where("Username").equals(Username).then((response)=>{
+        if(response.length === 1){
+            return res.json(response[0].Requests);
+        }
+    })
+})
+
 router.post('/', (req, res)=>{
     const YourName = req.body.YourName;
     const FriendName = req.body.FriendName;
