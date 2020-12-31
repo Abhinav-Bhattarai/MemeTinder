@@ -33,26 +33,22 @@ router.get('/:Username', (req, res)=>{
     })
 });
 
-router.post('/:type', (req, res)=>{
-    if(type === 'accept'){
-        const FriendName = req.body.FriendName;
-        const YourName = req.body.YourName;
-        const FriendProfilePic = req.body.FriendProfilePic;
-        const YourProfilePic = req.body.YourProfilePic;
-        UserModel.findOne({username: YourName}).exec().then((sender_profile)=>{
-            sender_profile.Matches.push({ username: FriendName, Profile_Picture: FriendProfilePic })
-            sender_profile.save().then(()=>{
-                UserModel.findOne({ username: FriendName }).exec().then((receiver_profile)=>{
-                    receiver_profile.Matches.push({ username: YourName, Profile_Picture: YourProfilePic })
-                    receiver_profile.save().then(()=>{
-                        return res.json({'matched': true});
-                    })
+router.post('/', (req, res)=>{
+    const FriendName = req.body.FriendName;
+    const YourName = req.body.YourName;
+    const FriendProfilePic = req.body.FriendProfilePic;
+    const YourProfilePic = req.body.YourProfilePic;
+    UserModel.findOne({username: YourName}).exec().then((sender_profile)=>{
+        sender_profile.Matches.push({ username: FriendName, Profile_Picture: FriendProfilePic })
+        sender_profile.save().then(()=>{
+            UserModel.findOne({ username: FriendName }).exec().then((receiver_profile)=>{
+                receiver_profile.Matches.push({ username: YourName, Profile_Picture: YourProfilePic })
+                receiver_profile.save().then(()=>{
+                    return res.json({'matched': true});
                 })
             })
         })
-    }else{
-
-    }
+    })
 });
 
 router.put('/', (req, res)=>{
@@ -68,12 +64,12 @@ router.put('/', (req, res)=>{
         data.Matches = Matches;
         data.save().then(()=>{
             UserModel.findOne({ Username: Usernmae }).exec().then((receiver_data)=>{
-                const Matches = [...receiver_data.Matches];
-                const index = Matches.findIndex((match)=>{
+                const Matches_F = [...receiver_data.Matches];
+                const index_F = Matches_F.findIndex((match)=>{
                     return match.username === Sender;
                 });
-                Matches[index].LastInteraction = Date.now();
-                receiver_data.Matches = Matches;
+                Matches_F[index_F].LastInteraction = Date.now();
+                receiver_data.Matches = Matches_F;
                 receiver_data.save().then(()=>{
                     return res.json({interaction_added: true});
                 })

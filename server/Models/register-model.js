@@ -45,7 +45,7 @@ const Schema = new SchemaObject({
 
     Requests: {
         type: [
-            {sender: String, ProfilePicture: {type: String, data: Buffer}, request_date: String}
+            {sender: String, ProfilePicture: {type: String, data: Buffer}}
             ],
         default: []
     }
