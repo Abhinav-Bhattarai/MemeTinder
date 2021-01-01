@@ -43,6 +43,11 @@ const Schema = new SchemaObject({
         default: false
     },
 
+    MemeBackground: {
+        type: String,
+        data: Buffer
+    },
+
     Requests: {
         type: [
             {sender: String, ProfilePicture: {type: String, data: Buffer}}
