@@ -43,7 +43,7 @@ const Schema = new SchemaObject({
         default: false
     },
 
-    MemeBackground: {
+    MainPost: {
         type: String,
         data: Buffer
     },

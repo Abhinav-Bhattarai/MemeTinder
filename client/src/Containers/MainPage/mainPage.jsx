@@ -21,6 +21,8 @@ const MainPage = ({ authenticate }) => {
     const [ request_spinner, SetRequestSpinner ] = useState( false );
     const [ requests, SetRequests ] = useState( null );
     const [ my_profile_pic, SetMyProfilePic ] = useState( null )
+    const [ post_list, SetPostList ] = useState( null );
+    const [ current_index, SetCurrentIndex ] = useState( 0 );
 
     const TriggerMessageNav = (event, ref)=>{
         ref.style.transition = '0.3s';
@@ -42,16 +44,36 @@ const MainPage = ({ authenticate }) => {
         ref.style.transform = "translateX(25%)";
     }
 
+    const SendMatchRequest = (friend_profile, friend_name)=>{
+        const context = {
+            YourName: localStorage.getItem('Username'),
+            YourProfile: my_profile_pic,
+            FriendName: friend_name,
+            FriendProfile: friend_profile
+        };
+        axios.put('/friend-requests', context).then(()=>{});
+    };
+
     const LeftClickHandler = ()=>{
-        console.log('Clicked');
+        SetCurrentIndex(current_index++);
     };
 
     const CenterClickHandler = ()=>{
-        console.log('Clicked');
+        const dummy = [...post_list];
+        const FriendName = dummy[current_index].Username;
+        const FriendProfile = dummy[current_index].ProfilePicture;
+        SetCurrentIndex(current_index++);
+        SendMatchRequest(FriendProfile, FriendName);
+        // realtime request
     };
 
     const RightClickHandler = ()=>{
-        console.log('Clicked');
+        const dummy = [...post_list];
+        const FriendName = dummy[current_index].Username;
+        const FriendProfile = dummy[current_index].ProfilePicture;
+        SetCurrentIndex(current_index++);
+        SendMatchRequest(FriendProfile, FriendName);
+        // realtime request;
     };
 
     const RemoveRequestData = (username)=>{
@@ -75,9 +97,7 @@ const MainPage = ({ authenticate }) => {
             FriendName: username
         }
 
-        axios.post('/friend-requests', context).then((response)=>{
-            console.log(response.data)
-        })
+        axios.post('/friend-requests', context).then((response)=>{})
     }
 
     const AddToMatchesBackend = (match_username, match_image)=>{
@@ -88,9 +108,7 @@ const MainPage = ({ authenticate }) => {
             YourProfilePic: my_profile_pic
         }
 
-        axios.post('/matches', context).then((response)=>{
-            console.log(response.data);
-        })
+        axios.post('/matches', context).then((response)=>{})
     }
 
     const AcceptMatchRequest = (profile_image, username)=>{
@@ -146,6 +164,17 @@ const MainPage = ({ authenticate }) => {
             }
         })
     }
+    
+    const FetchPosts = ()=>{
+        axios.get('/post/0').then((response)=>{
+            const no_post = { no_posts: true }
+            if(JSON.stringify(no_post) !== JSON.stringify(response.data)){
+                SetPostList(response.data);
+            }else{
+                // default no-post page;
+            }
+        })
+    }
 
     useEffect(()=>{
         SetSpinner(true);
@@ -156,6 +185,8 @@ const MainPage = ({ authenticate }) => {
         FetchFriendrequest();
         // this fetches my profile picture;
         GetProfilePic();
+        // this fetches posts;
+        FetchPosts();
     }, []);
 
     let people_list_jsx = null;
@@ -226,4 +257,4 @@ const MainPage = ({ authenticate }) => {
     )
 }
 
-export default MainPage
+export default MainPage;
