@@ -1,0 +1,10 @@
+.request-bar-container{
+    display: flex;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 25%;
+    height: 100%;
+    flex-direction: column;
+    background-color: rgb(241, 241, 241);
+}

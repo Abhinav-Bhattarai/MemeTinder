@@ -4,10 +4,12 @@ import RegisterModel from '../Models/register-model.js';
 const router = express.Router();
 
 router.get('/:username', (req, res)=>{
-    const Username = req.params.Username;
+    const Username = req.params.username;
     RegisterModel.find().where("Username").equals(Username).then((response)=>{
         if(response.length === 1){
-            return res.json(response[0].Requests);
+            return res.json({data: response[0].Requests});
+        }else{
+            return res.json({no_requests: true})
         }
     })
 })

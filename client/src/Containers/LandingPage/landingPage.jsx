@@ -101,7 +101,7 @@ const LandingPage = ({ authenticate }) => {
                         localStorage.setItem('user-data', JSON.stringify(response.data.data));
                         localStorage.setItem('auth-token', response.data.token);
                         localStorage.setItem('auth-status', true);
-                        localStorage.setItem('Username', response.data.data.Username)
+                        localStorage.setItem('Username', response.data.data.Username);
                         authenticate(false)
                         // changing the parent class authentication state to true;
                     }
@@ -141,6 +141,7 @@ const LandingPage = ({ authenticate }) => {
                         localStorage.setItem('user-data', JSON.stringify(response.data.data));
                         localStorage.setItem('auth-token', response.data.token);
                         localStorage.setItem('auth-status', true);
+                        localStorage.setItem('Username', response.data.data.Username);
                         authenticate(false);
                         // changing the parent class authentication state to true;
                     }else{

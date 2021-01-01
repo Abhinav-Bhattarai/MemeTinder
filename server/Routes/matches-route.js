@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/:Username', (req, res)=>{
     const Username = req.params.Username ;
-    UserModel.aggregate(
+    UserModel.aggregate([
         // matching with the collection;
         {$match: {
             Username: Username
@@ -19,7 +19,7 @@ router.get('/:Username', (req, res)=>{
             'LastInteraction': -1
         }}
 
-    ).then((response)=>{
+    ]).then((response)=>{
         if(response.length === 1){
             const data = response[0].Matches;
             if(data.length >= 1){

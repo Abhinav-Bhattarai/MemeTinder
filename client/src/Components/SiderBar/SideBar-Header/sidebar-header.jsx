@@ -5,7 +5,7 @@ import { FaShoppingBag } from 'react-icons/fa'
 import './sidebar-header.scss';
 import TestImage from '../../../assets/bg.jpg';
 
-const Icon = ()=>{
+export const Icon = ()=>{
     return (
         <IconContext.Provider value={{
             style: {
