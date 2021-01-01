@@ -1,0 +1,41 @@
+@import '../../_variables';
+
+.icon-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 87%;
+    left: 31%;
+    width: 35%;
+    padding: 5px 3%;
+}
+
+.icons{
+    padding: 10px 10px;
+    border-radius: 10px;
+    font-size: 45px;
+    color: grey;
+    transition: 0.3s;
+
+    &:hover{
+        transform: scale(1.1);
+    }
+}
+
+.left:hover{
+    color: #27da8f;
+}
+
+.right:hover{
+    color: #00acee;
+}
+
+.center{
+    transform: translateY(-30px);
+
+    &:hover{
+        color: $theme-color;
+        transform: scale(1.1) translateY(-30px);
+    }
+}

@@ -11,6 +11,8 @@ import PeopleListCard from '../../Components/PeopleListCard/people-list-card';
 import RequestBar from '../../Components/RequestBar/request-bar';
 import RequestListContainer from '../../Components/RequestListContainer/request-container';
 import RequestHeader from '../../Components/RequestBar/RequestHeader/request-header';
+import RequestNav from '../../Components/RequestBar/RequestNav/request-nav';
+import Interactions from '../../Components/Interactions/Interactions';
 
 const MainPage = ({ authenticate }) => {
 
@@ -28,6 +30,28 @@ const MainPage = ({ authenticate }) => {
         ref.style.transition = '0.3s';
         ref.style.transform = "translateX(25%)";
     }
+
+    const TriggerNotificationNav = (event, ref)=>{
+        ref.style.transition = '0.3s';
+        ref.style.transform = "translateX(160%)";
+    }
+ 
+    const TriggerRequestNav = (event, ref)=>{
+        ref.style.transition = '0.3s';
+        ref.style.transform = "translateX(25%)";
+    }
+
+    const LeftClickHandler = ()=>{
+        console.log('Clicked');
+    };
+
+    const CenterClickHandler = ()=>{
+        console.log('Clicked');
+    };
+
+    const RightClickHandler = ()=>{
+        console.log('Clicked');
+    };
 
     const FetchMatches = ()=>{
         axios.get(`/matches/${localStorage.getItem('Username')}`).then((response)=>{
@@ -109,6 +133,7 @@ const MainPage = ({ authenticate }) => {
 
     return (
         <Fragment>
+
             <SideBar>
                 <SidebarHeader/>
                 <SidebarNav 
@@ -117,10 +142,21 @@ const MainPage = ({ authenticate }) => {
                 />
                 { ( spinner ) ? <LoadSpinner/> : people_list_jsx }
             </SideBar>
+
             <RequestBar>
                 <RequestHeader/>
+                <RequestNav
+                    TriggerNotificationNav={ (e, ref)=> TriggerNotificationNav(e, ref) }
+                    TriggerRequestNav= { (e, ref)=>TriggerRequestNav(e, ref) }
+                />
                 { (request_spinner) ? <LoadSpinner/> : request_list_jsx }
             </RequestBar>
+
+            <Interactions
+                LeftClick={ LeftClickHandler }
+                RightClick={ RightClickHandler }
+                CenterClick={ CenterClickHandler }
+            />
         </Fragment>
     )
 }
