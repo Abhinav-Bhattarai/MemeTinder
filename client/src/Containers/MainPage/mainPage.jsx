@@ -20,6 +20,7 @@ const MainPage = ({ authenticate }) => {
     const [ spinner, SetSpinner ] = useState( false );
     const [ request_spinner, SetRequestSpinner ] = useState( false );
     const [ requests, SetRequests ] = useState( null );
+    const [ my_profile_pic, SetMyProfilePic ] = useState( null )
 
     const TriggerMessageNav = (event, ref)=>{
         ref.style.transition = '0.3s';
@@ -53,6 +54,59 @@ const MainPage = ({ authenticate }) => {
         console.log('Clicked');
     };
 
+    const RemoveRequestData = (username)=>{
+        const friend_req_list = [...requests];
+        const index = friend_req_list.findIndex((element)=>{
+            return element.Username === username;
+        });
+        friend_req_list.splice(index, 1);
+        SetRequests(friend_req_list);
+    }
+
+    const AddMatchData = (pp, username)=>{
+        const match_data = [...people_list];
+        match_data.unshift({username: username, Profile_Picture: pp});
+        SetPeopleList(match_data);
+    }
+
+    const RemoveRequestSectionBackend = (username)=>{
+        const context = {
+            YourName: localStorage.getItem('Username'),
+            FriendName: username
+        }
+
+        axios.post('/friend-requests', context).then((response)=>{
+            console.log(response.data)
+        })
+    }
+
+    const AddToMatchesBackend = (match_username, match_image)=>{
+        const context = {
+            FriendName: match_username,
+            YourName: localStorage.getItem('Username'),
+            FriendProfilePic: match_image,
+            YourProfilePic: my_profile_pic
+        }
+
+        axios.post('/matches', context).then((response)=>{
+            console.log(response.data);
+        })
+    }
+
+    const AcceptMatchRequest = (profile_image, username)=>{
+        // the username here is the person who requested
+        RemoveRequestSectionBackend(username);
+        RemoveRequestData(username);
+        AddMatchData(profile_image, username);
+        AddToMatchesBackend(username, profile_image);
+    }
+
+    const RejectMatchRequest = (username)=>{
+        // the username here is the person who requested
+        RemoveRequestSectionBackend(username);
+        RemoveRequestData(username);
+    }
+
     const FetchMatches = ()=>{
         axios.get(`/matches/${localStorage.getItem('Username')}`).then((response)=>{
             const error = {error_type: 'Username', message: 'Wrong Username'}
@@ -83,6 +137,16 @@ const MainPage = ({ authenticate }) => {
         })
     }
 
+    const GetProfilePic = ()=>{
+        axios.get(`/profile/${localStorage.getItem('Username')}`).then((response)=>{
+            if(response.data.length >= 1){
+                SetMyProfilePic(response.data);
+            }else{
+                SetMyProfilePic(false);
+            }
+        })
+    }
+
     useEffect(()=>{
         SetSpinner(true);
         SetRequestSpinner(true);
@@ -90,8 +154,9 @@ const MainPage = ({ authenticate }) => {
         FetchMatches();
         // this fetches all the requests;
         FetchFriendrequest();
+        // this fetches my profile picture;
+        GetProfilePic();
     }, []);
-
 
     let people_list_jsx = null;
     if(people_list){
@@ -105,7 +170,7 @@ const MainPage = ({ authenticate }) => {
                         people_list.map((user)=>{
                             return (
                                 <PeopleListCard 
-                                    profile_picture= { user.ProfilePicture } 
+                                    profile_picture= { user.Profile_Picture } 
                                     username = { user.username } 
                                 />
                             )
