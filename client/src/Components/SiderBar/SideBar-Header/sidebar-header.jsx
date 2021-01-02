@@ -1,9 +1,8 @@
 import React, { Fragment } from 'react';
 import { IconContext } from 'react-icons';
-import { FaShoppingBag } from 'react-icons/fa'
+import { FaPowerOff } from 'react-icons/fa'
 
 import './sidebar-header.scss';
-import TestImage from '../../../assets/bg.jpg';
 
 export const Icon = ()=>{
     return (
@@ -16,19 +15,23 @@ export const Icon = ()=>{
                 color: '#fff'
             }
         }}>
-            <FaShoppingBag/>
+            <FaPowerOff/>
         </IconContext.Provider>
     )
 }
 
-const SidebarHeader = () => {
+const SidebarHeader = ({ profile_picture }) => {
     return (
         <Fragment>
             <header className='sidebar-header'>
-                <img 
-                    src={ TestImage } 
-                    alt=' profile '
-                />
+                {
+                    (profile_picture) ? 
+                        <img 
+                            src={ profile_picture } 
+                            alt=' profile '
+                        /> : 
+                        <div className='temp-img'></div>
+                }
 
                 <div className='sidebar-header-name'>
                     My Profile

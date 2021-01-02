@@ -15,6 +15,7 @@ import RequestNav from '../../Components/RequestBar/RequestNav/request-nav';
 import Interactions from '../../Components/Interactions/Interactions';
 import NoPost from '../../Components/UI/Default-No-Post/no-post';
 import PostContainer from '../../Components/PostContainer/post-container';
+import TestImage from '../../assets/bg.jpg';
 
 const MainPage = ({ authenticate }) => {
 
@@ -162,7 +163,7 @@ const MainPage = ({ authenticate }) => {
             if(response.data.length >= 1){
                 SetMyProfilePic(response.data);
             }else{
-                SetMyProfilePic(false);
+                SetMyProfilePic( TestImage );
             }
         })
     }
@@ -251,7 +252,9 @@ const MainPage = ({ authenticate }) => {
         <Fragment>
 
             <SideBar>
-                <SidebarHeader/>
+                <SidebarHeader
+                    profile_picture= { my_profile_pic }
+                />
                 <SidebarNav 
                     TriggerMessageNav={ (e, ref)=>TriggerMessageNav(e, ref) } 
                     TriggerMatchNav= { (e, ref)=>TriggerMatchNav(e, ref) }

@@ -16,6 +16,7 @@ import MatchesRoute from './Routes/matches-route.js';
 import FriendRequestRoute from './Routes/friend-request.js';
 import DeleterRoute from './Routes/delete-route.js';
 import PostRoute from './Routes/posts-route.js';
+import ProfileRouter from './Routes/profile-route.js';
 
 dotenv.config();
 
@@ -51,6 +52,7 @@ app.use('/message', MessageRoute);
 app.use('/friend-requests', FriendRequestRoute);
 app.use('/delete', DeleterRoute);
 app.use('/post', PostRoute);
+app.use('/profile', ProfileRouter);
 
 // DB connection
 mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(()=>{
