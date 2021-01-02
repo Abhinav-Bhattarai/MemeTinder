@@ -1,4 +1,5 @@
-import React, { Fragment, Suspense, useEffect, useState } from 'react';
+import axios from 'axios';
+import React, { Fragment, Suspense, useCallback, useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router';
 
 import LogoPage from '../../Components/UI/LogoPage/logo-page';
@@ -25,7 +26,17 @@ function MainRouter(){
         }
     }
 
-    const fetch_jsx = ()=>{
+    const CheckJWT = (token)=>{
+        axios.post('/check', { token }).then((response)=>{
+            const data = response.data;
+            const error = {access_denied: true}
+            if(JSON.stringify(data) !== JSON.stringify(error)){
+                SetAuthenticationStatus(true);
+            }
+        })
+    }
+
+    const fetch_jsx = useCallback(()=>{
         const token = localStorage.getItem('auth-token');
         const auth_status = JSON.parse(localStorage.getItem('auth-status'));
         if(!auth_status){
@@ -38,14 +49,14 @@ function MainRouter(){
 
             if(token && auth_status){
                 // axios request for jwt check
-                SetAuthenticationStatus(true);
+                CheckJWT(token)
             }
         }
-    }
+    }, [])
 
     useEffect(()=>{
         fetch_jsx();
-    }, []);
+    }, [ fetch_jsx ]);
 
     return (
         <Fragment>

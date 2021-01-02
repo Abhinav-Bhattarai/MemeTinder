@@ -11,8 +11,10 @@ router.post('/', (req, res)=>{
     jwt.verify(token, process.env.JWT_AUTH_KEY, (err, response)=>{
         if(err) return res.json({access_denied: true})
         else{
-            if(JSON.stringify(response) === "{}"){
+            if(JSON.stringify(response) !== JSON.stringify({})){
                 return res.json({data: response})
+            }else{
+                return res.json({access_denied: true})
             }
         }
     })

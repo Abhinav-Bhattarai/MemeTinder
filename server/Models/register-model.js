@@ -25,7 +25,8 @@ const Schema = new SchemaObject({
 
     ProfilePicture: {
         type: String,
-        data: Buffer
+        data: Buffer,
+        default: ''
     },
     
     Gender: {
@@ -45,7 +46,8 @@ const Schema = new SchemaObject({
 
     MainPost: {
         type: String,
-        data: Buffer
+        data: Buffer,
+        default: ''
     },
 
     Requests: {

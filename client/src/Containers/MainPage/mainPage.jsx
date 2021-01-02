@@ -13,6 +13,8 @@ import RequestListContainer from '../../Components/RequestListContainer/request-
 import RequestHeader from '../../Components/RequestBar/RequestHeader/request-header';
 import RequestNav from '../../Components/RequestBar/RequestNav/request-nav';
 import Interactions from '../../Components/Interactions/Interactions';
+import NoPost from '../../Components/UI/Default-No-Post/no-post';
+import PostContainer from '../../Components/PostContainer/post-container';
 
 const MainPage = ({ authenticate }) => {
 
@@ -55,14 +57,14 @@ const MainPage = ({ authenticate }) => {
     };
 
     const LeftClickHandler = ()=>{
-        SetCurrentIndex(current_index++);
+        SetCurrentIndex(current_index + 1);
     };
 
     const CenterClickHandler = ()=>{
         const dummy = [...post_list];
         const FriendName = dummy[current_index].Username;
         const FriendProfile = dummy[current_index].ProfilePicture;
-        SetCurrentIndex(current_index++);
+        SetCurrentIndex(current_index + 1);
         SendMatchRequest(FriendProfile, FriendName);
         // realtime request
     };
@@ -71,7 +73,7 @@ const MainPage = ({ authenticate }) => {
         const dummy = [...post_list];
         const FriendName = dummy[current_index].Username;
         const FriendProfile = dummy[current_index].ProfilePicture;
-        SetCurrentIndex(current_index++);
+        SetCurrentIndex(current_index + 1);
         SendMatchRequest(FriendProfile, FriendName);
         // realtime request;
     };
@@ -227,6 +229,24 @@ const MainPage = ({ authenticate }) => {
         }
     }
 
+    let post_area_jsx = null;
+    if(post_list){
+        if(post_list.length >= 1){
+            // main cards along with Interaction;
+            post_area_jsx = (
+                <PostContainer>
+                    <Interactions
+                        LeftClick={ LeftClickHandler }
+                        RightClick={ RightClickHandler }
+                        CenterClick={ CenterClickHandler }
+                    />
+                </PostContainer>
+            )
+        }else{
+            post_area_jsx = <NoPost/>;
+        }
+    }
+
     return (
         <Fragment>
 
@@ -239,6 +259,8 @@ const MainPage = ({ authenticate }) => {
                 { ( spinner ) ? <LoadSpinner/> : people_list_jsx }
             </SideBar>
 
+            { post_area_jsx }
+
             <RequestBar>
                 <RequestHeader/>
                 <RequestNav
@@ -248,11 +270,6 @@ const MainPage = ({ authenticate }) => {
                 { (request_spinner) ? <LoadSpinner/> : request_list_jsx }
             </RequestBar>
 
-            <Interactions
-                LeftClick={ LeftClickHandler }
-                RightClick={ RightClickHandler }
-                CenterClick={ CenterClickHandler }
-            />
         </Fragment>
     )
 }
