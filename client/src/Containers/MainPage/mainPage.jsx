@@ -16,6 +16,7 @@ import Interactions from '../../Components/Interactions/Interactions';
 import NoPost from '../../Components/UI/Default-No-Post/no-post';
 import PostContainer from '../../Components/PostContainer/post-container';
 import TestImage from '../../assets/bg.jpg';
+import ImageContainer from '../../Components/ImageContainer/image-container';
 
 const MainPage = ({ authenticate }) => {
 
@@ -26,25 +27,31 @@ const MainPage = ({ authenticate }) => {
     const [ my_profile_pic, SetMyProfilePic ] = useState( null )
     const [ post_list, SetPostList ] = useState( null );
     const [ current_index, SetCurrentIndex ] = useState( 0 );
+    const [ current_sidebar_value, SetSideBarValue ] = useState( 0 );
+    const [ current_request_bar_value, SetRequestBarValue ] = useState( 0 );
 
     const TriggerMessageNav = (event, ref)=>{
         ref.style.transition = '0.3s';
         ref.style.transform = "translateX(160%)";
+        SetSideBarValue(1);
     }
 
     const TriggerMatchNav = (event, ref)=>{
         ref.style.transition = '0.3s';
         ref.style.transform = "translateX(25%)";
+        SetSideBarValue(0);
     }
 
     const TriggerNotificationNav = (event, ref)=>{
         ref.style.transition = '0.3s';
         ref.style.transform = "translateX(160%)";
+        SetRequestBarValue(1);
     }
  
     const TriggerRequestNav = (event, ref)=>{
         ref.style.transition = '0.3s';
         ref.style.transform = "translateX(25%)";
+        SetRequestBarValue(0);
     }
 
     const SendMatchRequest = (friend_profile, friend_name)=>{
@@ -149,10 +156,12 @@ const MainPage = ({ authenticate }) => {
         axios.get(`/friend-requests/${ localStorage.getItem('Username') }`).then((response)=>{
             const error = {no_requests: true}
             if(JSON.stringify(response.data) !== JSON.stringify(error)){
-                SetRequests(response.data.data);
-            }else{
-                // default no requset section
-                SetRequests('use-default-page')
+                if(response.data.data.length >= 1){
+                    SetRequests(response.data.data);
+                }else{
+                    // default no requset section
+                    SetRequests('use-default-page')
+                }
             }
             SetRequestSpinner(false)
         })
@@ -197,22 +206,41 @@ const MainPage = ({ authenticate }) => {
         if( people_list === 'use-default-page' ){
             people_list_jsx = <Nodata/>
         }else{
-            people_list_jsx = (
-                <PeopleListContainer>
-
-                    {
-                        people_list.map((user)=>{
-                            return (
-                                <PeopleListCard 
-                                    profile_picture= { user.Profile_Picture } 
-                                    username = { user.username } 
-                                />
-                            )
-                        })
-                    }
-
-                </PeopleListContainer>
-            )
+            if(current_sidebar_value === 0){
+                people_list_jsx = (
+                    <PeopleListContainer>
+    
+                        {
+                            people_list.map((user)=>{
+                                return (
+                                    <PeopleListCard 
+                                        profile_picture= { user.Profile_Picture } 
+                                        username = { user.username } 
+                                    />
+                                )
+                            })
+                        }
+    
+                    </PeopleListContainer>
+                );
+            }else{
+                people_list_jsx = (
+                    <PeopleListContainer>
+    
+                        {
+                            people_list.map((user)=>{
+                                return (
+                                    <PeopleListCard 
+                                        profile_picture= { user.Profile_Picture } 
+                                        username = { user.username } 
+                                    />
+                                )
+                            })
+                        }
+    
+                    </PeopleListContainer>
+                );
+            }
         }
     }
 
@@ -220,13 +248,21 @@ const MainPage = ({ authenticate }) => {
     if(requests){
         if( requests === 'use-default-page' ){
             // use Default page
-            request_list_jsx = <Nodata/>
+            request_list_jsx = <Nodata/>;
         }else{
-            request_list_jsx = (
-                <RequestListContainer>
-                    
-                </RequestListContainer>
-            )
+            if(current_request_bar_value === 0){
+                request_list_jsx = (
+                    <RequestListContainer>
+                        
+                    </RequestListContainer>
+                );
+            }else{
+                request_list_jsx = (
+                    <RequestListContainer>
+                        
+                    </RequestListContainer>
+                );
+            }
         }
     }
 
@@ -234,8 +270,13 @@ const MainPage = ({ authenticate }) => {
     if(post_list){
         if(post_list.length >= 1){
             // main cards along with Interaction;
+            // const post_data = [...post_list];
+            // const required_data = post_data[current_index];
             post_area_jsx = (
                 <PostContainer>
+                    <ImageContainer>
+
+                    </ImageContainer>
                     <Interactions
                         LeftClick={ LeftClickHandler }
                         RightClick={ RightClickHandler }
