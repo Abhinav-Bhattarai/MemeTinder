@@ -8,26 +8,19 @@ const Schema = new SchemaObject({
         required: true
     },
 
-    Messages: {
-
-        type: [
-                {
-                    person: String, 
-                    messages: {
-                        type: [{data: String, self: Boolean, Date: String}],
-                        default: []
-                    }
-                }
-              ],
-
-        default: []
-    },
-
     Matches: {
-        type: [{ username: String, Profile_Picture: {type: String, data: Buffer}, LastInteraction: {
-            type: String,
-            default: Date.now()
-        }}],
+        type: [{ 
+            username: String, 
+            Profile_Picture: {type: String, data: Buffer},
+            Messages: {
+                type: [{data: String, self: Boolean, Date: String}],
+                default: []
+            },
+            LastInteraction: {
+                type: String,
+                default: Date.now()
+            }
+        }],
         default: []
     }
 });

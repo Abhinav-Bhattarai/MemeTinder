@@ -1,4 +1,4 @@
-import express, { Router } from 'express';
+import express from 'express';
 import UserModel from '../Models/user-model.js';
 
 const router = express.Router();
@@ -15,7 +15,7 @@ router.put('/', (req, res)=>{
             self: true,
             Date: DateTime
         };
-        sender_data.Messages.push(data_for_sender);
+        sender_data.Matches.Messages.push(data_for_sender);
         sender_data.save().then(()=>{
             UserModel.findOne({Username: Receiver}).exec().then((receiver_data)=>{
                 const data_for_receiver = {
@@ -23,7 +23,7 @@ router.put('/', (req, res)=>{
                     self: false,
                     Date: DateTime
                 }
-                receiver_data.Messages.push(data_for_receiver);
+                receiver_data.Matches.Messages.push(data_for_receiver);
                 receiver_data.save().then(()=>{
                     return res.json({ message_added: true });
                 });
@@ -32,4 +32,4 @@ router.put('/', (req, res)=>{
     })
 });
 
-export default Router;
+export default router;

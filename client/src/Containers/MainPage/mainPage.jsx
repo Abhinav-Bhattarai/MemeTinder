@@ -224,17 +224,24 @@ const MainPage = ({ authenticate }) => {
 
     useEffect(()=>{
         if(socket){
-            const RequestSocket = ()=>{
-                socket.on('client-request-finder', ( sender, ProfilePicture )=>{
-                    // adding it to the request_list with unshift;
-                    const dummy = [...requests];
-                    const data = { sender, ProfilePicture }
-                    dummy.unshift(data);
-                    SetRequests(dummy);
-                })
-            }
             // socket operations;
-            RequestSocket();
+            socket.on('client-request-finder', ( sender, ProfilePicture )=>{
+                // adding it to the request_list with unshift;
+                const dummy = [...requests];
+                const data = { sender, ProfilePicture }
+                dummy.unshift(data);
+                SetRequests(dummy);
+            })
+
+            socket.on('receive-message', (  )=>{
+
+            })
+        }
+
+        // cleanup to manage redundancy of updates
+        return ()=>{
+            socket.off('client-request-finder');
+            socket.off('receive-message');
         }
     })
 

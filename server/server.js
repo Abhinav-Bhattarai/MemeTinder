@@ -11,7 +11,7 @@ import RegisterRoute from './Routes/register-route.js';
 import CheckJWTRoute from './Routes/check-jwt-route.js';
 import ForgetPasswordRoute from './Routes/Password-confirmation-route.js';
 import LoginRoute from './Routes/login-route.js';
-import MessageRoute from './Routes/login-route.js';
+import MessageRoute from './Routes/message-route.js';
 import MatchesRoute from './Routes/matches-route.js';
 import FriendRequestRoute from './Routes/friend-request.js';
 import DeleterRoute from './Routes/delete-route.js';
