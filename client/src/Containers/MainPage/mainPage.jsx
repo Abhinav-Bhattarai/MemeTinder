@@ -20,6 +20,7 @@ import TestImage from '../../assets/bg.jpg';
 import ImageContainer from '../../Components/ImageContainer/image-container';
 import Dropdown from '../../Components/UI/Dropdown/dropdown';
 import RequestCard from '../../Components/RequestCard/request-card';
+import ImageConfig from '../../Components/Credentials/ImageConfig/image-config';
 
 const MainPage = ({ authenticate }) => {
 
@@ -34,6 +35,7 @@ const MainPage = ({ authenticate }) => {
     const [ current_request_bar_value, SetRequestBarValue ] = useState( 0 );
     const [ dropdown_info, SetDropdownInfo ] = useState( false );
     const [ socket, SetSocket ] = useState( null )
+    const [ profile_alert, SetProfileAlert ] = useState( false );
 
     const TriggerDropdown = ()=>{
         SetDropdownInfo(!dropdown_info);
@@ -83,16 +85,17 @@ const MainPage = ({ authenticate }) => {
         SendMatchRequest(FriendName);
         SetCurrentIndex(current_index + 1);
         // realtime request
-        socket.emit('Send-Friend-Request', (FriendName, Username, my_profile_pic));
+        socket.emit('Send-Friend-Request', (FriendName, MyName, my_profile_pic));
     };
 
     const RightClickHandler = ()=>{
         const dummy = [...post_list];
         const FriendName = dummy[current_index].Username;
+        const MyName = localStorage.getItem('Username');
         SendMatchRequest(FriendName);
         SetCurrentIndex(current_index + 1);
         // realtime request;
-        socket.emit('Send-Friend-Request', (FriendName, Username, my_profile_pic));
+        socket.emit('Send-Friend-Request', (FriendName, MyName, my_profile_pic));
     };
 
     const LogoutHandler = ()=>{
@@ -186,6 +189,7 @@ const MainPage = ({ authenticate }) => {
                 SetMyProfilePic(response.data);
             }else{
                 SetMyProfilePic( TestImage );
+                SetProfileAlert( true );
             }
         })
     }
@@ -233,15 +237,17 @@ const MainPage = ({ authenticate }) => {
                 SetRequests(dummy);
             })
 
-            socket.on('receive-message', (  )=>{
+            socket.on('receive-message', (sender, message)=>{
 
             })
         }
 
         // cleanup to manage redundancy of updates
         return ()=>{
-            socket.off('client-request-finder');
-            socket.off('receive-message');
+            if(socket){
+                socket.off('client-request-finder');
+                socket.off('receive-message');
+            }
         }
     })
 
@@ -380,6 +386,8 @@ const MainPage = ({ authenticate }) => {
                 />
                 { ( request_spinner ) ? <LoadSpinner/> : request_list_jsx }
             </RequestBar>
+
+            { ( profile_alert ) ? <ImageConfig/> : null }
 
         </Fragment>
     )
