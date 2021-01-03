@@ -18,21 +18,13 @@ router.put('/', (req, res)=>{
     const YourName = req.body.YourName;
     const FriendName = req.body.FriendName;
     const YourProfile = req.body.YourProfile;
-    const FriendProfile = req.body.FriendProfile;
 
-    RegisterModel.findOne({ Username: YourName }).exec().then((sender)=>{
-        const data = [...sender.Requests];
-        data.push({sender: FriendName, ProfilePicture: FriendProfile});
-        sender.Requests = data;
-        sender.save().then(()=>{
-            RegisterModel.findOne({ Username: FriendName }).exec().then((receiver)=>{
-                const receiver_data = [...receiver.Requests];
-                receiver_data.push({sender: YourName, ProfilePicture:  YourProfile});
-                receiver.Requests = receiver_data;
-                receiver.save().then(()=>{
-                    return res.json({ request_sent: true });
-                })
-            })
+    RegisterModel.findOne({ Username: FriendName }).exec().then((receiver)=>{
+        const receiver_data = [...receiver.Requests];
+        receiver_data.push({sender: YourName, ProfilePicture:  YourProfile});
+        receiver.Requests = receiver_data;
+        receiver.save().then(()=>{
+            return res.json({ request_sent: true });
         })
     })
 

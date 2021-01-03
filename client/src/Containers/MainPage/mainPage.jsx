@@ -63,12 +63,11 @@ const MainPage = ({ authenticate }) => {
         SetRequestBarValue(0);
     }
 
-    const SendMatchRequest = (friend_profile, friend_name)=>{
+    const SendMatchRequest = (friend_name)=>{
         const context = {
             YourName: localStorage.getItem('Username'),
             YourProfile: my_profile_pic,
             FriendName: friend_name,
-            FriendProfile: friend_profile
         };
         axios.put('/friend-requests', context).then(()=>{});
     };
@@ -80,18 +79,16 @@ const MainPage = ({ authenticate }) => {
     const CenterClickHandler = ()=>{
         const dummy = [...post_list];
         const FriendName = dummy[current_index].Username;
-        const FriendProfile = dummy[current_index].ProfilePicture;
+        SendMatchRequest(FriendName);
         SetCurrentIndex(current_index + 1);
-        SendMatchRequest(FriendProfile, FriendName);
         // realtime request
     };
 
     const RightClickHandler = ()=>{
         const dummy = [...post_list];
         const FriendName = dummy[current_index].Username;
-        const FriendProfile = dummy[current_index].ProfilePicture;
+        SendMatchRequest(FriendName);
         SetCurrentIndex(current_index + 1);
-        SendMatchRequest(FriendProfile, FriendName);
         // realtime request;
     };
 
