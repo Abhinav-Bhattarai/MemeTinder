@@ -79,9 +79,11 @@ const MainPage = ({ authenticate }) => {
     const CenterClickHandler = ()=>{
         const dummy = [...post_list];
         const FriendName = dummy[current_index].Username;
+        const MyName = localStorage.getItem('Username');
         SendMatchRequest(FriendName);
         SetCurrentIndex(current_index + 1);
         // realtime request
+        socket.emit('Send-Friend-Request', (FriendName, Username, my_profile_pic));
     };
 
     const RightClickHandler = ()=>{
@@ -90,6 +92,7 @@ const MainPage = ({ authenticate }) => {
         SendMatchRequest(FriendName);
         SetCurrentIndex(current_index + 1);
         // realtime request;
+        socket.emit('Send-Friend-Request', (FriendName, Username, my_profile_pic));
     };
 
     const LogoutHandler = ()=>{
@@ -221,7 +224,17 @@ const MainPage = ({ authenticate }) => {
 
     useEffect(()=>{
         if(socket){
+            const RequestSocket = ()=>{
+                socket.on('client-request-finder', ( sender, ProfilePicture )=>{
+                    // adding it to the request_list with unshift;
+                    const dummy = [...requests];
+                    const data = { sender, ProfilePicture }
+                    dummy.unshift(data);
+                    SetRequests(dummy);
+                })
+            }
             // socket operations;
+            RequestSocket();
         }
     })
 
