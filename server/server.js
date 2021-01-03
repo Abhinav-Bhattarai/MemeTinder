@@ -37,6 +37,11 @@ app.use(cors({
 
 // Socket Connection
 io.on('connection', (socket)=>{
+
+    socket.on('join-room', (username)=>{
+        socket.join(username)
+    })
+
     socket.on('disconnect', ()=>{
         console.log('user disconnect')
     })

@@ -20,7 +20,7 @@ export const Icon = ()=>{
     )
 }
 
-const SidebarHeader = ({ profile_picture }) => {
+const SidebarHeader = ({ profile_picture, TriggerDropdown, children }) => {
     return (
         <Fragment>
             <header className='sidebar-header'>
@@ -29,6 +29,7 @@ const SidebarHeader = ({ profile_picture }) => {
                         <img 
                             src={ profile_picture } 
                             alt=' profile '
+                            onMouseOver={ TriggerDropdown }
                         /> : 
                         <div className='temp-img'></div>
                 }
@@ -38,6 +39,8 @@ const SidebarHeader = ({ profile_picture }) => {
                 </div>
 
                 <Icon/>
+
+                { children }
 
             </header>
         </Fragment>

@@ -4,7 +4,7 @@ import './sidebar.scss';
 const SideBar = ( props ) => {
     return (
         <Fragment>
-            <main className='side-bar-container'>
+            <main className='side-bar-container' style={{ filter: `blur(${props.blur})` }}>
                 { props.children }
             </main>
         </Fragment>

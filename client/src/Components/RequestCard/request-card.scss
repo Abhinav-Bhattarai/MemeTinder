@@ -1,0 +1,69 @@
+@import '../../_variables';
+
+.request-card{
+    cursor: context-menu;
+    padding: 20px 3%;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(219, 219, 219);
+    transition: 0.2s;
+    margin-top: 10px;
+
+    header{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    &-desc{
+        display: flex;
+        flex-direction: column;
+        width: 75%;
+        margin-bottom: 5px;
+        
+        &-name{
+            font-weight: 700;
+            font-size: 18px;
+        };
+
+        footer{
+            color: grey;
+        }
+    }
+
+    img{
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+    }
+
+    &-reply-container{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+        
+        .request-card-reply{
+            cursor: pointer;
+            padding: 10px 3%;
+            text-align: center;
+            width: 40%;
+            color: white;
+            border-radius: 10px;
+            background-color: #27da8f;
+            transition: 0.3s;
+
+            &:hover{
+                background-color: #1bce83;
+            }
+        }
+
+        .request-card-reply:last-child{
+            background-color: $theme-color;
+
+            &:hover{
+                background-color: #e92c4f;
+            }
+        }
+    }
+}

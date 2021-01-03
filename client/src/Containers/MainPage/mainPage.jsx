@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
+import socket_client from 'socket.io-client';
 
 import SideBar from '../../Components/SiderBar/sidebar';
 import SidebarHeader from '../../Components/SiderBar/SideBar-Header/sidebar-header';
@@ -17,6 +18,8 @@ import NoPost from '../../Components/UI/Default-No-Post/no-post';
 import PostContainer from '../../Components/PostContainer/post-container';
 import TestImage from '../../assets/bg.jpg';
 import ImageContainer from '../../Components/ImageContainer/image-container';
+import Dropdown from '../../Components/UI/Dropdown/dropdown';
+import RequestCard from '../../Components/RequestCard/request-card';
 
 const MainPage = ({ authenticate }) => {
 
@@ -29,6 +32,12 @@ const MainPage = ({ authenticate }) => {
     const [ current_index, SetCurrentIndex ] = useState( 0 );
     const [ current_sidebar_value, SetSideBarValue ] = useState( 0 );
     const [ current_request_bar_value, SetRequestBarValue ] = useState( 0 );
+    const [ dropdown_info, SetDropdownInfo ] = useState( false );
+    const [ socket, SetSocket ] = useState( null )
+
+    const TriggerDropdown = ()=>{
+        SetDropdownInfo(!dropdown_info);
+    }
 
     const TriggerMessageNav = (event, ref)=>{
         ref.style.transition = '0.3s';
@@ -86,6 +95,10 @@ const MainPage = ({ authenticate }) => {
         // realtime request;
     };
 
+    const LogoutHandler = ()=>{
+        authenticate(true);
+    }
+
     const RemoveRequestData = (username)=>{
         const friend_req_list = [...requests];
         const index = friend_req_list.findIndex((element)=>{
@@ -107,7 +120,7 @@ const MainPage = ({ authenticate }) => {
             FriendName: username
         }
 
-        axios.post('/friend-requests', context).then((response)=>{})
+        axios.post('/friend-requests', context).then(()=>{})
     }
 
     const AddToMatchesBackend = (match_username, match_image)=>{
@@ -118,7 +131,7 @@ const MainPage = ({ authenticate }) => {
             YourProfilePic: my_profile_pic
         }
 
-        axios.post('/matches', context).then((response)=>{})
+        axios.post('/matches', context).then(()=>{})
     }
 
     const AcceptMatchRequest = (profile_image, username)=>{
@@ -188,6 +201,12 @@ const MainPage = ({ authenticate }) => {
         })
     }
 
+    const JoinSocketRoom = ()=>{
+        const io = socket_client.connect(process.env.PROXY, {query: {username: localStorage.getItem('Username')}});
+        io.emit('join-room', (localStorage.getItem('Username')));
+        SetSocket(io);
+    }
+
     useEffect(()=>{
         SetSpinner(true);
         SetRequestSpinner(true);
@@ -199,7 +218,15 @@ const MainPage = ({ authenticate }) => {
         GetProfilePic();
         // this fetches posts;
         FetchPosts();
+        // join my_sockek_room
+        JoinSocketRoom();
     }, []);
+
+    useEffect(()=>{
+        if(socket){
+            // socket operations;
+        }
+    })
 
     let people_list_jsx = null;
     if(people_list){
@@ -250,10 +277,22 @@ const MainPage = ({ authenticate }) => {
             // use Default page
             request_list_jsx = <Nodata/>;
         }else{
+            const request_list = [...requests]
             if(current_request_bar_value === 0){
                 request_list_jsx = (
                     <RequestListContainer>
-                        
+                        { 
+                            request_list.map((request)=>{
+                                return (
+                                    <RequestCard
+                                        sender={ request.sender }
+                                        profile_picture= { request.ProfilePicture }
+                                        AcceptRequest={ (profile_image, username)=> AcceptMatchRequest(profile_image, username) }
+                                        DeclineRequest={ (username)=> RejectMatchRequest(username) }
+                                    />
+                                )
+                            })
+                        }
                     </RequestListContainer>
                 );
             }else{
@@ -292,9 +331,10 @@ const MainPage = ({ authenticate }) => {
     return (
         <Fragment>
 
-            <SideBar>
+            <SideBar blur={ ( dropdown_info ) ? '2px' : '0px' }>
                 <SidebarHeader
                     profile_picture= { my_profile_pic }
+                    TriggerDropdown={ TriggerDropdown }
                 />
                 <SidebarNav 
                     TriggerMessageNav={ (e, ref)=>TriggerMessageNav(e, ref) } 
@@ -302,6 +342,16 @@ const MainPage = ({ authenticate }) => {
                 />
                 { ( spinner ) ? <LoadSpinner/> : people_list_jsx }
             </SideBar>
+
+            {
+                (dropdown_info) ? 
+                    <Dropdown 
+                        profile={ my_profile_pic }
+                        TriggerDropdown={ TriggerDropdown }
+                        TriggerLogout={ LogoutHandler }
+                    /> :
+                    null
+            }
 
             { post_area_jsx }
 
@@ -311,7 +361,7 @@ const MainPage = ({ authenticate }) => {
                     TriggerNotificationNav={ (e, ref)=> TriggerNotificationNav(e, ref) }
                     TriggerRequestNav= { (e, ref)=>TriggerRequestNav(e, ref) }
                 />
-                { (request_spinner) ? <LoadSpinner/> : request_list_jsx }
+                { ( request_spinner ) ? <LoadSpinner/> : request_list_jsx }
             </RequestBar>
 
         </Fragment>

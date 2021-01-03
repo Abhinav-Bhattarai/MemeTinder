@@ -1,0 +1,73 @@
+@import '../../../_variables';
+
+@keyframes visible{
+    from{
+        opacity: 0.3;
+    }
+    to{
+        opacity: 1;
+    }
+}
+
+.dropdown{
+    position: fixed;
+    border-radius: 10px;
+    left: 1%;
+    top: 74px;
+    width: 27%;
+    display: flex;
+    flex-direction: column;
+    height: 315px;
+    z-index: 2;
+    background-color: rgb(216, 215, 215);
+    animation-name: visible;
+    animation-duration: 0.3s;
+
+    &::before{
+        content: '';
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        z-index: -1;
+        transform: rotate(45deg) translateY(-7px) translateX(2px);
+        background-color: rgb(216, 215, 215);
+    }
+
+    &-header{
+        padding: 15px 5%;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: rgb(199, 194, 194);
+
+        img{
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+        }
+
+        .dropdown-name{
+            font-weight: 500;
+            font-size: 20px;
+        }
+    }
+
+    .dropdown-nav{
+        padding: 10px 3%;
+        display: flex;
+        align-items: center;
+
+        &-name{
+            cursor: context-menu;
+            font-weight: 700;
+            font-size: 16px;
+            margin-left: 4%;
+        }
+
+        &:hover{
+            background-color: rgb(233, 231, 231);
+        }
+    }
+
+}

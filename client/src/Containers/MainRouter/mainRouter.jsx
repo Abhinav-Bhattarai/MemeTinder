@@ -20,6 +20,8 @@ function MainRouter(){
 
     const ChangeAuthentication = (status)=>{
         if(status){
+            localStorage.clear();
+            localStorage.setItem('auth-status', false);
             SetAuthenticationStatus(false);
         }else{
             SetAuthenticationStatus(true);
