@@ -2,6 +2,8 @@ import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
 import socket_client from 'socket.io-client';
 
+import '../../Components/PostContainer/post-container.scss';
+
 import SideBar from '../../Components/SiderBar/sidebar';
 import SidebarHeader from '../../Components/SiderBar/SideBar-Header/sidebar-header';
 import SidebarNav from '../../Components/SiderBar/Sidebar-Nav/sidebar-nav';
@@ -34,6 +36,7 @@ const MainPage = ({ authenticate }) => {
     const [ dropdown_info, SetDropdownInfo ] = useState( false );
     const [ socket, SetSocket ] = useState( null )
     const [ profile_alert, SetProfileAlert ] = useState( false );
+    const [ api_limiter, SetApiLimiter ] = useState( false );
 
     const TriggerDropdown = ()=>{
         SetDropdownInfo(!dropdown_info);
@@ -80,24 +83,56 @@ const MainPage = ({ authenticate }) => {
         SetCurrentIndex(current_index + 1);
     };
 
+    const FetchNewPost = ()=>{
+        axios.get(`/post/0/${localStorage.getItem('Username')}`).then((response)=>{
+            const no_post = { no_posts: true }
+            if(JSON.stringify(no_post) !== JSON.stringify(response.data)){
+                if(response.data.length >= 1){
+                    const dummy = [...post_list];
+                    let i = 0;
+                    for(i of response.data){
+                        dummy.push(i);
+                    };
+                    SetPostList(dummy);
+                }else{
+                    SetApiLimiter( true );
+                }
+            }
+        })
+    }
+
     const CenterClickHandler = ()=>{
         const dummy = [...post_list];
-        const FriendName = dummy[current_index].Username;
-        const MyName = localStorage.getItem('Username');
-        SendMatchRequest(FriendName);
-        SetCurrentIndex(current_index + 1);
-        // realtime request
-        socket.emit('Send-Friend-Request', (FriendName, MyName, my_profile_pic));
+        if(current_index <= dummy.length - 1){
+            const FriendName = dummy[current_index].Username;
+            const MyName = localStorage.getItem('Username');
+            SendMatchRequest(FriendName);
+            SetCurrentIndex(current_index + 1); 
+            if( api_limiter === false ){
+                if(Math.floor(dummy.length / 2) - 1 === current_index){
+                    FetchNewPost();
+                }
+            }
+            // realtime request
+            socket.emit('Send-Friend-Request', (FriendName, MyName, my_profile_pic));
+        }
     };
 
     const RightClickHandler = ()=>{
         const dummy = [...post_list];
-        const FriendName = dummy[current_index].Username;
-        const MyName = localStorage.getItem('Username');
-        SendMatchRequest(FriendName);
-        SetCurrentIndex(current_index + 1);
-        // realtime request;
-        socket.emit('Send-Friend-Request', (FriendName, MyName, my_profile_pic));
+        if(current_index <= dummy.length - 1){
+            const FriendName = dummy[current_index].Username;
+            const MyName = localStorage.getItem('Username');
+            SendMatchRequest(FriendName);
+            SetCurrentIndex(current_index + 1); 
+            if( api_limiter === false ){
+                if(Math.floor(dummy.length / 2) - 1 === current_index){
+                    FetchNewPost();
+                }
+            }
+            // realtime request
+            socket.emit('Send-Friend-Request', (FriendName, MyName, my_profile_pic));
+        }
     };
 
     const LogoutHandler = ()=>{
@@ -197,7 +232,6 @@ const MainPage = ({ authenticate }) => {
     const FetchPosts = ()=>{
         axios.get(`/post/0/${localStorage.getItem('Username')}`).then((response)=>{
             const no_post = { no_posts: true }
-            console.log(response.data)
             if(JSON.stringify(no_post) !== JSON.stringify(response.data)){
                 SetPostList(response.data);
             }else{
@@ -381,7 +415,11 @@ const MainPage = ({ authenticate }) => {
                     null
             }
 
-            { ( post_area_jsx ) ? post_area_jsx : <LoadSpinner/> }
+            { ( post_area_jsx ) ? post_area_jsx : 
+                <main className='main-post-container'>
+                    <LoadSpinner/>
+                </main>
+            }
 
             <RequestBar blur={ ( profile_alert ) ? '5px' : '0px' }>
                 <RequestHeader/>
