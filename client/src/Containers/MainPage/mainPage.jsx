@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
 import socket_client from 'socket.io-client';
 
@@ -25,8 +25,6 @@ import ImageConfig from '../../Components/Credentials/ImageConfig/image-config';
 const MainPage = ({ authenticate }) => {
 
     const [ people_list, SetPeopleList ] = useState( null );
-    const [ spinner, SetSpinner ] = useState( false );
-    const [ request_spinner, SetRequestSpinner ] = useState( false );
     const [ requests, SetRequests ] = useState( null );
     const [ my_profile_pic, SetMyProfilePic ] = useState( null )
     const [ post_list, SetPostList ] = useState( null );
@@ -168,7 +166,6 @@ const MainPage = ({ authenticate }) => {
             }else{
                 SetPeopleList('use-default-page');
             }
-            SetSpinner(false);
         })
     }
 
@@ -183,11 +180,10 @@ const MainPage = ({ authenticate }) => {
                     SetRequests('use-default-page')
                 }
             }
-            SetRequestSpinner(false)
         })
     }
 
-    const GetProfilePic = useCallback(()=>{
+    const GetProfilePic = ()=>{
         axios.get(`/profile/${localStorage.getItem('Username')}`).then((response)=>{
             if(response.data.length >= 1){
                 SetMyProfilePic(response.data);
@@ -196,15 +192,17 @@ const MainPage = ({ authenticate }) => {
                 SetProfileAlert( true );
             }
         })
-    }, []);
+    };
     
     const FetchPosts = ()=>{
-        axios.get('/post/0').then((response)=>{
+        axios.get(`/post/0/${localStorage.getItem('Username')}`).then((response)=>{
             const no_post = { no_posts: true }
+            console.log(response.data)
             if(JSON.stringify(no_post) !== JSON.stringify(response.data)){
                 SetPostList(response.data);
             }else{
                 // default no-post page;
+                SetPostList([]);
             }
         })
     }
@@ -216,19 +214,22 @@ const MainPage = ({ authenticate }) => {
     }
 
     useEffect(()=>{
-        SetSpinner(true);
-        SetRequestSpinner(true);
-        // this fetches all the matches with sorted data;
-        FetchMatches();
-        // this fetches all the requests;
-        FetchFriendrequest();
-        // this fetches my profile picture;
-        GetProfilePic();
+
         // this fetches posts;
         FetchPosts();
+
+        // this fetches all the matches with sorted data;
+        FetchMatches();
+
+        // this fetches all the requests;
+        FetchFriendrequest();
+
+        // this fetches my profile picture;
+        GetProfilePic();
+        
         // join my_sockek_room
         JoinSocketRoom();
-    }, [ GetProfilePic ]);
+    }, []);
 
     useEffect(()=>{
         if(socket){
@@ -367,7 +368,7 @@ const MainPage = ({ authenticate }) => {
                     TriggerMessageNav={ (e, ref)=>TriggerMessageNav(e, ref) } 
                     TriggerMatchNav= { (e, ref)=>TriggerMatchNav(e, ref) }
                 />
-                { ( spinner ) ? <LoadSpinner/> : people_list_jsx }
+                { ( !people_list_jsx ) ? <LoadSpinner/> : people_list_jsx }
             </SideBar>
 
             {
@@ -380,7 +381,7 @@ const MainPage = ({ authenticate }) => {
                     null
             }
 
-            { post_area_jsx }
+            { ( post_area_jsx ) ? post_area_jsx : <LoadSpinner/> }
 
             <RequestBar blur={ ( profile_alert ) ? '5px' : '0px' }>
                 <RequestHeader/>
@@ -388,7 +389,7 @@ const MainPage = ({ authenticate }) => {
                     TriggerNotificationNav={ (e, ref)=> TriggerNotificationNav(e, ref) }
                     TriggerRequestNav= { (e, ref)=>TriggerRequestNav(e, ref) }
                 />
-                { ( request_spinner ) ? <LoadSpinner/> : request_list_jsx }
+                { ( !request_list_jsx ) ? <LoadSpinner/> : request_list_jsx }
             </RequestBar>
 
             { ( profile_alert ) ? <ImageConfig RemoveProfileCard={ TriggerProfileAlert }/> : null }
