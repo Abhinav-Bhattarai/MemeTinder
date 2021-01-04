@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react';
 import './post-container.scss';
 
-const PostContainer = ({ children }) => {
+const PostContainer = ({ children, blur }) => {
     return (
         <Fragment>
-            <main className='main-post-container'>
+            <main className='main-post-container' style={{filter: `blur(${blur})`}}>
                 { children }
             </main>
         </Fragment>

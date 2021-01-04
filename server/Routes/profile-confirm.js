@@ -9,11 +9,15 @@ router.post('/:Username', (req, res)=>{
     const MainPost = req.body.MainPost;
     RegistrationModel.findOne({Username}, (err, response)=>{
         if(!err){
-            response.ProfilePicture = ProfilePicture;
-            response.MainPost = MainPost;
-            response.save().then(()=>{
-                return res.json({profile_added: true});
-            })
+            if(ProfilePicture.length >= 10 && MainPost.length >= 10){
+                response.ProfilePicture = ProfilePicture;
+                response.MainPost = MainPost;
+                response.save().then(()=>{
+                    return res.json({profile_added: true});
+                })
+            }else{
+                return res.json({invalid_pictures: true})
+            }
         }
     })
 })

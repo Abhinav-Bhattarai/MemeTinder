@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import socket_client from 'socket.io-client';
 
@@ -63,6 +63,10 @@ const MainPage = ({ authenticate }) => {
         ref.style.transition = '0.3s';
         ref.style.transform = "translateX(25%)";
         SetRequestBarValue(0);
+    }
+
+    const TriggerProfileAlert = ()=>{
+        SetProfileAlert(!profile_alert)
     }
 
     const SendMatchRequest = (friend_name)=>{
@@ -183,7 +187,7 @@ const MainPage = ({ authenticate }) => {
         })
     }
 
-    const GetProfilePic = ()=>{
+    const GetProfilePic = useCallback(()=>{
         axios.get(`/profile/${localStorage.getItem('Username')}`).then((response)=>{
             if(response.data.length >= 1){
                 SetMyProfilePic(response.data);
@@ -192,7 +196,7 @@ const MainPage = ({ authenticate }) => {
                 SetProfileAlert( true );
             }
         })
-    }
+    }, []);
     
     const FetchPosts = ()=>{
         axios.get('/post/0').then((response)=>{
@@ -224,7 +228,7 @@ const MainPage = ({ authenticate }) => {
         FetchPosts();
         // join my_sockek_room
         JoinSocketRoom();
-    }, []);
+    }, [ GetProfilePic ]);
 
     useEffect(()=>{
         if(socket){
@@ -335,7 +339,7 @@ const MainPage = ({ authenticate }) => {
             // const post_data = [...post_list];
             // const required_data = post_data[current_index];
             post_area_jsx = (
-                <PostContainer>
+                <PostContainer blur={ ( profile_alert ) ? '5px' : '0px' }>
                     <ImageContainer>
 
                     </ImageContainer>
@@ -354,7 +358,7 @@ const MainPage = ({ authenticate }) => {
     return (
         <Fragment>
 
-            <SideBar blur={ ( dropdown_info ) ? '2px' : '0px' }>
+            <SideBar blur={ ( dropdown_info || profile_alert ) ? '5px' : '0px' }>
                 <SidebarHeader
                     profile_picture= { my_profile_pic }
                     TriggerDropdown={ TriggerDropdown }
@@ -378,7 +382,7 @@ const MainPage = ({ authenticate }) => {
 
             { post_area_jsx }
 
-            <RequestBar>
+            <RequestBar blur={ ( profile_alert ) ? '5px' : '0px' }>
                 <RequestHeader/>
                 <RequestNav
                     TriggerNotificationNav={ (e, ref)=> TriggerNotificationNav(e, ref) }
@@ -387,7 +391,7 @@ const MainPage = ({ authenticate }) => {
                 { ( request_spinner ) ? <LoadSpinner/> : request_list_jsx }
             </RequestBar>
 
-            { ( profile_alert ) ? <ImageConfig/> : null }
+            { ( profile_alert ) ? <ImageConfig RemoveProfileCard={ TriggerProfileAlert }/> : null }
 
         </Fragment>
     )
