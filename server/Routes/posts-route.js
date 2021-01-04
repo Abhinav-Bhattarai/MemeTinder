@@ -4,10 +4,10 @@ import RegistrationModel from '../Models/register-model.js';
 const router = express.Router();
 
 router.get('/:number/:Username', (req, res)=>{
-    const number = req.params.number;
+    const number = parseInt(req.params.number);
     const Username = req.params.Username;
-
-    RegistrationModel.find({}).skip(parseInt(number)).limit(15).then((response)=>{
+    
+    RegistrationModel.find({}).skip(number * 20).limit(20).then((response)=>{
         if(response.length >= 1){
             const main_data = [];
             let i = 0

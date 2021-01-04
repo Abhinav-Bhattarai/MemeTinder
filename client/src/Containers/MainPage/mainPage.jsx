@@ -34,7 +34,7 @@ const MainPage = ({ authenticate }) => {
     const [ current_sidebar_value, SetSideBarValue ] = useState( 0 );
     const [ current_request_bar_value, SetRequestBarValue ] = useState( 0 );
     const [ dropdown_info, SetDropdownInfo ] = useState( false );
-    const [ socket, SetSocket ] = useState( null )
+    const [ socket, SetSocket ] = useState( null );
     const [ profile_alert, SetProfileAlert ] = useState( false );
     const [ api_limiter, SetApiLimiter ] = useState( false );
 
@@ -107,14 +107,14 @@ const MainPage = ({ authenticate }) => {
             const FriendName = dummy[current_index].Username;
             const MyName = localStorage.getItem('Username');
             SendMatchRequest(FriendName);
-            SetCurrentIndex(current_index + 1); 
+            if(current_index !== dummy.length - 1) SetCurrentIndex(current_index + 1); 
             if( api_limiter === false ){
                 if(Math.floor(dummy.length / 2) - 1 === current_index){
                     FetchNewPost();
                 }
             }
             // realtime request
-            socket.emit('Send-Friend-Request', (FriendName, MyName, my_profile_pic));
+            socket.emit('Send-Friend-Request', FriendName, MyName, my_profile_pic);
         }
     };
 
@@ -124,14 +124,14 @@ const MainPage = ({ authenticate }) => {
             const FriendName = dummy[current_index].Username;
             const MyName = localStorage.getItem('Username');
             SendMatchRequest(FriendName);
-            SetCurrentIndex(current_index + 1); 
+            if(current_index !== dummy.length - 1) SetCurrentIndex(current_index + 1); 
             if( api_limiter === false ){
                 if(Math.floor(dummy.length / 2) - 1 === current_index){
                     FetchNewPost();
                 }
             }
             // realtime request
-            socket.emit('Send-Friend-Request', (FriendName, MyName, my_profile_pic));
+            socket.emit('Send-Friend-Request', FriendName, MyName, my_profile_pic);
         }
     };
 
@@ -174,12 +174,17 @@ const MainPage = ({ authenticate }) => {
         axios.post('/matches', context).then(()=>{})
     }
 
-    const AcceptMatchRequest = (profile_image, username)=>{
+    const SendSocketMatch = (profile_image, username)=>{
+        socket.emit('accept-request', username)
+    }
+
+    const AcceptMatchRequest = (e, profile_image, username)=>{
         // the username here is the person who requested
         RemoveRequestSectionBackend(username);
         RemoveRequestData(username);
         AddMatchData(profile_image, username);
         AddToMatchesBackend(username, profile_image);
+        SendSocketMatch(profile_image, username);
     }
 
     const RejectMatchRequest = (username)=>{
@@ -242,8 +247,8 @@ const MainPage = ({ authenticate }) => {
     }
 
     const JoinSocketRoom = ()=>{
-        const io = socket_client.connect(process.env.PROXY, {query: {username: localStorage.getItem('Username')}});
-        io.emit('join-room', (localStorage.getItem('Username')));
+        const io = socket_client.connect(process.env.PROXY);
+        io.emit('join-room', localStorage.getItem('Username'));
         SetSocket(io);
     }
 
@@ -276,6 +281,19 @@ const MainPage = ({ authenticate }) => {
                 SetRequests(dummy);
             })
 
+            socket.on('match', (alert)=>{
+                // axios call to reconsider the match requests;
+                axios.get(`/matches/${localStorage.getItem('Username')}`).then((response)=>{
+                    const error = {error_type: 'Username', message: 'Wrong Username'}
+                    const no_match = {no_matches: true}
+                    if(JSON.stringify(response.data) !== JSON.stringify(error)){
+                        if(JSON.stringify(response.data) !== JSON.stringify(no_match)){
+                            SetPeopleList(response.data.data);
+                        }
+                    }
+                })
+            })
+
             socket.on('receive-message', (sender, message)=>{
 
             })
@@ -284,8 +302,7 @@ const MainPage = ({ authenticate }) => {
         // cleanup to manage redundancy of updates
         return ()=>{
             if(socket){
-                socket.off('client-request-finder');
-                socket.off('receive-message');
+                socket.disconnect()
             }
         }
     })
@@ -300,9 +317,10 @@ const MainPage = ({ authenticate }) => {
                     <PeopleListContainer>
     
                         {
-                            people_list.map((user)=>{
+                            people_list.map((user, i)=>{
                                 return (
                                     <PeopleListCard 
+                                        key={i}
                                         profile_picture= { user.Profile_Picture } 
                                         username = { user.username } 
                                     />
@@ -317,9 +335,10 @@ const MainPage = ({ authenticate }) => {
                     <PeopleListContainer>
     
                         {
-                            people_list.map((user)=>{
+                            people_list.map((user, i)=>{
                                 return (
                                     <PeopleListCard 
+                                        key={i}
                                         profile_picture= { user.Profile_Picture } 
                                         username = { user.username } 
                                     />
@@ -344,13 +363,14 @@ const MainPage = ({ authenticate }) => {
                 request_list_jsx = (
                     <RequestListContainer>
                         { 
-                            request_list.map((request)=>{
+                            request_list.map((request, i)=>{
                                 return (
                                     <RequestCard
+                                        key={i}
                                         sender={ request.sender }
                                         profile_picture= { request.ProfilePicture }
-                                        AcceptRequest={ (profile_image, username)=> AcceptMatchRequest(profile_image, username) }
-                                        DeclineRequest={ (username)=> RejectMatchRequest(username) }
+                                        AcceptRequest={ (e, profile_image, username)=> AcceptMatchRequest(e, profile_image, username) }
+                                        DeclineRequest={ (e, username)=> RejectMatchRequest(e, username) }
                                     />
                                 )
                             })
@@ -371,13 +391,15 @@ const MainPage = ({ authenticate }) => {
     if(post_list){
         if(post_list.length >= 1){
             // main cards along with Interaction;
-            // const post_data = [...post_list];
-            // const required_data = post_data[current_index];
+            const post_data = [...post_list];
+            const required_data = post_data[current_index];
             post_area_jsx = (
                 <PostContainer blur={ ( profile_alert ) ? '5px' : '0px' }>
-                    <ImageContainer>
-
-                    </ImageContainer>
+                    <ImageContainer
+                        ProfilePicture={ required_data.ProfilePicture }
+                        MainPost={ required_data.MainPost }
+                        Username={ required_data.Username }
+                    />
                     <Interactions
                         LeftClick={ LeftClickHandler }
                         RightClick={ RightClickHandler }

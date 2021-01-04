@@ -13,8 +13,8 @@ const RequestCard = ({ sender, profile_picture, AcceptRequest, DeclineRequest })
                     </main>
                 </header>
                 <article className='request-card-reply-container'>
-                    <div className='request-card-reply' onClick={ AcceptRequest.bind( profile_picture, sender ) }>ACCEPT</div>
-                    <div className='request-card-reply' onClick={ DeclineRequest.bind(username) }>DECLINE</div>
+                    <div className='request-card-reply' onClick={(e)=>AcceptRequest(e,  profile_picture, sender ) }>ACCEPT</div>
+                    <div className='request-card-reply' onClick={ (e)=>DeclineRequest(e, sender) }>DECLINE</div>
                 </article>
             </main>
         </Fragment>
