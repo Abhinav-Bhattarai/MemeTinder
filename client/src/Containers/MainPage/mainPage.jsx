@@ -150,7 +150,7 @@ const MainPage = ({ authenticate }) => {
 
     const AddMatchData = (pp, username)=>{
         const match_data = [...people_list];
-        const current_date = new Date(parseInt(Date.now())).toLocaleDateString();
+        const current_date = Date.now();
         match_data.unshift({username: username, Profile_Picture: pp, Messages: [], LastInteraction: current_date});
         SetPeopleList(match_data);
     }
@@ -307,12 +307,13 @@ const MainPage = ({ authenticate }) => {
     
                         {
                             people_list.map((user, i)=>{
+                                const UpdateDate = new Date(parseInt(user.LastInteraction)).toLocaleDateString();
                                 return (
                                     <PeopleListCard 
                                         key={i}
                                         profile_picture = { user.Profile_Picture } 
                                         username = { user.username } 
-                                        lastupdate = { user.LastInteraction }
+                                        lastupdate = { UpdateDate }
                                     />
                                 )
                             })
@@ -326,11 +327,13 @@ const MainPage = ({ authenticate }) => {
     
                         {
                             people_list.map((user, i)=>{
+                                const UpdateDate = new Date(parseInt(user.LastInteraction)).toLocaleDateString();
                                 return (
                                     <PeopleListCard 
                                         key={i}
                                         profile_picture= { user.Profile_Picture } 
                                         username = { user.username } 
+                                        lastupdate = { UpdateDate}
                                     />
                                 )
                             })

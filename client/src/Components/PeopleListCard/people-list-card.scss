@@ -8,6 +8,12 @@
     justify-content: flex-start;
     margin-top: 5px;
     background-color: rgb(219, 219, 219);
+    cursor: context-menu;
+    transition: 0.3s;
+
+    &:hover{
+        background-color: rgb(209, 208, 208);
+    }
 
     img{
         width: 55px;
@@ -25,7 +31,7 @@
             font-weight: 500;
             font-size: 23px;
             padding: 2px 2%;
-            letter-spacing: 2px;
+            letter-spacing: 1.2px;
         }
 
         footer{
