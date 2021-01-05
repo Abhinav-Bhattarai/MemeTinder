@@ -150,16 +150,15 @@ const MainPage = ({ authenticate }) => {
 
     const AddMatchData = (pp, username)=>{
         const match_data = [...people_list];
-        match_data.unshift({username: username, Profile_Picture: pp});
+        const current_date = new Date(parseInt(Date.now())).toLocaleDateString();
+        match_data.unshift({username: username, Profile_Picture: pp, Messages: [], LastInteraction: current_date});
         SetPeopleList(match_data);
     }
 
     const RemoveRequestSectionBackend = (username)=>{
         const context = {
-            YourName: localStorage.getItem('Username'),
             FriendName: username
         }
-
         axios.post('/friend-requests', context).then(()=>{})
     }
 
@@ -183,7 +182,7 @@ const MainPage = ({ authenticate }) => {
         RemoveRequestSectionBackend(username);
         RemoveRequestData(username);
         AddMatchData(profile_image, username);
-        AddToMatchesBackend(username, profile_image);
+        // AddToMatchesBackend(username, profile_image);
         SendSocketMatch(username);
     }
 
@@ -195,16 +194,16 @@ const MainPage = ({ authenticate }) => {
 
     const FetchMatches = ()=>{
         axios.get(`/matches/${localStorage.getItem('Username')}`).then((response)=>{
-            const error = {error_type: 'Username', message: 'Wrong Username'}
-            const no_match = {no_matches: true}
+            const error = {error_type: 'Username', message: 'Wrong Username'};
+            const no_res = {no_matches: true};
             if(JSON.stringify(response.data) !== JSON.stringify(error)){
-                if(JSON.stringify(response.data) === JSON.stringify(no_match)){
-                    SetPeopleList('use-default-page');
-                }else{
+                if(JSON.stringify(response.data) !== JSON.stringify(no_res)){
                     SetPeopleList(response.data.data);
+                }else{
+                    SetPeopleList([]);
                 }
             }else{
-                SetPeopleList('use-default-page');
+                SetPeopleList([]);
             }
         })
     }
@@ -299,7 +298,7 @@ const MainPage = ({ authenticate }) => {
 
     let people_list_jsx = null;
     if(people_list){
-        if( people_list === 'use-default-page' ){
+        if( people_list.length === 0 ){
             people_list_jsx = <Nodata/>
         }else{
             if(current_sidebar_value === 0){
@@ -311,8 +310,9 @@ const MainPage = ({ authenticate }) => {
                                 return (
                                     <PeopleListCard 
                                         key={i}
-                                        profile_picture= { user.Profile_Picture } 
+                                        profile_picture = { user.Profile_Picture } 
                                         username = { user.username } 
+                                        lastupdate = { user.LastInteraction }
                                     />
                                 )
                             })
@@ -348,7 +348,7 @@ const MainPage = ({ authenticate }) => {
             // use Default page
             request_list_jsx = <Nodata/>;
         }else{
-            const request_list = [...requests]
+            const request_list = [...requests];
             if(current_request_bar_value === 0){
                 request_list_jsx = (
                     <RequestListContainer>
@@ -370,7 +370,7 @@ const MainPage = ({ authenticate }) => {
             }else{
                 request_list_jsx = (
                     <RequestListContainer>
-                        
+
                     </RequestListContainer>
                 );
             }

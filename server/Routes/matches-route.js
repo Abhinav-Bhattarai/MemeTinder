@@ -48,9 +48,13 @@ router.post('/', (req, res)=>{
                     receiver_profile.save().then(()=>{
                         return res.json({'matched': true});
                     })
+                }else{
+                    return res.json({not_added_to_matches: true});
                 }
             })
         })
+        }else{
+            return res.json({not_added_to_matches: true});
         }
     })
 });
