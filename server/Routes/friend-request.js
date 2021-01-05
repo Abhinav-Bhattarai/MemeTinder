@@ -21,6 +21,7 @@ router.put('/', (req, res)=>{
 
     RegisterModel.findOne({ Username: FriendName }).exec().then((receiver)=>{
         const receiver_data = [...receiver.Requests];
+        console.log(receiver_data)
         receiver_data.push({sender: YourName, ProfilePicture:  YourProfile});
         receiver.Requests = receiver_data;
         receiver.save().then(()=>{
@@ -47,7 +48,7 @@ router.post('/', (req, res)=>{
                     return element.sender === YourName;
                 });
                 Requests.splice(friend_profile_index, 1);
-                friend_profile.Requests = Requests;
+                friend_profile.Requests = friend_profile_Requests;
                 friend_profile.save().then(()=>{
                     return res.json({ request_deleted: true })
                 });

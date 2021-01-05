@@ -41,9 +41,11 @@ io.on('connection', (socket)=>{
 
     socket.on('join-room', (username)=>{
         socket.join(username)
+        console.log(`connected to ${username} room`)
     })
 
     socket.on('Send-Friend-Request', ( room, sender_name, sender_profile )=>{
+        console.log('friend-request-triggered')
         socket.broadcast.to(room).emit('client-request-finder', sender_name, sender_profile )
     })
 
@@ -51,9 +53,7 @@ io.on('connection', (socket)=>{
         socket.broadcast.to(username).emit('match', 'stay-alert')
     })
 
-    socket.on('disconnect', ()=>{
-        console.log('user disconnect')
-    })
+    socket.on('disconnect', ()=>{})
 });
 
 // api Endpoints

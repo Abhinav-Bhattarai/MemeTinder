@@ -174,7 +174,7 @@ const MainPage = ({ authenticate }) => {
         axios.post('/matches', context).then(()=>{})
     }
 
-    const SendSocketMatch = (profile_image, username)=>{
+    const SendSocketMatch = (username)=>{
         socket.emit('accept-request', username)
     }
 
@@ -184,7 +184,7 @@ const MainPage = ({ authenticate }) => {
         RemoveRequestData(username);
         AddMatchData(profile_image, username);
         AddToMatchesBackend(username, profile_image);
-        SendSocketMatch(profile_image, username);
+        SendSocketMatch(username);
     }
 
     const RejectMatchRequest = (username)=>{
@@ -294,15 +294,13 @@ const MainPage = ({ authenticate }) => {
                 })
             })
 
-            socket.on('receive-message', (sender, message)=>{
-
-            })
+            socket.on('receive-message', (sender, message)=>{})
         }
 
         // cleanup to manage redundancy of updates
         return ()=>{
             if(socket){
-                socket.disconnect()
+                socket.off('client-request-finder');
             }
         }
     })

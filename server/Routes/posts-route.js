@@ -7,7 +7,11 @@ router.get('/:number/:Username', (req, res)=>{
     const number = parseInt(req.params.number);
     const Username = req.params.Username;
     
-    RegistrationModel.find({}).skip(number * 20).limit(20).then((response)=>{
+    RegistrationModel.aggregate([
+        {$match: {}},
+        {$skip: number*20},
+        {$limit: 20}
+    ]).then((response)=>{
         if(response.length >= 1){
             const main_data = [];
             let i = 0
