@@ -38,16 +38,20 @@ router.post('/', (req, res)=>{
     const YourName = req.body.YourName;
     const FriendProfilePic = req.body.FriendProfilePic;
     const YourProfilePic = req.body.YourProfilePic;
-    UserModel.findOne({username: YourName}).exec().then((sender_profile)=>{
-        sender_profile.Matches.push({ username: FriendName, Profile_Picture: FriendProfilePic })
-        sender_profile.save().then(()=>{
-            UserModel.findOne({ username: FriendName }).exec().then((receiver_profile)=>{
-                receiver_profile.Matches.push({ username: YourName, Profile_Picture: YourProfilePic })
-                receiver_profile.save().then(()=>{
-                    return res.json({'matched': true});
-                })
+    UserModel.findOne({Username: YourName}).exec().then((sender_profile)=>{
+        if(sender_profile){
+            sender_profile.Matches.push({ username: FriendName, Profile_Picture: FriendProfilePic })
+            sender_profile.save().then(()=>{
+            UserModel.findOne({ Username: FriendName }).exec().then((receiver_profile)=>{
+                if(receiver_profile){
+                    receiver_profile.Matches.push({ username: YourName, Profile_Picture: YourProfilePic })
+                    receiver_profile.save().then(()=>{
+                        return res.json({'matched': true});
+                    })
+                }
             })
         })
+        }
     })
 });
 

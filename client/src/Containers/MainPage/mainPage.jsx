@@ -213,12 +213,7 @@ const MainPage = ({ authenticate }) => {
         axios.get(`/friend-requests/${ localStorage.getItem('Username') }`).then((response)=>{
             const error = {no_requests: true}
             if(JSON.stringify(response.data) !== JSON.stringify(error)){
-                if(response.data.data.length >= 1){
-                    SetRequests(response.data.data);
-                }else{
-                    // default no requset section
-                    SetRequests('use-default-page')
-                }
+                SetRequests(response.data.data);
             }
         })
     }
@@ -295,12 +290,9 @@ const MainPage = ({ authenticate }) => {
             })
 
             socket.on('receive-message', (sender, message)=>{})
-        }
 
-        // cleanup to manage redundancy of updates
-        return ()=>{
-            if(socket){
-                socket.off('client-request-finder');
+            return ()=>{
+                socket.removeAllListeners();
             }
         }
     })
@@ -352,7 +344,7 @@ const MainPage = ({ authenticate }) => {
 
     let request_list_jsx = null;
     if(requests){
-        if( requests === 'use-default-page' ){
+        if( requests.length === 0 ){
             // use Default page
             request_list_jsx = <Nodata/>;
         }else{
