@@ -27,6 +27,7 @@ const SidebarHeader = ({ profile_picture, TriggerDropdown, children }) => {
                 {
                     (profile_picture) ? 
                         <img 
+                            draggable='false'
                             src={ profile_picture } 
                             alt=' profile '
                             onMouseOver={ TriggerDropdown }

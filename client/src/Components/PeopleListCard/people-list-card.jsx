@@ -5,7 +5,7 @@ const PeopleListCard = ({ profile_picture, username, lastupdate }) => {
     return (
         <Fragment>
             <main className='people-list-card-container'>
-                <img src={ profile_picture } alt='profile-pic'/>
+                <img src={ profile_picture } draggable='false' alt='profile-pic'/>
                 <div className='people-list-card-container-desc-area'>
                     <header>{ username }</header>
                     <footer>LastUpdatedAt: { lastupdate }</footer>

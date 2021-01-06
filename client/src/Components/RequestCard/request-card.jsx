@@ -6,7 +6,7 @@ const RequestCard = ({ sender, profile_picture, AcceptRequest, DeclineRequest })
         <Fragment>
             <main className='request-card'>
                 <header>
-                    <img src={ profile_picture } alt='default-req-card'/>
+                    <img src={ profile_picture } draggable='false' alt='default-req-card'/>
                     <main className='request-card-desc'>
                         <div className='request-card-desc-name'>{ sender }</div>
                         <footer>want's to match with you ?</footer>

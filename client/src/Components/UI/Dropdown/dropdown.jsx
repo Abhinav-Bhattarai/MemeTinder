@@ -58,7 +58,7 @@ const Dropdown = ({ profile, TriggerDropdown, TriggerLogout }) => {
             <main className='dropdown' onMouseLeave={ TriggerDropdown }>
                 <header className='dropdown-header'>
                     {
-                        (profile) ? <img src={ profile } alt='profile'/> : null
+                        (profile) ? <img src={ profile } draggable='false' alt='profile'/> : null
                     }
                     <div className='dropdown-name'>
                         { localStorage.getItem('Username') }

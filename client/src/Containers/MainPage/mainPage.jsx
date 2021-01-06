@@ -170,11 +170,14 @@ const MainPage = ({ authenticate }) => {
             YourProfilePic: my_profile_pic
         }
 
-        axios.post('/matches', context).then(()=>{})
+        axios.post('/matches', context).then(()=>{
+            // sending socket data to other client after matches endpoint is updated;
+            SendSocketMatch(match_username);
+        })
     }
 
     const SendSocketMatch = (username)=>{
-        socket.emit('accept-request', username)
+        socket.emit('accept', username)
     }
 
     const AcceptMatchRequest = (e, profile_image, username)=>{
@@ -183,7 +186,6 @@ const MainPage = ({ authenticate }) => {
         RemoveRequestData(username);
         AddMatchData(profile_image, username);
         // AddToMatchesBackend(username, profile_image);
-        SendSocketMatch(username);
     }
 
     const RejectMatchRequest = (username)=>{
@@ -283,7 +285,11 @@ const MainPage = ({ authenticate }) => {
                     if(JSON.stringify(response.data) !== JSON.stringify(error)){
                         if(JSON.stringify(response.data) !== JSON.stringify(no_match)){
                             SetPeopleList(response.data.data);
+                        }else{
+                            SetPeopleList([]);
                         }
+                    }else{
+                        SetPeopleList([]);
                     }
                 })
             })
