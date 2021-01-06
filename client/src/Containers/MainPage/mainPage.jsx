@@ -155,9 +155,9 @@ const MainPage = ({ authenticate }) => {
         SetPeopleList(match_data);
     }
 
-    const RemoveRequestSectionBackend = (username)=>{
+    const RemoveRequestSectionBackend = ()=>{
         const context = {
-            FriendName: username
+            MyName: localStorage.getItem('Username')
         }
         axios.post('/friend-requests', context).then(()=>{})
     }
@@ -170,9 +170,10 @@ const MainPage = ({ authenticate }) => {
             YourProfilePic: my_profile_pic
         }
 
-        axios.post('/matches', context).then(()=>{
+        axios.post('/matches', context).then((response)=>{
             // sending socket data to other client after matches endpoint is updated;
             SendSocketMatch(match_username);
+            console.log(response.data)
         })
     }
 
@@ -183,19 +184,20 @@ const MainPage = ({ authenticate }) => {
     const AcceptMatchRequest = (e, profile_image, username)=>{
         // the username here is the person who requested
         RemoveRequestSectionBackend(username);
-        RemoveRequestData(username);
+        RemoveRequestData();
         AddMatchData(profile_image, username);
-        // AddToMatchesBackend(username, profile_image);
+        AddToMatchesBackend(username, profile_image);
     }
 
     const RejectMatchRequest = (username)=>{
         // the username here is the person who requested
         RemoveRequestSectionBackend(username);
-        RemoveRequestData(username);
+        RemoveRequestData();
     }
 
     const FetchMatches = ()=>{
         axios.get(`/matches/${localStorage.getItem('Username')}`).then((response)=>{
+            console.log(response.data);
             const error = {error_type: 'Username', message: 'Wrong Username'};
             const no_res = {no_matches: true};
             if(JSON.stringify(response.data) !== JSON.stringify(error)){

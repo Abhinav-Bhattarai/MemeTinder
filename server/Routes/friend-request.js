@@ -31,7 +31,7 @@ router.put('/', (req, res)=>{
 })
 
 router.post('/', (req, res)=>{
-    const FriendName = req.body.FriendName;
+    const FriendName = req.body.MyName;
     RegisterModel.findOne({ Username: FriendName }).exec().then((profile)=>{
         const Requests = [...profile.Requests];
         const index = Requests.findIndex((element)=>{

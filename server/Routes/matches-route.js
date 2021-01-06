@@ -5,21 +5,7 @@ const router = express.Router();
 
 router.get('/:Username', (req, res)=>{
     const Username = req.params.Username ;
-    UserModel.aggregate([
-        // matching with the collection;
-        {$match: {
-            Username: Username
-        }},
-
-        // Opening Matches array in a collection mongo form;
-        {$unwind: '$Matches'},
-
-        // finally sorting the Matches array;
-        {$sort: {
-            'LastInteraction': -1
-        }}
-
-    ]).then((response)=>{
+    UserModel.find().where("Username").equals(Username).sort({"Matches.LastInteraction": -1}).then((response)=>{
         if(response.length === 1){
             const data = response[0].Matches;
             if(data.length >= 1){
