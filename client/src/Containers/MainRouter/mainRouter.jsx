@@ -54,7 +54,7 @@ function MainRouter(){
                 CheckJWT(token)
             }
         }
-    }, [])
+    }, []);
 
     useEffect(()=>{
         fetch_jsx();

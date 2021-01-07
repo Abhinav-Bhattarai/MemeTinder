@@ -23,6 +23,9 @@ import ImageContainer from '../../Components/ImageContainer/image-container';
 import Dropdown from '../../Components/UI/Dropdown/dropdown';
 import RequestCard from '../../Components/RequestCard/request-card';
 import ImageConfig from '../../Components/Credentials/ImageConfig/image-config';
+import { Route, Switch } from 'react-router';
+import HomeContainer from '../../Components/HomeContainer/home-container';
+import MessageContainer from '../../Components/MessageContainer/message-container';
 
 const MainPage = ({ authenticate }) => {
 
@@ -253,37 +256,6 @@ const MainPage = ({ authenticate }) => {
         io.emit('join-room', localStorage.getItem('Username'));
         SetSocket(io);
     }
-
-    // Event Listeners;
-
-    const KeyPressed = (e)=>{
-        const key_pressed = e.key;
-        if(post_list){
-            if(post_list.length >= 1 && current_index <= post_list.length - 1){
-                if(key_pressed === ' '){
-                    LeftClickHandler();
-                }
-                else if(key_pressed === 'ArrowLeft'){
-                    LeftClickHandler();
-                }
-
-                else if(key_pressed === 'ArrowRight'){
-                    CenterClickHandler();
-                }
-
-                else if(key_pressed === 'ArrowUp'){
-                    RightClickHandler();
-                }
-            }
-        }
-    }
-
-    useEffect(() => {
-
-        document.addEventListener("keydown", KeyPressed);
-        return () => document.removeEventListener("keydown", KeyPressed);
-    
-    });
 
     useEffect(()=>{
 
@@ -516,7 +488,22 @@ const MainPage = ({ authenticate }) => {
                     null
             }
 
-            { ( post_area_jsx ) ? post_area_jsx : 
+            { ( post_area_jsx ) ? 
+                (
+                    <Switch>
+                        <Route exact path='/home' render={()=>{
+                            return <HomeContainer 
+                                        jsx = { post_area_jsx }
+                                        LeftClick = { LeftClickHandler }
+                                        RightClick = { RightClickHandler }
+                                        CenterClick = { CenterClickHandler }
+                                    />}
+                        }/>
+                        <Route exact path='/messsages/:id' render={()=><MessageContainer/>}/>
+                        <Route render={()=><HomeContainer jsx={ post_area_jsx }/>}/>
+                    </Switch>
+                )
+            : 
                 <main className='main-post-container'>
                     <LoadSpinner/>
                 </main>
