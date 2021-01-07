@@ -31,11 +31,11 @@ router.put('/', (req, res)=>{
 })
 
 router.post('/', (req, res)=>{
-    const FriendName = req.body.MyName;
-    RegisterModel.findOne({ Username: FriendName }).exec().then((profile)=>{
+    const MyName = req.body.MyName;
+    RegisterModel.findOne({ Username: MyName }).exec().then((profile)=>{
         const Requests = [...profile.Requests];
         const index = Requests.findIndex((element)=>{
-            return element.sender === FriendName;
+            return element.sender === MyName;
         });
         Requests.splice(index, 1);
         profile.Requests = Requests;

@@ -160,7 +160,9 @@ const MainPage = ({ authenticate }) => {
         const context = {
             MyName: localStorage.getItem('Username')
         }
-        axios.post('/friend-requests', context).then(()=>{})
+        axios.post('/friend-requests', context).then((response)=>{
+            console.log(response.data);
+        })
     }
 
     const AddToMatchesBackend = (match_username, match_image)=>{
@@ -234,8 +236,13 @@ const MainPage = ({ authenticate }) => {
     const FetchPosts = ()=>{
         axios.get(`/post/0/${localStorage.getItem('Username')}`).then((response)=>{
             const no_post = { no_posts: true }
+            console.log(response.data)
             if(JSON.stringify(no_post) !== JSON.stringify(response.data)){
-                SetTempPostList(response.data);
+                if(response.data.length >= 1){
+                    SetTempPostList(response.data);
+                }else{
+                    SetPostList([]);
+                }
             }else{
                 // default no-post page;
                 SetPostList([]);
@@ -302,10 +309,13 @@ const MainPage = ({ authenticate }) => {
                     } 
                 }
                 SetPostList(dummy_list);
-                
+                SetTempPostList(null);
+            }else{
+                SetPostList(temp_post_list);
+                SetTempPostList(null);
             }
         }
-    })
+    }, [ temp_post_list, people_list ])
 
     useEffect(()=>{
         if(socket){

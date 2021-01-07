@@ -60,13 +60,13 @@ function MainRouter(){
         fetch_jsx();
     }, [ fetch_jsx ]);
 
-    useEffect(()=>{
-        if(authentication_status === true){
-            if(!localStorage.getItem('Username') || !localStorage.getItem('auth-token')|| !localStorage('auth-status')){
-                ChangeAuthentication(true);
-            }
-        }
-    });
+    // useEffect(()=>{
+    //     if(authentication_status === true){
+    //         if(!localStorage.getItem('Username') || !localStorage.getItem('auth-token')|| !localStorage('auth-status')){
+    //             ChangeAuthentication(true);
+    //         }
+    //     }
+    // });
 
     return (
         <Fragment>
