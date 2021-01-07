@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, Suspense, useEffect, useState } from 'react';
 import axios from 'axios';
 import socket_client from 'socket.io-client';
 
@@ -25,7 +25,10 @@ import RequestCard from '../../Components/RequestCard/request-card';
 import ImageConfig from '../../Components/Credentials/ImageConfig/image-config';
 import { Route, Switch } from 'react-router';
 import HomeContainer from '../../Components/HomeContainer/home-container';
-import MessageContainer from '../../Components/MessageContainer/message-container';
+
+const AsyncMessageRoute = React.lazy(()=>{
+    return import('../../Components/MessageContainer/message-container')
+})
 
 const MainPage = ({ authenticate }) => {
 
@@ -155,7 +158,7 @@ const MainPage = ({ authenticate }) => {
     const AddMatchData = (pp, username)=>{
         const match_data = [...people_list];
         const current_date = Date.now();
-        match_data.unshift({username: username, Profile_Picture: pp, Messages: [], LastInteraction: current_date});
+        match_data.unshift({username: username, Profile_Picture: pp, Messages: [], LastInteraction: current_date, fresh: true});
         SetPeopleList(match_data);
     }
 
@@ -175,14 +178,11 @@ const MainPage = ({ authenticate }) => {
             YourProfilePic: my_profile_pic
         }
 
-        axios.post('/matches', context).then((response)=>{
-            // sending socket data to other client after matches endpoint is updated;
-            SendSocketMatch(match_username);
-        })
+        axios.post('/matches', context).then(()=>{})
     }
 
     const SendSocketMatch = (username)=>{
-        socket.emit('accept', username)
+        socket.emit('accept', localStorage.getItem('Username'), my_profile_pic, username);
     }
 
     const AcceptMatchRequest = (e, profile_image, username)=>{
@@ -191,6 +191,7 @@ const MainPage = ({ authenticate }) => {
         RemoveRequestData();
         AddMatchData(profile_image, username);
         AddToMatchesBackend(username, profile_image);
+        SendSocketMatch(username)
     }
 
     const RejectMatchRequest = (username)=>{
@@ -329,24 +330,14 @@ const MainPage = ({ authenticate }) => {
                 SetRequests(dummy);
             })
 
-            socket.on('match', (alert)=>{
+            socket.on('match', (username, Profile_Picture)=>{
                 // axios call to reconsider the match requests;
-                axios.get(`/matches/${localStorage.getItem('Username')}`).then((response)=>{
-                    const error = {error_type: 'Username', message: 'Wrong Username'}
-                    const no_match = {no_matches: true}
-                    if(JSON.stringify(response.data) !== JSON.stringify(error)){
-                        if(JSON.stringify(response.data) !== JSON.stringify(no_match)){
-                            SetPeopleList(response.data.data);
-                        }else{
-                            SetPeopleList([]);
-                        }
-                    }else{
-                        SetPeopleList([]);
-                    }
-                })
+                AddMatchData(Profile_Picture, username);
             })
 
-            socket.on('receive-message', (sender, message)=>{})
+            socket.on('receive-message', (sender, message)=>{
+                // Message Socket Receiver;
+            })
 
             return ()=>{
                 socket.removeAllListeners();
@@ -499,7 +490,13 @@ const MainPage = ({ authenticate }) => {
                                         CenterClick = { CenterClickHandler }
                                     />}
                         }/>
-                        <Route exact path='/messsages/:id' render={()=><MessageContainer/>}/>
+                        <Route exact path='/messsages/:id' render={()=>{
+                            return (
+                                <Suspense fallback={ <LoadSpinner/> }>
+                                    <AsyncMessageRoute/>
+                                </Suspense>
+                            )
+                        }}/>
                         <Route render={()=><HomeContainer jsx={ post_area_jsx }/>}/>
                     </Switch>
                 )

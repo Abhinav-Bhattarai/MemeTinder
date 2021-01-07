@@ -49,8 +49,8 @@ io.on('connection', (socket)=>{
         socket.broadcast.to(room).emit('client-request-finder', sender_name, sender_profile )
     })
 
-    socket.on('accept', (username)=>{
-        socket.broadcast.to(username).emit('match', 'stay-alert')
+    socket.on('accept', (username, profile, friend_name)=>{
+        socket.broadcast.to(friend_name).emit('match', username, profile)
     })
 
     socket.on('disconnect', ()=>{})
