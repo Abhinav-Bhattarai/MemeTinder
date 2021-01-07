@@ -161,7 +161,6 @@ const MainPage = ({ authenticate }) => {
             MyName: localStorage.getItem('Username')
         }
         axios.post('/friend-requests', context).then((response)=>{
-            console.log(response.data);
         })
     }
 
@@ -236,7 +235,6 @@ const MainPage = ({ authenticate }) => {
     const FetchPosts = ()=>{
         axios.get(`/post/0/${localStorage.getItem('Username')}`).then((response)=>{
             const no_post = { no_posts: true }
-            console.log(response.data)
             if(JSON.stringify(no_post) !== JSON.stringify(response.data)){
                 if(response.data.length >= 1){
                     SetTempPostList(response.data);
@@ -255,6 +253,37 @@ const MainPage = ({ authenticate }) => {
         io.emit('join-room', localStorage.getItem('Username'));
         SetSocket(io);
     }
+
+    // Event Listeners;
+
+    const KeyPressed = (e)=>{
+        const key_pressed = e.key;
+        if(post_list){
+            if(post_list.length >= 1 && current_index <= post_list.length - 1){
+                if(key_pressed === ' '){
+                    LeftClickHandler();
+                }
+                else if(key_pressed === 'ArrowLeft'){
+                    LeftClickHandler();
+                }
+
+                else if(key_pressed === 'ArrowRight'){
+                    CenterClickHandler();
+                }
+
+                else if(key_pressed === 'ArrowUp'){
+                    RightClickHandler();
+                }
+            }
+        }
+    }
+
+    useEffect(() => {
+
+        document.addEventListener("keydown", KeyPressed);
+        return () => document.removeEventListener("keydown", KeyPressed);
+    
+    });
 
     useEffect(()=>{
 
