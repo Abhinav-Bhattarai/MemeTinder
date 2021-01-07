@@ -37,6 +37,7 @@ const MainPage = ({ authenticate }) => {
     const [ socket, SetSocket ] = useState( null );
     const [ profile_alert, SetProfileAlert ] = useState( false );
     const [ api_limiter, SetApiLimiter ] = useState( false );
+    const [ temp_post_list, SetTempPostList ] = useState( null );
 
     const TriggerDropdown = ()=>{
         SetDropdownInfo(!dropdown_info);
@@ -173,7 +174,6 @@ const MainPage = ({ authenticate }) => {
         axios.post('/matches', context).then((response)=>{
             // sending socket data to other client after matches endpoint is updated;
             SendSocketMatch(match_username);
-            console.log(response.data)
         })
     }
 
@@ -197,7 +197,6 @@ const MainPage = ({ authenticate }) => {
 
     const FetchMatches = ()=>{
         axios.get(`/matches/${localStorage.getItem('Username')}`).then((response)=>{
-            console.log(response.data);
             const error = {error_type: 'Username', message: 'Wrong Username'};
             const no_res = {no_matches: true};
             if(JSON.stringify(response.data) !== JSON.stringify(error)){
@@ -236,7 +235,7 @@ const MainPage = ({ authenticate }) => {
         axios.get(`/post/0/${localStorage.getItem('Username')}`).then((response)=>{
             const no_post = { no_posts: true }
             if(JSON.stringify(no_post) !== JSON.stringify(response.data)){
-                SetPostList(response.data);
+                SetTempPostList(response.data);
             }else{
                 // default no-post page;
                 SetPostList([]);
@@ -267,6 +266,46 @@ const MainPage = ({ authenticate }) => {
         // join my_sockek_room
         JoinSocketRoom();
     }, []);
+
+    useEffect(()=>{
+        if(temp_post_list && people_list){
+            // O(n.log(n));
+            const post_list = [...temp_post_list]; // Username
+            const dummy_list = [...post_list]; // username
+            const matches = [...people_list];
+            if(post_list.length >= 1 && matches.length >= 1){
+                let match = 0;
+                for(match of matches){
+                    let PostListLowerIndex = 0;
+                    let PostListGreatestIndex = post_list.length - 1;
+
+                    while ( PostListLowerIndex <= PostListGreatestIndex ){ 
+  
+                        // Find the mid index 
+                        let PostListMidIndex = Math.floor((PostListLowerIndex + PostListGreatestIndex) / 2);
+                        let MidIndexUsername = post_list[PostListMidIndex].Username; 
+                   
+                        // If element is present at mid, return True 
+                        if (MidIndexUsername === match.username){
+                            dummy_list.splice(PostListMidIndex, 1);
+                            break;
+                        }  
+                  
+                        // Else look in left or right half accordingly 
+                        else if (Math.sign(MidIndexUsername.localeCompare(match.username)) === -1){  
+                            PostListLowerIndex = PostListMidIndex + 1; 
+                        }
+
+                        else{
+                            PostListGreatestIndex = PostListMidIndex - 1; 
+                        }
+                    } 
+                }
+                SetPostList(dummy_list);
+                
+            }
+        }
+    })
 
     useEffect(()=>{
         if(socket){
