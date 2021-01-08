@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 
-const HomeContainer = ({ jsx, LeftClick, RightClick, CenterClick }) => {
+const HomeContainer = ({ jsx, LeftClick, RightClick, CenterClick, post_list, current_sidebar_value, current_index }) => {
 
     // Event Listeners;
 
@@ -9,18 +9,18 @@ const HomeContainer = ({ jsx, LeftClick, RightClick, CenterClick }) => {
             const key_pressed = e.key;
             if(post_list.length >= 1 && current_index <= post_list.length - 1){
                 if(key_pressed === ' '){
-                    LeftClickHandler();
+                    LeftClick();
                 }
                 else if(key_pressed === 'ArrowLeft'){
-                    LeftClickHandler();
+                    LeftClick();
                 }
 
                 else if(key_pressed === 'ArrowRight'){
-                    CenterClickHandler();
+                    CenterClick();
                 }
 
                 else if(key_pressed === 'ArrowUp'){
-                    RightClickHandler();
+                    RightClick();
                 }
             }
         }

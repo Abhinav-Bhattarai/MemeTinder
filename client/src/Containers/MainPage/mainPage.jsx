@@ -488,8 +488,12 @@ const MainPage = ({ authenticate }) => {
                                         LeftClick = { LeftClickHandler }
                                         RightClick = { RightClickHandler }
                                         CenterClick = { CenterClickHandler }
+                                        post_list = { post_list }
+                                        current_sidebar_value = { current_sidebar_value }
+                                        current_index = { current_index }
                                     />}
                         }/>
+
                         <Route exact path='/messsages/:id' render={()=>{
                             return (
                                 <Suspense fallback={ <LoadSpinner/> }>
@@ -497,7 +501,18 @@ const MainPage = ({ authenticate }) => {
                                 </Suspense>
                             )
                         }}/>
-                        <Route render={()=><HomeContainer jsx={ post_area_jsx }/>}/>
+
+                        <Route render={()=>{
+                            return <HomeContainer 
+                                        jsx = { post_area_jsx }
+                                        LeftClick = { LeftClickHandler }
+                                        RightClick = { RightClickHandler }
+                                        CenterClick = { CenterClickHandler }
+                                        post_list = { post_list }
+                                        current_sidebar_value = { current_sidebar_value }
+                                        current_index = { current_index }
+                                    />}
+                        }/>
                     </Switch>
                 )
             : 
