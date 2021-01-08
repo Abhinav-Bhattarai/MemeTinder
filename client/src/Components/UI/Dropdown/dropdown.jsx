@@ -52,7 +52,7 @@ const DeveloperIcon = ()=>{
     )
 }
 
-const Dropdown = ({ profile, TriggerDropdown, TriggerLogout }) => {
+const Dropdown = ({ profile, TriggerDropdown, TriggerLogoutPopup }) => {
     return (
         <Fragment>
             <main className='dropdown' onMouseLeave={ TriggerDropdown }>
@@ -77,7 +77,7 @@ const Dropdown = ({ profile, TriggerDropdown, TriggerLogout }) => {
                     <DeveloperIcon/>
                     <div className='dropdown-nav-name'>Developer Info</div>
                 </nav>
-                <nav className='dropdown-nav'>
+                <nav className='dropdown-nav' onClick={ TriggerLogoutPopup }>
                     <Icon/>
                     <div className='dropdown-nav-name'>Logout</div>
                 </nav>

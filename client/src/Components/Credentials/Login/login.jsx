@@ -81,19 +81,17 @@ const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password}) => {
                 <div
                  onClick={forget_password}
                  style={{
+                    display: 'block',
+                    padding: '15px 3%',
+                    textAlign: 'center',
                     fontWeight: '500',
-                    fontSize: '14px',
-                    padding: '5px 7%',
-                    color: 'red',
-                    cursor: 'pointer',
-                    textDecoration: 'underline'
+                    color: '#000',
+                    backgroundColor: ' rgb(187, 186, 186)',
+                    margin: '5px auto 30px auto',
+                    width: '82%',
+                    borderRadius: '10px',
+                    cursor: 'pointer'
                 }}>Forgot password ?</div>
-
-                 <div style={{
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    textAlign: 'center'
-                }}>OR</div>
             </main>
         </Fragment>
     )

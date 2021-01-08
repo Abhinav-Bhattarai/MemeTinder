@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { IconContext } from 'react-icons';
-import { FaPowerOff } from 'react-icons/fa'
+import { FaLock } from 'react-icons/fa'
 
 import './sidebar-header.scss';
 
@@ -15,7 +15,7 @@ export const Icon = ()=>{
                 color: '#fff'
             }
         }}>
-            <FaPowerOff/>
+            <FaLock/>
         </IconContext.Provider>
     )
 }

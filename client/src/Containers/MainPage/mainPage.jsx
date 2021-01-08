@@ -25,6 +25,7 @@ import RequestCard from '../../Components/RequestCard/request-card';
 import ImageConfig from '../../Components/Credentials/ImageConfig/image-config';
 import { Route, Switch } from 'react-router';
 import HomeContainer from '../../Components/HomeContainer/home-container';
+import Logout from '../../Components/Credentials/Logout/logout';
 
 const AsyncMessageRoute = React.lazy(()=>{
     return import('../../Components/MessageContainer/message-container')
@@ -44,6 +45,7 @@ const MainPage = ({ authenticate }) => {
     const [ profile_alert, SetProfileAlert ] = useState( false );
     const [ api_limiter, SetApiLimiter ] = useState( false );
     const [ temp_post_list, SetTempPostList ] = useState( null );
+    const [ logout_popup, SetLogoutPopup ] = useState( false );
 
     const TriggerDropdown = ()=>{
         SetDropdownInfo(!dropdown_info);
@@ -75,6 +77,10 @@ const MainPage = ({ authenticate }) => {
 
     const TriggerProfileAlert = ()=>{
         SetProfileAlert(!profile_alert)
+    }
+
+    const PeopleCardMessageClick = ()=>{
+
     }
 
     const SendMatchRequest = (friend_name)=>{
@@ -142,7 +148,12 @@ const MainPage = ({ authenticate }) => {
         }
     };
 
-    const LogoutHandler = ()=>{
+    const TriggerLogoutPopup = ()=>{
+        SetLogoutPopup( !logout_popup );
+        SetDropdownInfo( false );
+    }
+
+    const ConfirmLogoutHandler = ()=>{
         authenticate(true);
     }
 
@@ -382,7 +393,8 @@ const MainPage = ({ authenticate }) => {
                                         key={i}
                                         profile_picture= { user.Profile_Picture } 
                                         username = { user.username } 
-                                        lastupdate = { UpdateDate}
+                                        lastupdate = { UpdateDate }
+                                        click = { PeopleCardMessageClick }
                                     />
                                 )
                             })
@@ -436,7 +448,7 @@ const MainPage = ({ authenticate }) => {
             const post_data = [...post_list];
             const required_data = post_data[current_index];
             post_area_jsx = (
-                <PostContainer blur={ ( profile_alert ) ? '5px' : '0px' }>
+                <PostContainer blur={ ( profile_alert || logout_popup ) ? '5px' : '0px' }>
                     <ImageContainer
                         ProfilePicture={ required_data.ProfilePicture }
                         MainPost={ required_data.MainPost }
@@ -450,14 +462,18 @@ const MainPage = ({ authenticate }) => {
                 </PostContainer>
             )
         }else{
-            post_area_jsx = <NoPost/>;
+            post_area_jsx = (
+                <NoPost 
+                    blur={ ( profile_alert || logout_popup ) ? '5px' : '0px' }
+                />
+            );
         }
     }
 
     return (
         <Fragment>
 
-            <SideBar blur={ ( dropdown_info || profile_alert ) ? '5px' : '0px' }>
+            <SideBar blur={ ( dropdown_info || profile_alert || logout_popup ) ? '5px' : '0px' }>
                 <SidebarHeader
                     profile_picture= { my_profile_pic }
                     TriggerDropdown={ TriggerDropdown }
@@ -472,11 +488,20 @@ const MainPage = ({ authenticate }) => {
             {
                 (dropdown_info) ? 
                     <Dropdown 
-                        profile={ my_profile_pic }
-                        TriggerDropdown={ TriggerDropdown }
-                        TriggerLogout={ LogoutHandler }
+                        profile = { my_profile_pic }
+                        TriggerDropdown = { TriggerDropdown }
+                        TriggerLogoutPopup = { TriggerLogoutPopup }
                     /> :
                     null
+            }
+
+            {
+                ( logout_popup ) ? 
+                    <Logout
+                        TriggerLogoutPopup = { TriggerLogoutPopup }
+                        ConfirmLogout = { ConfirmLogoutHandler }
+                    />
+                : null
             }
 
             { ( post_area_jsx ) ? 
@@ -521,7 +546,7 @@ const MainPage = ({ authenticate }) => {
                 </main>
             }
 
-            <RequestBar blur={ ( profile_alert ) ? '5px' : '0px' }>
+            <RequestBar blur={ ( profile_alert || logout_popup ) ? '5px' : '0px' }>
                 <RequestHeader/>
                 <RequestNav
                     TriggerNotificationNav={ (e, ref)=> TriggerNotificationNav(e, ref) }
