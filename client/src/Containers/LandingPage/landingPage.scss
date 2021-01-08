@@ -33,18 +33,19 @@
         display: block;
         border: none;
         border-radius: 40px;
-        background-image: linear-gradient(to right, $theme-color, rgb(235, 102, 69));
+        background-color: $theme-color;
         font-weight: 300;
         font-size: 18px;
         color: white;
         margin-bottom: 150px;
+        transition: 0.3s;
 
         &:focus{
             outline: none;
         }
 
-        &:hover{
-            background-image: linear-gradient(to right, rgb(235, 102, 69), $theme-color);
+        &:hover{   
+            background-color: rgb(250, 39, 39);
         }
     }
 

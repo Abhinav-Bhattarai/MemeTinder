@@ -23,15 +23,15 @@ import ImageContainer from '../../Components/ImageContainer/image-container';
 import Dropdown from '../../Components/UI/Dropdown/dropdown';
 import RequestCard from '../../Components/RequestCard/request-card';
 import ImageConfig from '../../Components/Credentials/ImageConfig/image-config';
-import { Route, Switch } from 'react-router';
+import { Route, Switch, withRouter } from 'react-router';
 import HomeContainer from '../../Components/HomeContainer/home-container';
 import Logout from '../../Components/Credentials/Logout/logout';
 
 const AsyncMessageRoute = React.lazy(()=>{
-    return import('../../Components/MessageContainer/message-container')
+    return import('../../Components/Messages/messages')
 })
 
-const MainPage = ({ authenticate }) => {
+const MainPage = ({ authenticate, match }) => {
 
     const [ people_list, SetPeopleList ] = useState( null );
     const [ requests, SetRequests ] = useState( null );
@@ -46,6 +46,7 @@ const MainPage = ({ authenticate }) => {
     const [ api_limiter, SetApiLimiter ] = useState( false );
     const [ temp_post_list, SetTempPostList ] = useState( null );
     const [ logout_popup, SetLogoutPopup ] = useState( false );
+    const [ messageInput, SetMessageInput ] = useState( '' );
 
     const TriggerDropdown = ()=>{
         SetDropdownInfo(!dropdown_info);
@@ -95,6 +96,12 @@ const MainPage = ({ authenticate }) => {
     const LeftClickHandler = ()=>{
         SetCurrentIndex(current_index + 1);
     };
+
+    // Message Route
+    const ChangeMessageInput = (event)=>{
+        const value = event.target.value;
+        SetMessageInput( value );
+    }
 
     const FetchNewPost = ()=>{
         axios.get(`/post/0/${localStorage.getItem('Username')}`).then((response)=>{
@@ -507,6 +514,19 @@ const MainPage = ({ authenticate }) => {
             { ( post_area_jsx ) ? 
                 (
                     <Switch>
+
+                        <Route exact path='/message/:user' render={()=>{
+                            return (
+                                <Suspense fallback={ <LoadSpinner/> }>
+                                    <AsyncMessageRoute 
+                                        blur={ ( profile_alert || logout_popup ) ? '5px' : '0px' }
+                                        MessageInputValue = { messageInput }
+                                        ChangeMessageInput = { (e)=>ChangeMessageInput(e) }
+                                    />
+                                </Suspense>
+                            )
+                        }}/>
+
                         <Route exact path='/home' render={()=>{
                             return <HomeContainer 
                                         jsx = { post_area_jsx }
@@ -518,14 +538,6 @@ const MainPage = ({ authenticate }) => {
                                         current_index = { current_index }
                                     />}
                         }/>
-
-                        <Route exact path='/messsages/:id' render={()=>{
-                            return (
-                                <Suspense fallback={ <LoadSpinner/> }>
-                                    <AsyncMessageRoute/>
-                                </Suspense>
-                            )
-                        }}/>
 
                         <Route render={()=>{
                             return <HomeContainer 
@@ -561,4 +573,4 @@ const MainPage = ({ authenticate }) => {
     )
 }
 
-export default MainPage;
+export default withRouter( MainPage );

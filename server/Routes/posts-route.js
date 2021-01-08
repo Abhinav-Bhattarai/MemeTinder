@@ -10,7 +10,8 @@ router.get('/:number/:Username', (req, res)=>{
     RegistrationModel.aggregate([
         {$match: {}},
         {$skip: number*20},
-        {$limit: 20}
+        {$limit: 20},
+        {$sort: {Username: 1}}
     ]).then((response)=>{
         if(response.length >= 1){
             const main_data = [];

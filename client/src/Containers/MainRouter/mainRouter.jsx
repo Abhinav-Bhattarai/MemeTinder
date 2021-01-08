@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { Fragment, Suspense, useCallback, useEffect, useState } from 'react';
-import { Route, Switch } from 'react-router';
+import { Route, Switch, withRouter } from 'react-router';
 
 import LogoPage from '../../Components/UI/LogoPage/logo-page';
 import LandingPageGuard from '../../HOC/Guards/LandingPageGuard';
@@ -14,7 +14,7 @@ const AsyncMainPage = React.lazy(()=>{
     return import('../MainPage/mainPage')
 })
 
-function MainRouter(){
+function MainRouter({ history }){
 
     const [authentication_status, SetAuthenticationStatus] = useState(null);
 
@@ -23,8 +23,10 @@ function MainRouter(){
             localStorage.clear();
             localStorage.setItem('auth-status', false);
             SetAuthenticationStatus(false);
+            history.push('/?loggedout=True');
         }else{
             SetAuthenticationStatus(true);
+            history.push('/main-app');
         }
     }
 
@@ -106,4 +108,4 @@ function MainRouter(){
     );
 }
 
-export default MainRouter;
+export default withRouter( MainRouter );
