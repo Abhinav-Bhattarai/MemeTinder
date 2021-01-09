@@ -15,7 +15,7 @@ const SidebarNav = ({ TriggerMessageNav, TriggerMatchNav }) => {
                 </div>
 
                 <div className='sidebar-nav-element' onClick={ (e) => TriggerMessageNav(e, navbar_pointer.current) }>
-                    <NavLink to='/login'> Messages </NavLink>
+                    <NavLink to='/messages'> Messages </NavLink>
                 </div>
 
                 <div className='navbar-pointer' ref={ navbar_pointer }></div>

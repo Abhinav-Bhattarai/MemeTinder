@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import '../PostContainer/post-container.scss';
+import './messages.scss';
 import Message from './MessageContainer/Message/message';
 import MessageFooter from './MessageFooter/message-footer';
 import MessageHeader from './MessageHeader/message-header';
@@ -7,7 +7,6 @@ import MessageHeader from './MessageHeader/message-header';
 const MessageContainer = ({ ChangeMessageInput, MessageInputValue, RecentMessages, Profile, Username, blur }) => {
 
     let jsx = null;
-
     if( RecentMessages && Profile && Username ){
         jsx = (
             <>
@@ -41,7 +40,12 @@ const MessageContainer = ({ ChangeMessageInput, MessageInputValue, RecentMessage
 
     return (
         <Fragment>
-            <main className = 'main-post-container' style={ { filter: `blur(${blur})` } }>
+            <main className = 'main-messages-container' 
+                style = { { 
+                            filter: `blur(${blur})`,
+                          } 
+                        }
+            >
                 { jsx }
             </main>
         </Fragment>

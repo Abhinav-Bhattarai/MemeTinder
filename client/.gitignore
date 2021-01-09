@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .env
+.debug.log
 .eslintcache
 .pnp.js
 

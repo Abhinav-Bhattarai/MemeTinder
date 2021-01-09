@@ -31,7 +31,7 @@ const AsyncMessageRoute = React.lazy(()=>{
     return import('../../Components/Messages/messages')
 })
 
-const MainPage = ({ authenticate, match }) => {
+const MainPage = ({ authenticate, history }) => {
 
     const [ people_list, SetPeopleList ] = useState( null );
     const [ requests, SetRequests ] = useState( null );
@@ -47,6 +47,8 @@ const MainPage = ({ authenticate, match }) => {
     const [ temp_post_list, SetTempPostList ] = useState( null );
     const [ logout_popup, SetLogoutPopup ] = useState( false );
     const [ messageInput, SetMessageInput ] = useState( '' );
+    const [ recent_messages, SetRecentMessages ] = useState( null );
+    const [ message_info, SetMessageInfo ] = useState( null );
 
     const TriggerDropdown = ()=>{
         SetDropdownInfo(!dropdown_info);
@@ -80,8 +82,19 @@ const MainPage = ({ authenticate, match }) => {
         SetProfileAlert(!profile_alert)
     }
 
-    const PeopleCardMessageClick = ()=>{
-
+    const PeopleCardMessageClick = (username)=>{
+        // socket emit to that person room
+        const dummy = [...people_list]
+        const user_index = dummy.findIndex((element)=>{
+            return element.username === username;
+        })
+        if(user_index !== -1){
+            const MessageData = dummy[user_index].Messages;
+            const MessageInfo = { Username: username, Profile: dummy[user_index].Profile_Picture };
+            SetMessageInfo(MessageInfo);
+            SetRecentMessages(MessageData);
+            history.push(`/message/${username}`);
+        }
     }
 
     const SendMatchRequest = (friend_name)=>{
@@ -401,7 +414,7 @@ const MainPage = ({ authenticate, match }) => {
                                         profile_picture= { user.Profile_Picture } 
                                         username = { user.username } 
                                         lastupdate = { UpdateDate }
-                                        click = { PeopleCardMessageClick }
+                                        click = { ( username )=>PeopleCardMessageClick( username ) }
                                     />
                                 )
                             })
@@ -522,6 +535,9 @@ const MainPage = ({ authenticate, match }) => {
                                         blur={ ( profile_alert || logout_popup ) ? '5px' : '0px' }
                                         MessageInputValue = { messageInput }
                                         ChangeMessageInput = { (e)=>ChangeMessageInput(e) }
+                                        RecentMessages = { recent_messages }
+                                        Username = { message_info.Username }
+                                        Profile = { message_info.Profile }
                                     />
                                 </Suspense>
                             )
