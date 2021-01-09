@@ -1,12 +1,13 @@
 import React, { Fragment, useEffect, useRef } from 'react';
 import './message-footer.scss';
 
-const MessageFooter = ({ MessageInputValue, MessageInputChanger }) => {
+const MessageFooter = ({ MessageInputValue, MessageInputChanger, SendMessage }) => {
     const textarea_ref = useRef( null );
 
     const TextAreaListener = (press)=>{
         if(press.key === 'Enter'){
             // Send Message;
+            SendMessage();
         }
     }
 
@@ -27,6 +28,7 @@ const MessageFooter = ({ MessageInputValue, MessageInputChanger }) => {
         <Fragment>
             <footer className='message-input-footer'>
                 <input 
+                    autoFocus
                     ref = { textarea_ref }
                     type = 'text' 
                     value = { MessageInputValue }

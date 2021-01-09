@@ -3,8 +3,9 @@ import './messages.scss';
 import Message from './MessageContainer/Message/message';
 import MessageFooter from './MessageFooter/message-footer';
 import MessageHeader from './MessageHeader/message-header';
+import MessageContainer from './MessageContainer/message-container';
 
-const MessageContainer = ({ ChangeMessageInput, MessageInputValue, RecentMessages, Profile, Username, blur }) => {
+const Messages = ({ ChangeMessageInput, MessageInputValue, RecentMessages, Profile, Username, blur, SendMessage }) => {
 
     let jsx = null;
     if( RecentMessages && Profile && Username ){
@@ -17,22 +18,25 @@ const MessageContainer = ({ ChangeMessageInput, MessageInputValue, RecentMessage
 
                 <MessageContainer>
                     {
-                        RecentMessages.map((messages, i)=>{
-                            return (
-                                <Message 
-                                    key = { i }
-                                    Message = { messages.data } 
-                                    Self = { messages.self }
-                                    Date = { messages.Date }
-                                />
-                            )
-                        })
+                        ( RecentMessages.length >= 1 ) ? (
+                            RecentMessages.map((messages, i)=>{
+                                return (
+                                    <Message 
+                                        key = { i }
+                                        Message = { messages.data } 
+                                        Self = { messages.self }
+                                        Date = { messages.Date }
+                                    />
+                                )
+                            })
+                        ): null
                     }
                 </MessageContainer>
 
                 <MessageFooter
                     MessageInputValue = { MessageInputValue }
                     MessageInputChanger = { ChangeMessageInput }
+                    SendMessage = { ()=>SendMessage(Username) }
                 />
             </>
         )
@@ -52,4 +56,4 @@ const MessageContainer = ({ ChangeMessageInput, MessageInputValue, RecentMessage
     )
 }
 
-export default MessageContainer;
+export default Messages;

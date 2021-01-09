@@ -53,6 +53,10 @@ io.on('connection', (socket)=>{
         socket.broadcast.to(friend_name).emit('match', username, profile)
     })
 
+    socket.on('receive-message-server', (sender, receiver, message)=>{
+        socket.broadcast.to(receiver).emit('receive-message-client', sender, message)
+    })
+
     socket.on('disconnect', ()=>{})
 });
 

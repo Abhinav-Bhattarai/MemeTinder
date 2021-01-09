@@ -97,6 +97,23 @@ const MainPage = ({ authenticate, history }) => {
         }
     }
 
+    const AddMessage = (Match_name, Message, self)=>{
+        const date = new Date(parseInt(Date.now())).toLocaleTimeString();
+        const dummy = [...people_list];
+        const match_index = dummy.findIndex((element)=>{
+            return element.username === Match_name
+        })
+        dummy[match_index].Messages.push({data: Message, self, Date: date});
+        SetPeopleList(dummy)
+    }
+
+    const SendMessageHandler = (Match_name)=>{
+        // axios request;
+        AddMessage( Match_name, messageInput, true );
+        socket.emit('receive-message-server', localStorage.getItem('Username'), Match_name, messageInput)
+        SetMessageInput('');
+    }
+
     const SendMatchRequest = (friend_name)=>{
         const context = {
             YourName: localStorage.getItem('Username'),
@@ -366,8 +383,9 @@ const MainPage = ({ authenticate, history }) => {
                 AddMatchData(Profile_Picture, username);
             })
 
-            socket.on('receive-message', (sender, message)=>{
+            socket.on('receive-message-client', (sender, message)=>{
                 // Message Socket Receiver;
+                AddMessage(sender, message, false);
             })
 
             return ()=>{
@@ -538,6 +556,7 @@ const MainPage = ({ authenticate, history }) => {
                                         RecentMessages = { recent_messages }
                                         Username = { message_info.Username }
                                         Profile = { message_info.Profile }
+                                        SendMessage = { (username)=>SendMessageHandler(username) }
                                     />
                                 </Suspense>
                             )

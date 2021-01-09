@@ -4,7 +4,7 @@ import '../../SiderBar/SideBar-Header/sidebar-header.scss';
 const RequestHeader = () => {
     return (
         <Fragment>
-            <header className='sidebar-header' style= {{ justifyContent: 'center' }}>
+            <header className='sidebar-header' style= {{ justifyContent: 'center', padding: '17px 5%' }}>
                 <div className='sidebar-header-name'>
                     Requests
                 </div>
