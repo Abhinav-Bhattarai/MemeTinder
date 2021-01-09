@@ -9,12 +9,12 @@ const PeopleListCard = ({ profile_picture, username, lastupdate, click }) => {
                 <img src={ profile_picture } draggable='false' alt='profile-pic'/>
                 <div className='people-list-card-container-desc-area'>
                     <header>{ username }</header>
-                    <footer>LastUpdatedAt: { lastupdate }</footer>
+                    <footer>LastInteraction: { lastupdate }</footer>
                 </div>
             </main>
         </Fragment>
     )
-
+    
 }
 
 export default PeopleListCard
