@@ -10,11 +10,11 @@ const SidebarNav = ({ TriggerMessageNav, TriggerMatchNav }) => {
         <Fragment>
             <nav className='sidebar-nav'>
 
-                <div className='sidebar-nav-element' onClick={ (e) => TriggerMatchNav(e, navbar_pointer.current) }>
+                <div className='sidebar-nav-element' onClick={TriggerMatchNav.bind(this,  navbar_pointer.current) }>
                     <NavLink to='/'> Matches </NavLink>
                 </div>
 
-                <div className='sidebar-nav-element' onClick={ (e) => TriggerMessageNav(e, navbar_pointer.current) }>
+                <div className='sidebar-nav-element' onClick={TriggerMessageNav.bind(this, navbar_pointer.current) }>
                     <NavLink to='/messages'> Messages </NavLink>
                 </div>
 

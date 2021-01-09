@@ -12,7 +12,7 @@ const RequestNav = ({ TriggerNotificationNav, TriggerRequestNav }) => {
 
                 <div className='sidebar-nav-element'
                     onClick={
-                        (e)=> TriggerRequestNav(e, navbar_pointer.current)
+                        TriggerRequestNav.bind(this, navbar_pointer.current)
                     }
                 >
                     <NavLink to='/'> Requests </NavLink>
@@ -20,7 +20,7 @@ const RequestNav = ({ TriggerNotificationNav, TriggerRequestNav }) => {
 
                 <div className='sidebar-nav-element'
                     onClick={
-                        (e)=> TriggerNotificationNav(e, navbar_pointer.current)
+                        TriggerNotificationNav.bind(this, navbar_pointer.current)
                     }
                 >
                     <NavLink to='/notifications'> Notification </NavLink>

@@ -1,5 +1,33 @@
+@import '../../../_variables';
+
 .message-container{
     height: 80%;
     width: 100%;
     margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+}
+
+.message-text-container{
+
+    display: flex;
+    margin: 5px 3%;
+
+    .message-me{
+        margin-left: auto;
+        padding: 10px 3%;
+        background-color: $theme-color;
+        color: white;
+        border-radius: 20px;
+        font-size: 16px;
+        max-width: 60%;
+    }
+    
+    .message-sender{
+        @extend .message-me;
+        margin-left: 0;
+        background-color: rgb(202, 201, 201);
+        color: black;
+    }
 }

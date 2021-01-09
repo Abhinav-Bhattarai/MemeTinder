@@ -54,25 +54,25 @@ const MainPage = ({ authenticate, history }) => {
         SetDropdownInfo(!dropdown_info);
     }
 
-    const TriggerMessageNav = (event, ref)=>{
+    const TriggerMessageNav = (ref)=>{
         ref.style.transition = '0.3s';
         ref.style.transform = "translateX(160%)";
         SetSideBarValue(1);
     }
 
-    const TriggerMatchNav = (event, ref)=>{
+    const TriggerMatchNav = (ref)=>{
         ref.style.transition = '0.3s';
         ref.style.transform = "translateX(25%)";
         SetSideBarValue(0);
     }
 
-    const TriggerNotificationNav = (event, ref)=>{
+    const TriggerNotificationNav = (ref)=>{
         ref.style.transition = '0.3s';
         ref.style.transform = "translateX(160%)";
         SetRequestBarValue(1);
     }
  
-    const TriggerRequestNav = (event, ref)=>{
+    const TriggerRequestNav = (ref)=>{
         ref.style.transition = '0.3s';
         ref.style.transform = "translateX(25%)";
         SetRequestBarValue(0);
@@ -149,7 +149,7 @@ const MainPage = ({ authenticate, history }) => {
                 }
             }
         })
-    }
+    };
 
     const CenterClickHandler = ()=>{
         const dummy = [...post_list];
@@ -188,11 +188,11 @@ const MainPage = ({ authenticate, history }) => {
     const TriggerLogoutPopup = ()=>{
         SetLogoutPopup( !logout_popup );
         SetDropdownInfo( false );
-    }
+    };
 
     const ConfirmLogoutHandler = ()=>{
         authenticate(true);
-    }
+    };
 
     const RemoveRequestData = (username)=>{
         const friend_req_list = [...requests];
@@ -201,14 +201,14 @@ const MainPage = ({ authenticate, history }) => {
         });
         friend_req_list.splice(index, 1);
         SetRequests(friend_req_list);
-    }
+    };
 
     const AddMatchData = (pp, username)=>{
         const match_data = [...people_list];
         const current_date = Date.now();
         match_data.unshift({username: username, Profile_Picture: pp, Messages: [], LastInteraction: current_date, fresh: true});
         SetPeopleList(match_data);
-    }
+    };
 
     const RemoveRequestSectionBackend = ()=>{
         const context = {
@@ -216,7 +216,7 @@ const MainPage = ({ authenticate, history }) => {
         }
         axios.post('/friend-requests', context).then((response)=>{
         })
-    }
+    };
 
     const AddToMatchesBackend = (match_username, match_image)=>{
         const context = {
@@ -517,8 +517,8 @@ const MainPage = ({ authenticate, history }) => {
                     TriggerDropdown={ TriggerDropdown }
                 />
                 <SidebarNav 
-                    TriggerMessageNav={ (e, ref)=>TriggerMessageNav(e, ref) } 
-                    TriggerMatchNav= { (e, ref)=>TriggerMatchNav(e, ref) }
+                    TriggerMessageNav={ (ref)=>TriggerMessageNav(ref) } 
+                    TriggerMatchNav= { (ref)=>TriggerMatchNav(ref) }
                 />
                 { ( !people_list_jsx ) ? <LoadSpinner/> : people_list_jsx }
             </SideBar>
@@ -596,8 +596,8 @@ const MainPage = ({ authenticate, history }) => {
             <RequestBar blur={ ( profile_alert || logout_popup ) ? '5px' : '0px' }>
                 <RequestHeader/>
                 <RequestNav
-                    TriggerNotificationNav={ (e, ref)=> TriggerNotificationNav(e, ref) }
-                    TriggerRequestNav= { (e, ref)=>TriggerRequestNav(e, ref) }
+                    TriggerNotificationNav={ (ref)=> TriggerNotificationNav(ref) }
+                    TriggerRequestNav= { (ref)=>TriggerRequestNav(ref) }
                 />
                 { ( !request_list_jsx ) ? <LoadSpinner/> : request_list_jsx }
             </RequestBar>
