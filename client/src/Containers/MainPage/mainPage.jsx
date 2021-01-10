@@ -115,7 +115,6 @@ const MainPage = ({ authenticate, history }) => {
         }
 
         axios.put('/message', context).then((response)=>{
-            console.log(response.data);
         });
     }
 
@@ -343,6 +342,7 @@ const MainPage = ({ authenticate, history }) => {
             const post_list = [...temp_post_list]; // Username
             const dummy_list = [...post_list]; // username
             const matches = [...people_list];
+            let deletion_num = 0
             if(post_list.length >= 1 && matches.length >= 1){
                 let match = 0;
                 for(match of matches){
@@ -352,14 +352,14 @@ const MainPage = ({ authenticate, history }) => {
                     while ( PostListLowerIndex <= PostListGreatestIndex ){ 
   
                         // Find the mid index 
-                        let PostListMidIndex = Math.floor((PostListLowerIndex + PostListGreatestIndex) / 2);
-                        let MidIndexUsername = post_list[PostListMidIndex].Username; 
-                   
+                        const PostListMidIndex = Math.floor((PostListLowerIndex + PostListGreatestIndex) / 2);
+                        const MidIndexUsername = post_list[PostListMidIndex].Username; 
                         // If element is present at mid, return True 
                         if (MidIndexUsername === match.username){
-                            dummy_list.splice(PostListMidIndex, 1);
+                            dummy_list.splice(PostListMidIndex - deletion_num, 1);
+                            deletion_num ++
                             break;
-                        }  
+                        }
                   
                         // Else look in left or right half accordingly 
                         else if (Math.sign(MidIndexUsername.localeCompare(match.username)) === -1){  
