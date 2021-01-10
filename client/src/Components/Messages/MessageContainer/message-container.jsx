@@ -21,7 +21,7 @@ const MessageContainer = ({ children }) => {
         <Fragment>
             {
                 (children) ? (
-                    <SimpleBar style={{ maxHeight: '79%' }} autoHide={ false }>
+                    <SimpleBar style={{ maxHeight: '79%', scrollbarWidth: '2%' }}>
                         <main className='message-container' style={ ( !children ) ? { 
                             display: 'flex',
                             justifyContent: 'center',

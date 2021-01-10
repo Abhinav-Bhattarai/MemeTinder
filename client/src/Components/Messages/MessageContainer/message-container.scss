@@ -13,9 +13,11 @@
 
     display: flex;
     margin: 5px 3%;
+    position: relative;
 
     .message-me{
         margin-left: auto;
+        margin-right: 2%;
         padding: 10px 3%;
         background-color: $theme-color;
         color: white;
@@ -29,5 +31,11 @@
         margin-left: 0;
         background-color: rgb(202, 201, 201);
         color: black;
+    }
+
+    .message-date{
+        color: white;
+        font-size: 10px;
+        font-weight: 600;
     }
 }

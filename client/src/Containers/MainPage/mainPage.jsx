@@ -107,10 +107,26 @@ const MainPage = ({ authenticate, history }) => {
         SetPeopleList(dummy)
     }
 
+    const AddMessagetoBackend = (receiver)=>{
+        const context = {
+            Message: messageInput,
+            Sender: localStorage.getItem('Username'),
+            Receiver: receiver
+        }
+
+        axios.put('/message', context).then(()=>{});
+    }
+
+    const ChangeLatestInteractionBackend = (receiver)=>{
+
+    }
+
     const SendMessageHandler = (Match_name)=>{
         // axios request;
         AddMessage( Match_name, messageInput, true );
-        socket.emit('receive-message-server', localStorage.getItem('Username'), Match_name, messageInput)
+        socket.emit('receive-message-server', localStorage.getItem('Username'), Match_name, messageInput);
+        AddMessagetoBackend(Match_name);
+        ChangeLatestInteractionBackend(Match_name)
         SetMessageInput('');
     }
 
