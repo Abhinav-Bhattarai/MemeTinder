@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/:Username', (req, res)=>{
     const Username = req.params.Username ;
-    UserModel.find().where("Username").equals(Username).sort({"Matches.LastInteraction": -1}).then((response)=>{
+    UserModel.find().where("Username").equals(Username).then((response)=>{
         if(response.length === 1){
             const data = response[0].Matches;
             if(data.length >= 1){
@@ -44,34 +44,5 @@ router.post('/', (req, res)=>{
         }
     })
 });
-
-router.put('/', (req, res)=>{
-    const Username = req.body.Username;
-    const Receiver = req.body.Receiver;
-
-    UserModel.findOne({ Username: Username }).exec().then((data)=>{
-        const Matches = [...data.Matches];
-        const index = Matches.findIndex((match)=>{
-            return match.username === Receiver;
-        });
-        Matches[index].LastInteraction = Date.now();
-        data.Matches = Matches;
-        data.save().then(()=>{
-            UserModel.findOne({ Username: Usernmae }).exec().then((receiver_data)=>{
-                const Matches_F = [...receiver_data.Matches];
-                const index_F = Matches_F.findIndex((match)=>{
-                    return match.username === Sender;
-                });
-                Matches_F[index_F].LastInteraction = Date.now();
-                receiver_data.Matches = Matches_F;
-                receiver_data.save().then(()=>{
-                    return res.json({interaction_added: true});
-                })
-            })
-        });
-    });
-    
-})
-
 
 export default router;

@@ -114,11 +114,9 @@ const MainPage = ({ authenticate, history }) => {
             Receiver: receiver
         }
 
-        axios.put('/message', context).then(()=>{});
-    }
-
-    const ChangeLatestInteractionBackend = (receiver)=>{
-
+        axios.put('/message', context).then((response)=>{
+            console.log(response.data);
+        });
     }
 
     const SendMessageHandler = (Match_name)=>{
@@ -126,7 +124,6 @@ const MainPage = ({ authenticate, history }) => {
         AddMessage( Match_name, messageInput, true );
         socket.emit('receive-message-server', localStorage.getItem('Username'), Match_name, messageInput);
         AddMessagetoBackend(Match_name);
-        ChangeLatestInteractionBackend(Match_name)
         SetMessageInput('');
     }
 

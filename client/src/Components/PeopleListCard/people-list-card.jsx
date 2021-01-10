@@ -9,7 +9,7 @@ const PeopleListCard = ({ profile_picture, username, lastupdate, click }) => {
                 <img src={ profile_picture } draggable='false' alt='profile-pic'/>
                 <div className='people-list-card-container-desc-area'>
                     <header>{ username }</header>
-                    <footer>LastInteraction: { lastupdate }</footer>
+                    <footer>Matched_Date: { lastupdate }</footer>
                 </div>
             </main>
         </Fragment>
@@ -17,4 +17,4 @@ const PeopleListCard = ({ profile_picture, username, lastupdate, click }) => {
     
 }
 
-export default PeopleListCard
+export default PeopleListCard;
