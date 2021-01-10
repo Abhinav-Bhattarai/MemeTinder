@@ -50,6 +50,7 @@ const MainPage = ({ authenticate, history }) => {
     const [ recent_messages, SetRecentMessages ] = useState( null );
     const [ message_info, SetMessageInfo ] = useState( null );
     const [ current_post_api_call, SetCurrentPostApiCall ] = useState( 0 );
+    const [ milestone, SetMileStone ] = useState( 0 );
 
     const TriggerDropdown = ()=>{
         SetDropdownInfo(!dropdown_info);
@@ -120,8 +121,7 @@ const MainPage = ({ authenticate, history }) => {
             Receiver: receiver
         }
 
-        axios.put('/message', context).then((response)=>{
-        });
+        axios.put('/message', context).then(()=>{});
     }
 
     const SendMessageHandler = (Match_name)=>{
@@ -141,54 +141,6 @@ const MainPage = ({ authenticate, history }) => {
         axios.put('/friend-requests', context).then(()=>{});
     };
 
-    const LeftClickHandler = ()=>{
-        // handles rejection;
-        SetCurrentIndex(current_index + 1);
-    };
-
-    const CenterClickHandler = ()=>{
-        // Sends Friend request SuperLike
-        const dummy = [...post_list];
-        if(current_index <= dummy.length - 1){
-            const FriendName = dummy[current_index].Username;
-            const MyName = localStorage.getItem('Username');
-            SendMatchRequest(FriendName);
-            if(current_index !== dummy.length - 1) SetCurrentIndex(current_index + 1); 
-            if( api_limiter === false ){
-                if(Math.floor(dummy.length / 2) - 1 === current_index){
-                    FetchNewPost();
-                }
-            }
-            // realtime request
-            socket.emit('Send-Friend-Request', FriendName, MyName, my_profile_pic);
-        }
-    };
-
-    const RightClickHandler = ()=>{
-        // Send Friend Request Like;
-        const dummy = [...post_list];
-        if(current_index <= dummy.length - 1){
-            const FriendName = dummy[current_index].Username;
-            const MyName = localStorage.getItem('Username');
-            SendMatchRequest(FriendName);
-            if(current_index !== dummy.length - 1) SetCurrentIndex(current_index + 1); 
-            if( api_limiter === false ){
-                if(Math.floor(dummy.length / 2) - 1 === current_index){
-                    FetchNewPost();
-                }
-            }
-            // realtime request
-            socket.emit('Send-Friend-Request', FriendName, MyName, my_profile_pic);
-        }
-    };
-
-    // Message Route
-    const ChangeMessageInput = (event)=>{
-        // message two-way binding;
-        const value = event.target.value;
-        SetMessageInput( value );
-    }
-
     const FetchNewPost = ()=>{
 
         // Fetch new posts after reaching half value for the total post_array;
@@ -204,15 +156,70 @@ const MainPage = ({ authenticate, history }) => {
                     SetTempPostList(dummy);
                     if(response.data.length === 20){
                         SetCurrentPostApiCall( current_post_api_call + 1 );
+                    }else{
+                         SetApiLimiter( true );
                     }
                 }else{
                     SetApiLimiter( true );
-                    SetPostList( [] );
                 }
             }
         })
 
     };
+
+    const LeftClickHandler = ()=>{
+        // handles rejection;
+        const dummy = [...post_list];
+        dummy.splice(0, 1);
+        SetPostList( dummy );
+        SetCurrentIndex(current_index + 1);
+    };
+
+    const CenterClickHandler = ()=>{ 
+        // Sends Friend request SuperLike
+        const dummy = [...post_list];
+        // realtime request
+        const FriendName = dummy[0].Username;
+        const MyName = localStorage.getItem('Username');
+        socket.emit('Send-Friend-Request', FriendName, MyName, my_profile_pic);
+
+        if(api_limiter === false && current_index === milestone){
+            FetchNewPost();
+        }else{
+            SetCurrentIndex(current_index + 1);
+        }
+
+        SendMatchRequest(FriendName);
+        dummy.splice(0, 1);
+        SetPostList(dummy);
+    };
+
+    const RightClickHandler = ()=>{
+        // Sends Friend request SuperLike
+        const dummy = [...post_list];
+        // realtime request
+        const FriendName = dummy[0].Username;
+        const MyName = localStorage.getItem('Username');
+        socket.emit('Send-Friend-Request', FriendName, MyName, my_profile_pic);
+
+        if(api_limiter === false && current_index === milestone){
+            FetchNewPost();
+        }else{
+            SetCurrentIndex(current_index + 1);
+        }
+
+        SendMatchRequest(FriendName);
+        dummy.splice(0, 1);
+        SetPostList(dummy);
+        
+    };
+
+    // Message Route
+    const ChangeMessageInput = (event)=>{
+        // message two-way binding;
+        const value = event.target.value;
+        SetMessageInput( value );
+    }
 
     const TriggerLogoutPopup = ()=>{
         // change logout popup;
@@ -397,6 +404,11 @@ const MainPage = ({ authenticate, history }) => {
                 }
                 SetPostList(dummy_list);
                 SetTempPostList(null);
+                SetMileStone( Math.floor(dummy_list.length / 2) + 1 );
+                SetCurrentIndex(0);
+                if(dummy_list.length <= 20){
+                    SetApiLimiter(true);
+                }
             }else{
                 SetPostList(temp_post_list);
                 SetTempPostList(null);
@@ -527,7 +539,7 @@ const MainPage = ({ authenticate, history }) => {
         if(post_list.length >= 1){
             // main cards along with Interaction;
             const post_data = [...post_list];
-            const required_data = post_data[current_index];
+            const required_data = post_data[0];
             post_area_jsx = (
                 <PostContainer blur={ ( profile_alert || logout_popup ) ? '5px' : '0px' }>
                     <ImageContainer
@@ -613,7 +625,7 @@ const MainPage = ({ authenticate, history }) => {
                                         CenterClick = { CenterClickHandler }
                                         post_list = { post_list }
                                         current_sidebar_value = { current_sidebar_value }
-                                        current_index = { current_index }
+                                        current_index = { 0 }
                                     />}
                         }/>
 
@@ -625,7 +637,7 @@ const MainPage = ({ authenticate, history }) => {
                                         CenterClick = { CenterClickHandler }
                                         post_list = { post_list }
                                         current_sidebar_value = { current_sidebar_value }
-                                        current_index = { current_index }
+                                        current_index = { 0 }
                                     />}
                         }/>
                     </Switch>
