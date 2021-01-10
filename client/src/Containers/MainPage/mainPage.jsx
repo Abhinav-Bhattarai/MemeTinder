@@ -55,6 +55,8 @@ const MainPage = ({ authenticate, history }) => {
         SetDropdownInfo(!dropdown_info);
     }
 
+    // changeing the sidebar and request bar pointer div;
+
     const TriggerMessageNav = (ref)=>{
         ref.style.transition = '0.3s';
         ref.style.transform = "translateX(160%)";
@@ -89,16 +91,19 @@ const MainPage = ({ authenticate, history }) => {
         const user_index = dummy.findIndex((element)=>{
             return element.username === username;
         })
+        // check if there is data in the main array;
         if(user_index !== -1){
             const MessageData = dummy[user_index].Messages;
             const MessageInfo = { Username: username, Profile: dummy[user_index].Profile_Picture };
             SetMessageInfo(MessageInfo);
             SetRecentMessages(MessageData);
+            // shifting the route;
             history.push(`/message/${username}`);
         }
     }
 
     const AddMessage = (Match_name, Message, self)=>{
+        // adding message for real time and state update;
         const date = new Date(parseInt(Date.now())).toLocaleTimeString();
         const dummy = [...people_list];
         const match_index = dummy.findIndex((element)=>{
@@ -137,17 +142,56 @@ const MainPage = ({ authenticate, history }) => {
     };
 
     const LeftClickHandler = ()=>{
+        // handles rejection;
         SetCurrentIndex(current_index + 1);
+    };
+
+    const CenterClickHandler = ()=>{
+        // Sends Friend request SuperLike
+        const dummy = [...post_list];
+        if(current_index <= dummy.length - 1){
+            const FriendName = dummy[current_index].Username;
+            const MyName = localStorage.getItem('Username');
+            SendMatchRequest(FriendName);
+            if(current_index !== dummy.length - 1) SetCurrentIndex(current_index + 1); 
+            if( api_limiter === false ){
+                if(Math.floor(dummy.length / 2) - 1 === current_index){
+                    FetchNewPost();
+                }
+            }
+            // realtime request
+            socket.emit('Send-Friend-Request', FriendName, MyName, my_profile_pic);
+        }
+    };
+
+    const RightClickHandler = ()=>{
+        // Send Friend Request Like;
+        const dummy = [...post_list];
+        if(current_index <= dummy.length - 1){
+            const FriendName = dummy[current_index].Username;
+            const MyName = localStorage.getItem('Username');
+            SendMatchRequest(FriendName);
+            if(current_index !== dummy.length - 1) SetCurrentIndex(current_index + 1); 
+            if( api_limiter === false ){
+                if(Math.floor(dummy.length / 2) - 1 === current_index){
+                    FetchNewPost();
+                }
+            }
+            // realtime request
+            socket.emit('Send-Friend-Request', FriendName, MyName, my_profile_pic);
+        }
     };
 
     // Message Route
     const ChangeMessageInput = (event)=>{
+        // message two-way binding;
         const value = event.target.value;
         SetMessageInput( value );
     }
 
     const FetchNewPost = ()=>{
 
+        // Fetch new posts after reaching half value for the total post_array;
         axios.get(`/post/${current_post_api_call + 1}/${localStorage.getItem('Username')}`).then((response)=>{
             const no_post = { no_posts: true }
             if(JSON.stringify(no_post) !== JSON.stringify(response.data)){
@@ -170,50 +214,19 @@ const MainPage = ({ authenticate, history }) => {
 
     };
 
-    const CenterClickHandler = ()=>{
-        const dummy = [...post_list];
-        if(current_index <= dummy.length - 1){
-            const FriendName = dummy[current_index].Username;
-            const MyName = localStorage.getItem('Username');
-            SendMatchRequest(FriendName);
-            if(current_index !== dummy.length - 1) SetCurrentIndex(current_index + 1); 
-            if( api_limiter === false ){
-                if(Math.floor(dummy.length / 2) - 1 === current_index){
-                    FetchNewPost();
-                }
-            }
-            // realtime request
-            socket.emit('Send-Friend-Request', FriendName, MyName, my_profile_pic);
-        }
-    };
-
-    const RightClickHandler = ()=>{
-        const dummy = [...post_list];
-        if(current_index <= dummy.length - 1){
-            const FriendName = dummy[current_index].Username;
-            const MyName = localStorage.getItem('Username');
-            SendMatchRequest(FriendName);
-            if(current_index !== dummy.length - 1) SetCurrentIndex(current_index + 1); 
-            if( api_limiter === false ){
-                if(Math.floor(dummy.length / 2) - 1 === current_index){
-                    FetchNewPost();
-                }
-            }
-            // realtime request
-            socket.emit('Send-Friend-Request', FriendName, MyName, my_profile_pic);
-        }
-    };
-
     const TriggerLogoutPopup = ()=>{
+        // change logout popup;
         SetLogoutPopup( !logout_popup );
         SetDropdownInfo( false );
     };
 
     const ConfirmLogoutHandler = ()=>{
+        // changes authentication status to false to log out;
         authenticate(true);
     };
 
     const RemoveRequestData = (username)=>{
+        // Removes the selected data from request array state after accept or reject;
         const friend_req_list = [...requests];
         const index = friend_req_list.findIndex((element)=>{
             return element.Username === username;
@@ -223,6 +236,7 @@ const MainPage = ({ authenticate, history }) => {
     };
 
     const AddMatchData = (pp, username)=>{
+        // Add to match data array after accepting match request; 
         const match_data = [...people_list];
         const current_date = Date.now();
         match_data.unshift({username: username, Profile_Picture: pp, Messages: [], LastInteraction: current_date, fresh: true});
@@ -249,6 +263,7 @@ const MainPage = ({ authenticate, history }) => {
     }
 
     const SendSocketMatch = (username)=>{
+        // real-time for adding to match array of receiver;
         socket.emit('accept', localStorage.getItem('Username'), my_profile_pic, username);
     }
 
@@ -344,6 +359,7 @@ const MainPage = ({ authenticate, history }) => {
     }, []);
 
     useEffect(()=>{
+        // Check for post of the matches and deleting that from the new post list;
         if(temp_post_list && people_list){
             // O(n.log(n));
             const post_list = [...temp_post_list]; // Username
@@ -352,6 +368,7 @@ const MainPage = ({ authenticate, history }) => {
             let deletion_num = 0
             if(post_list.length >= 1 && matches.length >= 1){
                 let match = 0;
+                // O(nlog(n)); WCS = 400 || BCS = O(1) === 1;
                 for(match of matches){
                     let PostListLowerIndex = 0;
                     let PostListGreatestIndex = post_list.length - 1;
@@ -388,6 +405,7 @@ const MainPage = ({ authenticate, history }) => {
     }, [ temp_post_list, people_list ])
 
     useEffect(()=>{
+        // socket receiers in client;
         if(socket){
             // socket operations;
             socket.on('client-request-finder', ( sender, ProfilePicture )=>{
