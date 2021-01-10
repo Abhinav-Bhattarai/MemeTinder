@@ -21,11 +21,18 @@ router.put('/', (req, res)=>{
 
     RegisterModel.findOne({ Username: FriendName }).exec().then((receiver)=>{
         const receiver_data = [...receiver.Requests];
-        receiver_data.push({sender: YourName, ProfilePicture:  YourProfile});
-        receiver.Requests = receiver_data;
-        receiver.save().then(()=>{
-            return res.json({ request_sent: true });
+        const data_redundancy = receiver_data.findIndex((element)=>{
+            return element.sender === YourName;
         })
+        if(data_redundancy === -1){
+            receiver_data.push({sender: YourName, ProfilePicture:  YourProfile});
+            receiver.Requests = receiver_data;
+            receiver.save().then(()=>{
+                return res.json({ request_sent: true });
+            })
+        }else{
+            return res.json({ request_redundant: true });
+        }
     })
 
 })

@@ -13,67 +13,68 @@ import ForgetPassword from '../../Components/Credentials/Login/forget-password';
 
 const LandingPage = ({ authenticate }) => {
 
-    const [signup_card, SetSignupCard] = useState(false);
-    const [login_card, SetLoginCard] = useState(false);
-    const [forget_password_card, SetForgetCard] = useState(false);
-    const [signup_username, SetSignupUsername] = useState('');
-    const [signup_password, SetSignupPassword] = useState('');
-    const [signup_confirm, SetSignupConfirm] = useState('');
-    const [signup_email, SetSignupEmail] = useState('');
-    const [signup_gender, SetSignupGender] = useState(null)
-    const [signin_username, SetSigninUsername] = useState('');
-    const [signin_password, SetSigninPassword] = useState('');
-    const [forget_number, SetForgetNumber] = useState('');
-    const [signin_cred_error, SetSigninCredError] = useState([]);
-    const [signup_cred_error, SetSignupCredError] = useState([]);
-    const [forget_cred_error, SetForgetCredError] = useState(null);
+    const [ signup_card, SetSignupCard ] = useState( false );
+    const [ login_card, SetLoginCard ] = useState( false );
+    const [ forget_password_card, SetForgetCard ] = useState( false );
+    const [ signup_username, SetSignupUsername ] = useState( '' );
+    const [ signup_password, SetSignupPassword ] = useState( '' );
+    const [ signup_confirm, SetSignupConfirm ] = useState( '' );
+    const [ signup_email, SetSignupEmail ] = useState( '' );
+    const [ signup_gender, SetSignupGender ] = useState( null )
+    const [ signin_username, SetSigninUsername ] = useState( '' );
+    const [ signin_password, SetSigninPassword ] = useState( '' );
+    const [ forget_number, SetForgetNumber ] = useState( '' );
+    const [ signin_cred_error, SetSigninCredError ] = useState( [] );
+    const [ signup_cred_error, SetSignupCredError ] = useState( [] );
+    const [ forget_cred_error, SetForgetCredError ] = useState( null );
 
     const SignupCardHandler = ()=>{
         SetSignupCard(!signup_card)
-    }
+    };
 
     const LoginCardHandler = ()=>{
         SetLoginCard(!login_card)
-    }
+    };
 
     const ChangeSignupUsername = (event)=>{
         const value = event.target.value;
         SetSignupUsername(value)
-    }
+    };
+
     const ChangeSignupPassword = (event)=>{
         const value = event.target.value;
         SetSignupPassword(value)
-    }
+    };
 
     const ChangeSignupConfirm = (event)=>{
         const value = event.target.value;
         SetSignupConfirm(value)
-    }
+    };
 
     const ChangeSignupEmail = (event)=>{
         const value = event.target.value;
         SetSignupEmail(value)
-    }
+    };
 
     const ChangeSigninUsername = (event)=>{
         const value = event.target.value;
         SetSigninUsername(value)
-    }
+    };
 
     const ChangeSigninPassword = (event)=>{
         const value = event.target.value;
         SetSigninPassword(value)
-    }
+    };
 
     const ChangeForgetNumber = (event)=>{
         const value = event.target.value;
         SetForgetNumber(value)
-    }
+    };
 
     const ChangeSignupGender = (event)=>{
         const value = event.target.value;
         SetSignupGender(value)
-    }
+    };
 
     const LoginCredentialSubmitHandler = (event)=>{
         event.preventDefault();
@@ -119,7 +120,7 @@ const LandingPage = ({ authenticate }) => {
 
             SetSigninCredError(dummy)
         }
-    }
+    };
 
     const SignupCredentialSubmitHandler = (event)=>{
         event.preventDefault();
@@ -133,7 +134,7 @@ const LandingPage = ({ authenticate }) => {
                     Password: signup_password,
                     Confirm: signup_confirm,
                     Gender: signup_gender
-                }
+                };
                 axios.post('/register', context).then((response)=>{
                     const error = {error_type: "Username", message: "Username Already exists"}
                     if(JSON.stringify(response.data) !== JSON.stringify(error)){
@@ -169,7 +170,7 @@ const LandingPage = ({ authenticate }) => {
             }
             SetSignupCredError(dummy)
         }
-    }
+    };
 
     const TriggerForgetPassword = (type)=>{
         if(type !== true){
@@ -189,7 +190,7 @@ const LandingPage = ({ authenticate }) => {
         }else{
             SetForgetCard(false)
         }
-    }
+    };
 
     const FrogetPasswordSubmit = (event)=>{
         // this executes and checks the OTP verifications and access;
@@ -208,37 +209,44 @@ const LandingPage = ({ authenticate }) => {
                 }
             })
         }
-    }
+    };
 
     return (
         <Fragment>
             <main onClick={
                 ()=>{
+
                     if(signup_card){
                         SignupCardHandler();
                         SetSignupCredError([]);
                     }
+
                     else if(login_card){
                         LoginCardHandler();
                         SetSigninCredError([]);
                     }
+
                     else if(forget_password_card){
                         TriggerForgetPassword(true)
                     }
+
                 }
             }>
                 <Navbar 
-                    TriggerLogin={SetLoginCard}
+                    blur = { (login_card || signup_card) ? true : false }
+                    TriggerLogin={ SetLoginCard }
                 />
-                <main className='background-image-container' style={{height: '100%'}}>
+                <main className='background-image-container' style={
+                    (login_card || signup_card) ? { height: '100%', filter: `blur(5px)` } : { height: '100%' }
+                }>
 
                     <img
-                        src={Background}
-                        alt='background'
+                        src = { Background }
+                        alt = 'background'
                     />
 
                 </main>
-                <main className='landingpage-middle-flex'>
+                <main className='landingpage-middle-flex' style={(login_card || signup_card) ? { filter: `blur(5px)` } : {  }}>
                     <Logo type='LandingPage'/>
                     <button id='middle-flex-btn' onClick={SignupCardHandler}>CREATE ACCOUNT</button>
                 </main>
@@ -293,4 +301,4 @@ const LandingPage = ({ authenticate }) => {
     )
 }
 
-export default LandingPage
+export default LandingPage;

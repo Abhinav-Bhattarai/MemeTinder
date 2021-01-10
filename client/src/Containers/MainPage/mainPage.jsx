@@ -49,6 +49,7 @@ const MainPage = ({ authenticate, history }) => {
     const [ messageInput, SetMessageInput ] = useState( '' );
     const [ recent_messages, SetRecentMessages ] = useState( null );
     const [ message_info, SetMessageInfo ] = useState( null );
+    const [ current_post_api_call, SetCurrentPostApiCall ] = useState( 0 );
 
     const TriggerDropdown = ()=>{
         SetDropdownInfo(!dropdown_info);
@@ -146,7 +147,8 @@ const MainPage = ({ authenticate, history }) => {
     }
 
     const FetchNewPost = ()=>{
-        axios.get(`/post/0/${localStorage.getItem('Username')}`).then((response)=>{
+
+        axios.get(`/post/${current_post_api_call + 1}/${localStorage.getItem('Username')}`).then((response)=>{
             const no_post = { no_posts: true }
             if(JSON.stringify(no_post) !== JSON.stringify(response.data)){
                 if(response.data.length >= 1){
@@ -155,12 +157,17 @@ const MainPage = ({ authenticate, history }) => {
                     for(i of response.data){
                         dummy.push(i);
                     };
-                    SetPostList(dummy);
+                    SetTempPostList(dummy);
+                    if(response.data.length === 20){
+                        SetCurrentPostApiCall( current_post_api_call + 1 );
+                    }
                 }else{
                     SetApiLimiter( true );
+                    SetPostList( [] );
                 }
             }
         })
+
     };
 
     const CenterClickHandler = ()=>{
@@ -386,9 +393,14 @@ const MainPage = ({ authenticate, history }) => {
             socket.on('client-request-finder', ( sender, ProfilePicture )=>{
                 // adding it to the request_list with unshift;
                 const dummy = [...requests];
-                const data = { sender, ProfilePicture }
-                dummy.unshift(data);
-                SetRequests(dummy);
+                const data_redundancy = dummy.findIndex((element)=>{
+                    return element.sender === sender;
+                })
+                if(data_redundancy === -1){
+                    const data = { sender, ProfilePicture }
+                    dummy.unshift(data);
+                    SetRequests(dummy);
+                }
             })
 
             socket.on('match', (username, Profile_Picture)=>{
