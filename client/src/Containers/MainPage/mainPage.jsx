@@ -167,12 +167,23 @@ const MainPage = ({ authenticate, history }) => {
 
     };
 
+    const SetReactionBackend = (FriendName)=>{
+        const context = {
+            MyName: localStorage.getItem('Username'),
+            ReactedPersonName: FriendName
+        } 
+
+        axios.put('/post-react', context);
+    }
+
     const LeftClickHandler = ()=>{
         // handles rejection;
         const dummy = [...post_list];
+        const FriendName = dummy[0].Username;
         dummy.splice(0, 1);
         SetPostList( dummy );
         SetCurrentIndex(current_index + 1);
+        SetReactionBackend(FriendName);
     };
 
     const CenterClickHandler = ()=>{ 
@@ -190,6 +201,7 @@ const MainPage = ({ authenticate, history }) => {
         }
 
         SendMatchRequest(FriendName);
+        SetReactionBackend(FriendName);
         dummy.splice(0, 1);
         SetPostList(dummy);
     };
@@ -209,6 +221,7 @@ const MainPage = ({ authenticate, history }) => {
         }
 
         SendMatchRequest(FriendName);
+        SetReactionBackend(FriendName);
         dummy.splice(0, 1);
         SetPostList(dummy);
         

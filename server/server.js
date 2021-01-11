@@ -18,6 +18,7 @@ import DeleterRoute from './Routes/delete-route.js';
 import PostRoute from './Routes/posts-route.js';
 import ProfileRouter from './Routes/profile-route.js';
 import ProfileConfirmRoute from './Routes/profile-confirm.js';
+import PostReactRoute from './Routes/change-reacted-profile.js';
 
 dotenv.config();
 
@@ -72,6 +73,7 @@ app.use('/delete', DeleterRoute);
 app.use('/post', PostRoute);
 app.use('/profile', ProfileRouter);
 app.use('/profile-confirm', ProfileConfirmRoute);
+app.use('/post-react', PostReactRoute);
 
 // DB connection
 mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(()=>{
