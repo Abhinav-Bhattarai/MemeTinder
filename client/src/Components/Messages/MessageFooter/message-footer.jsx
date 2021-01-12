@@ -7,10 +7,11 @@ const SendIcon = ()=>{
     return (
         <IconContext.Provider value = {{
             style: {
-                fontSize: '15px',
+                fontSize: '24px',
                 position: 'absolute',
-                top: '50%',
-                right: '3%'
+                top: '24%',
+                right: '3%',
+                color: '#00acee'
             }
         }}>
             <BiSend/>

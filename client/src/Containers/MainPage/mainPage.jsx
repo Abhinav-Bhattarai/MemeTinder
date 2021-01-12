@@ -31,7 +31,7 @@ const AsyncMessageRoute = React.lazy(()=>{
     return import('../../Components/Messages/messages');
 })
 
-const MainPage = ({ authenticate, history }) => {
+const MainPage = ({ authenticate, history, match }) => {
 
     const [ people_list, SetPeopleList ] = useState( null );
     const [ requests, SetRequests ] = useState( null );
@@ -52,6 +52,8 @@ const MainPage = ({ authenticate, history }) => {
     const [ current_post_api_call, SetCurrentPostApiCall ] = useState( 0 );
     const [ milestone, SetMileStone ] = useState( 0 );
     const [ joined_room, SetJoinedRoom ] = useState( null );
+    const [ nav_notification, SetNavNotification ] = useState( null );
+    const [ direct_url_access, SetDirectURLAccess ] = useState( false );
 
     const TriggerDropdown = ()=>{
         SetDropdownInfo(!dropdown_info);
@@ -70,6 +72,7 @@ const MainPage = ({ authenticate, history }) => {
         ref.style.transform = "translateX(25%)";
         SetSideBarValue(0);
         LeaveJoinedRoom();
+        history.push('/main-app');
     }
 
     const TriggerNotificationNav = (ref)=>{
@@ -88,6 +91,27 @@ const MainPage = ({ authenticate, history }) => {
         SetProfileAlert(!profile_alert)
     }
 
+    const DeleteNotification = (sender)=>{
+        const dummy = [...people_list];
+        const findSender = dummy.findIndex((element)=>{
+            return element.username === sender;
+        });
+        if(findSender !== -1){
+            const new_data = {...dummy[findSender], notification: null}
+            dummy[findSender] = new_data;
+            const nav_notification_list = [...nav_notification];
+            const index = nav_notification_list.findIndex((element)=>{
+                return element === sender;
+            })
+            nav_notification_list.splice(index, 1);
+            if(nav_notification_list.length === 0){
+                SetNavNotification( null );
+            }
+            SetPeopleList(dummy);
+            SetNavNotification( nav_notification_list );
+        }
+    }
+
     const PeopleCardMessageClick = (username)=>{
         // socket emit to that person room
         const dummy = [...people_list]
@@ -101,6 +125,9 @@ const MainPage = ({ authenticate, history }) => {
             SetMessageInfo(MessageInfo);
             SetRecentMessages(MessageData);
             SetJoinedRoom( username );
+            if(nav_notification){
+                DeleteNotification(username);
+            }
             // shifting the route;
             history.push(`/message/${username}`);
         }
@@ -206,11 +233,10 @@ const MainPage = ({ authenticate, history }) => {
         }else{
             SetCurrentIndex(current_index + 1);
         }
-
-        SendMatchRequest(FriendName);
-        SetReactionBackend(FriendName);
         dummy.splice(0, 1);
         SetPostList(dummy);
+        SendMatchRequest(FriendName);
+        SetReactionBackend(FriendName);
     };
 
     const RightClickHandler = ()=>{
@@ -227,10 +253,10 @@ const MainPage = ({ authenticate, history }) => {
             SetCurrentIndex(current_index + 1);
         }
 
-        SendMatchRequest(FriendName);
-        SetReactionBackend(FriendName);
         dummy.splice(0, 1);
         SetPostList(dummy);
+        SendMatchRequest(FriendName);
+        SetReactionBackend(FriendName);
 
     };
 
@@ -262,6 +288,13 @@ const MainPage = ({ authenticate, history }) => {
                 const new_data = {...dummy[findSender], notification: true}
                 dummy[findSender] = new_data;
                 SetPeopleList(dummy);
+                if(nav_notification){
+                    const nav_notification_list = [...nav_notification];
+                    nav_notification_list.push(sender);
+                    SetNavNotification(nav_notification_list);
+                }else{
+                    SetNavNotification([sender]);
+                }   
             }
         }
     }
@@ -449,13 +482,42 @@ const MainPage = ({ authenticate, history }) => {
         }
     }, [ temp_post_list, people_list ]);
 
+    const FetchDirectURLMessages = (username)=>{
+        const dummy = [...people_list]
+        const user_index = dummy.findIndex((element)=>{
+            return element.username === username;
+        })
+        // check if there is data in the main array;
+        if(user_index !== -1){
+            const MessageData = dummy[user_index].Messages;
+            const MessageInfo = { Username: username, Profile: dummy[user_index].Profile_Picture };
+            SetMessageInfo(MessageInfo);
+            SetRecentMessages(MessageData);
+            SetJoinedRoom( username );
+            if(nav_notification){
+                DeleteNotification(username);
+            }
+            SetDirectURLAccess(true);
+        }else{
+            // false username;
+            history.push('/main-app');
+        }
+    }
+
     useEffect(()=>{
         if(history.location.pathname === "/"){
             if(joined_room !== null){
                 SetJoinedRoom(null);
+                SetDirectURLAccess(false);
+            }
+        }else{
+            if(joined_room === null && people_list){
+                const username = history.location.pathname.split('/')[2];
+                FetchDirectURLMessages(username);
             }
         }
-    }, [ joined_room, history.location.pathname ])
+
+    }, [ joined_room, history.location.pathname, people_list ])
 
     useEffect(()=>{
         // socket receiers in client;
@@ -619,6 +681,7 @@ const MainPage = ({ authenticate, history }) => {
                 <SidebarNav 
                     TriggerMessageNav={ (ref)=>TriggerMessageNav(ref) } 
                     TriggerMatchNav= { (ref)=>TriggerMatchNav(ref) }
+                    NavNotification = { nav_notification }
                 />
                 { ( !people_list_jsx ) ? <LoadSpinner/> : people_list_jsx }
             </SideBar>
@@ -642,13 +705,19 @@ const MainPage = ({ authenticate, history }) => {
                 : null
             }
 
-            { ( post_area_jsx ) ? 
-                (
-                    <Switch>
+            { ( direct_url_access ) ? (
 
-                        <Route exact path='/message/:user' render={()=>{
-                            return (
-                                <Suspense fallback={ <LoadSpinner/> }>
+                <Route exact path='/message/:user' render={()=>{
+                    return (
+                        <Suspense 
+                            fallback={ 
+                                    (<main className='main-post-container'>
+                                        <LoadSpinner/>
+                                    </main>) 
+                                }
+                        >
+                            {
+                                (message_info) ? (
                                     <AsyncMessageRoute 
                                         blur={ ( profile_alert || logout_popup ) ? '5px' : '0px' }
                                         MessageInputValue = { messageInput }
@@ -658,40 +727,75 @@ const MainPage = ({ authenticate, history }) => {
                                         Profile = { message_info.Profile }
                                         SendMessage = { (username)=>SendMessageHandler(username) }
                                     />
-                                </Suspense>
-                            )
-                        }}/>
+                                ): null
+                            }
+                        </Suspense>
+                    )
+                }}/>
 
-                        <Route exact path='/home' render={()=>{
-                            return <HomeContainer 
-                                        jsx = { post_area_jsx }
-                                        LeftClick = { LeftClickHandler }
-                                        RightClick = { RightClickHandler }
-                                        CenterClick = { CenterClickHandler }
-                                        post_list = { post_list }
-                                        current_sidebar_value = { current_sidebar_value }
-                                        current_index = { 0 }
-                                    />}
-                        }/>
-
-                        <Route render={()=>{
-                            return <HomeContainer 
-                                        jsx = { post_area_jsx }
-                                        LeftClick = { LeftClickHandler }
-                                        RightClick = { RightClickHandler }
-                                        CenterClick = { CenterClickHandler }
-                                        post_list = { post_list }
-                                        current_sidebar_value = { current_sidebar_value }
-                                        current_index = { 0 }
-                                    />}
-                        }/>
-                    </Switch>
-                )
-            : 
-                <main className='main-post-container'>
-                    <LoadSpinner/>
-                </main>
-            }
+            ) : (
+                    ( post_area_jsx ) ? 
+                        (
+                            <Switch>
+        
+                                <Route exact path='/message/:user' render={()=>{
+                                    return (
+                                        <Suspense 
+                                            fallback={ 
+                                                    (<main className='main-post-container'>
+                                                        <LoadSpinner/>
+                                                    </main>) 
+                                                }
+                                        >
+                                            {
+                                                (message_info) ? (
+                                                    <AsyncMessageRoute 
+                                                        blur={ ( profile_alert || logout_popup ) ? '5px' : '0px' }
+                                                        MessageInputValue = { messageInput }
+                                                        ChangeMessageInput = { (e)=>ChangeMessageInput(e) }
+                                                        RecentMessages = { recent_messages }
+                                                        Username = { message_info.Username }
+                                                        Profile = { message_info.Profile }
+                                                        SendMessage = { (username)=>SendMessageHandler(username) }
+                                                    />
+                                                ): null
+                                            }
+                                        </Suspense>
+                                    )
+                                }}/>
+        
+                                <Route exact path='/home' render={()=>{
+                                    return <HomeContainer 
+                                                jsx = { post_area_jsx }
+                                                LeftClick = { LeftClickHandler }
+                                                RightClick = { RightClickHandler }
+                                                CenterClick = { CenterClickHandler }
+                                                post_list = { post_list }
+                                                current_sidebar_value = { current_sidebar_value }
+                                                current_index = { 0 }
+                                            />}
+                                }/>
+        
+                                <Route render={()=>{
+                                    return <HomeContainer 
+                                                jsx = { post_area_jsx }
+                                                LeftClick = { LeftClickHandler }
+                                                RightClick = { RightClickHandler }
+                                                CenterClick = { CenterClickHandler }
+                                                post_list = { post_list }
+                                                current_sidebar_value = { current_sidebar_value }
+                                                current_index = { 0 }
+                                            />}
+                                }/>
+        
+                            </Switch>
+                        )
+                    : 
+                        <main className='main-post-container'>
+                            <LoadSpinner/>
+                        </main>
+                    
+            ) }
 
             <RequestBar blur={ ( profile_alert || logout_popup ) ? '5px' : '0px' }>
                 <RequestHeader/>

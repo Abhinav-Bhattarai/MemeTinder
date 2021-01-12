@@ -7,6 +7,7 @@
     position: relative;
 
     &-element{
+        cursor: context-menu;
         width: 40%;
         text-align: center;
         margin: 0px 5%;
@@ -16,6 +17,7 @@
         font-weight: 700;
         color: black;
         text-decoration: none;
+        position: relative;
     }
 
 
@@ -28,6 +30,17 @@
         width: 35%;
         transform: translateX(25%);
     }
+}
+
+.notify-icon-2{
+    font-size: 8px;
+    color: $theme-color;
+    position: absolute;
+    top: 4px;
+    background-color: $theme-color;
+    border-radius: 50%;
+    right: 14%;
+    box-shadow: 0 0 5px $theme-color
 }
 
 // .match-active{
