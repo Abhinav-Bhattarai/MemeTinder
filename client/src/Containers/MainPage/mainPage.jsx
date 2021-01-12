@@ -28,7 +28,7 @@ import HomeContainer from '../../Components/HomeContainer/home-container';
 import Logout from '../../Components/Credentials/Logout/logout';
 
 const AsyncMessageRoute = React.lazy(()=>{
-    return import('../../Components/Messages/messages')
+    return import('../../Components/Messages/messages');
 })
 
 const MainPage = ({ authenticate, history }) => {
@@ -56,7 +56,6 @@ const MainPage = ({ authenticate, history }) => {
     const TriggerDropdown = ()=>{
         SetDropdownInfo(!dropdown_info);
     }
-
 
     // changeing the sidebar and request bar pointer div;
 
@@ -281,7 +280,7 @@ const MainPage = ({ authenticate, history }) => {
         // Add to match data array after accepting match request; 
         const match_data = [...people_list];
         const current_date = Date.now();
-        match_data.unshift({username: username, Profile_Picture: pp, Messages: [], LastInteraction: current_date, fresh: true});
+        match_data.unshift({username: username, Profile_Picture: pp, Messages: [], LastInteraction: current_date, recent: true});
         SetPeopleList(match_data);
     };
 
@@ -448,7 +447,15 @@ const MainPage = ({ authenticate, history }) => {
                 SetTempPostList(null);
             }
         }
-    }, [ temp_post_list, people_list ])
+    }, [ temp_post_list, people_list ]);
+
+    useEffect(()=>{
+        if(history.location.pathname === "/"){
+            if(joined_room !== null){
+                SetJoinedRoom(null);
+            }
+        }
+    }, [ joined_room, history.location.pathname ])
 
     useEffect(()=>{
         // socket receiers in client;
@@ -502,6 +509,7 @@ const MainPage = ({ authenticate, history }) => {
                                         profile_picture = { user.Profile_Picture } 
                                         username = { user.username } 
                                         lastupdate = { UpdateDate }
+                                        fresh = { ( user.recent ) ? user.recent : false }
                                     />
                                 )
                             })

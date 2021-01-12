@@ -11,11 +11,18 @@ const NotifyIcon = ()=>{
     )
 }
 
-const PeopleListCard = ({ profile_picture, username, lastupdate, click, notification }) => {
+const NewIcon = ()=>{
+    return (
+        <div className='new-icon'>NEW</div>
+    )
+}
+
+const PeopleListCard = ({ profile_picture, username, lastupdate, click, notification, recent }) => {
     return (
         <Fragment>
             <main className='people-list-card-container' onClick={ ( click ) ? click.bind(this, username) : null }>
                 { (notification) ? <NotifyIcon/> : null }
+                { (recent) ? <NewIcon/> : null }
                 <img src={ profile_picture } draggable='false' alt='profile-pic'/>
                 <div className='people-list-card-container-desc-area'>
                     <header>{ username }</header>

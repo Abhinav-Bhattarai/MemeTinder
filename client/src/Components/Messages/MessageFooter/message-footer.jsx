@@ -1,5 +1,22 @@
 import React, { Fragment, useEffect, useRef } from 'react';
+import { IconContext } from 'react-icons';
+import { BiSend } from 'react-icons/bi';
 import './message-footer.scss';
+
+const SendIcon = ()=>{
+    return (
+        <IconContext.Provider value = {{
+            style: {
+                fontSize: '15px',
+                position: 'absolute',
+                top: '50%',
+                right: '3%'
+            }
+        }}>
+            <BiSend/>
+        </IconContext.Provider>
+    )
+}
 
 const MessageFooter = ({ MessageInputValue, MessageInputChanger, SendMessage }) => {
     const textarea_ref = useRef( null );
@@ -12,7 +29,7 @@ const MessageFooter = ({ MessageInputValue, MessageInputChanger, SendMessage }) 
     }
 
     useEffect(()=>{
-        const ref = textarea_ref.current
+        const ref = textarea_ref.current;
 
         if(textarea_ref.current){
             ref.addEventListener('keydown', TextAreaListener);
@@ -36,6 +53,7 @@ const MessageFooter = ({ MessageInputValue, MessageInputChanger, SendMessage }) 
                     placeholder = 'Enter your message .....'
     
                 />
+                <span onClick = { SendMessage }> <SendIcon/> </span>
             </footer>
         </Fragment>
     )

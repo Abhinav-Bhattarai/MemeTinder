@@ -55,3 +55,17 @@
     right: 3%;
     box-shadow: 0 0 20px $theme-color
 }
+
+.new-icon{
+    position: absolute;
+    top: 8px;
+    right: 3%;
+    width: 5%;
+    padding: 3px 2%;
+    border-radius: 20px;
+    font-size: 16px;
+    color: white;
+    font-weight: 500;
+    background-color: $theme-color;
+    box-shadow: 0 0 20px $theme-color
+}
