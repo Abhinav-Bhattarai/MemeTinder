@@ -124,7 +124,7 @@ const LandingPage = ({ authenticate }) => {
 
     const SignupCredentialSubmitHandler = (event)=>{
         event.preventDefault();
-        if(signup_username.length > 3 && signup_password.length >= 8 && signup_email.length >= 11 && signup_password === signup_confirm && signup_gender.length >= 4){
+        if(signup_username.length > 3 && signup_password.length >= 8 && signup_email.length >= 11 && signup_password === signup_confirm && signup_gender){
             const number_regex = /[0-9]/;
             if(number_regex.exec(signup_password) !== null){
                 // further axios request

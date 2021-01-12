@@ -1,5 +1,4 @@
 import React, { Fragment, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
 import '../../SiderBar/Sidebar-Nav/sidebar-nav.scss';
 
 const RequestNav = ({ TriggerNotificationNav, TriggerRequestNav }) => {
@@ -15,7 +14,7 @@ const RequestNav = ({ TriggerNotificationNav, TriggerRequestNav }) => {
                         TriggerRequestNav.bind(this, navbar_pointer.current)
                     }
                 >
-                    <NavLink to='/'> Requests </NavLink>
+                    Requests
                 </div>
 
                 <div className='sidebar-nav-element'
@@ -23,7 +22,7 @@ const RequestNav = ({ TriggerNotificationNav, TriggerRequestNav }) => {
                         TriggerNotificationNav.bind(this, navbar_pointer.current)
                     }
                 >
-                    <NavLink to='/notifications'> Notification </NavLink>
+                    Notification
                 </div>
 
                 <div className='navbar-pointer' ref={ navbar_pointer }></div>

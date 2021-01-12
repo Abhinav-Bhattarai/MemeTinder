@@ -1,11 +1,21 @@
 import React, { Fragment } from 'react';
+import { IconContext } from 'react-icons';
+import { FaDotCircle } from 'react-icons/fa';
 import './people-list-card.scss';
 
-const PeopleListCard = ({ profile_picture, username, lastupdate, click }) => {
+const NotifyIcon = ()=>{
+    return (
+        <IconContext.Provider value={{ className: 'notify-icon' }}>
+            <FaDotCircle/>
+        </IconContext.Provider>
+    )
+}
 
+const PeopleListCard = ({ profile_picture, username, lastupdate, click, notification }) => {
     return (
         <Fragment>
             <main className='people-list-card-container' onClick={ ( click ) ? click.bind(this, username) : null }>
+                { (notification) ? <NotifyIcon/> : null }
                 <img src={ profile_picture } draggable='false' alt='profile-pic'/>
                 <div className='people-list-card-container-desc-area'>
                     <header>{ username }</header>

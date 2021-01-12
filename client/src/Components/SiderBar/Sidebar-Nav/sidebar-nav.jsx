@@ -1,5 +1,4 @@
 import React, { Fragment, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
 import './sidebar-nav.scss';
 
 const SidebarNav = ({ TriggerMessageNav, TriggerMatchNav }) => {
@@ -11,11 +10,11 @@ const SidebarNav = ({ TriggerMessageNav, TriggerMatchNav }) => {
             <nav className='sidebar-nav'>
 
                 <div className='sidebar-nav-element' onClick={TriggerMatchNav.bind(this,  navbar_pointer.current) }>
-                    <NavLink to='/'> Matches </NavLink>
+                    Matches
                 </div>
 
                 <div className='sidebar-nav-element' onClick={TriggerMessageNav.bind(this, navbar_pointer.current) }>
-                    <NavLink to='/messages'> Messages </NavLink>
+                    Messages
                 </div>
 
                 <div className='navbar-pointer' ref={ navbar_pointer }></div>

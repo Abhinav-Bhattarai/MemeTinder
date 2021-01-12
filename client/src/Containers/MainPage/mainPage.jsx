@@ -18,7 +18,7 @@ import RequestNav from '../../Components/RequestBar/RequestNav/request-nav';
 import Interactions from '../../Components/Interactions/Interactions';
 import NoPost from '../../Components/UI/Default-No-Post/no-post';
 import PostContainer from '../../Components/PostContainer/post-container';
-import TestImage from '../../assets/bg.jpg';
+import TestImage from '../../assets/default-user.png';
 import ImageContainer from '../../Components/ImageContainer/image-container';
 import Dropdown from '../../Components/UI/Dropdown/dropdown';
 import RequestCard from '../../Components/RequestCard/request-card';
@@ -51,10 +51,12 @@ const MainPage = ({ authenticate, history }) => {
     const [ message_info, SetMessageInfo ] = useState( null );
     const [ current_post_api_call, SetCurrentPostApiCall ] = useState( 0 );
     const [ milestone, SetMileStone ] = useState( 0 );
+    const [ joined_room, SetJoinedRoom ] = useState( null );
 
     const TriggerDropdown = ()=>{
         SetDropdownInfo(!dropdown_info);
     }
+
 
     // changeing the sidebar and request bar pointer div;
 
@@ -68,6 +70,7 @@ const MainPage = ({ authenticate, history }) => {
         ref.style.transition = '0.3s';
         ref.style.transform = "translateX(25%)";
         SetSideBarValue(0);
+        LeaveJoinedRoom();
     }
 
     const TriggerNotificationNav = (ref)=>{
@@ -98,6 +101,7 @@ const MainPage = ({ authenticate, history }) => {
             const MessageInfo = { Username: username, Profile: dummy[user_index].Profile_Picture };
             SetMessageInfo(MessageInfo);
             SetRecentMessages(MessageData);
+            SetJoinedRoom( username );
             // shifting the route;
             history.push(`/message/${username}`);
         }
@@ -111,7 +115,7 @@ const MainPage = ({ authenticate, history }) => {
             return element.username === Match_name
         })
         dummy[match_index].Messages.push({data: Message, self, Date: date});
-        SetPeopleList(dummy)
+        SetPeopleList(dummy);
     }
 
     const AddMessagetoBackend = (receiver)=>{
@@ -121,7 +125,7 @@ const MainPage = ({ authenticate, history }) => {
             Receiver: receiver
         }
 
-        axios.put('/message', context).then(()=>{});
+        axios.put('/message', context);
     }
 
     const SendMessageHandler = (Match_name)=>{
@@ -132,13 +136,17 @@ const MainPage = ({ authenticate, history }) => {
         SetMessageInput('');
     }
 
+    const LeaveJoinedRoom = ()=>{
+        SetJoinedRoom( null );
+    }
+
     const SendMatchRequest = (friend_name)=>{
         const context = {
             YourName: localStorage.getItem('Username'),
             YourProfile: my_profile_pic,
             FriendName: friend_name,
         };
-        axios.put('/friend-requests', context).then(()=>{});
+        axios.put('/friend-requests', context);
     };
 
     const FetchNewPost = ()=>{
@@ -224,7 +232,7 @@ const MainPage = ({ authenticate, history }) => {
         SetReactionBackend(FriendName);
         dummy.splice(0, 1);
         SetPostList(dummy);
-        
+
     };
 
     // Message Route
@@ -244,6 +252,20 @@ const MainPage = ({ authenticate, history }) => {
         // changes authentication status to false to log out;
         authenticate(true);
     };
+
+    const NotifyInPeoplaCard = (sender)=>{
+        if(joined_room !== sender){
+            const dummy = [...people_list];
+            const findSender = dummy.findIndex((element)=>{
+                return element.username === sender;
+            });
+            if(findSender !== -1){
+                const new_data = {...dummy[findSender], notification: true}
+                dummy[findSender] = new_data;
+                SetPeopleList(dummy);
+            }
+        }
+    }
 
     const RemoveRequestData = (username)=>{
         // Removes the selected data from request array state after accept or reject;
@@ -267,8 +289,7 @@ const MainPage = ({ authenticate, history }) => {
         const context = {
             MyName: localStorage.getItem('Username')
         }
-        axios.post('/friend-requests', context).then((response)=>{
-        })
+        axios.post('/friend-requests', context);
     };
 
     const AddToMatchesBackend = (match_username, match_image)=>{
@@ -279,7 +300,7 @@ const MainPage = ({ authenticate, history }) => {
             YourProfilePic: my_profile_pic
         }
 
-        axios.post('/matches', context).then(()=>{})
+        axios.post('/matches', context);
     }
 
     const SendSocketMatch = (username)=>{
@@ -454,6 +475,7 @@ const MainPage = ({ authenticate, history }) => {
             socket.on('receive-message-client', (sender, message)=>{
                 // Message Socket Receiver;
                 AddMessage(sender, message, false);
+                NotifyInPeoplaCard(sender);
             })
 
             return ()=>{
@@ -501,6 +523,7 @@ const MainPage = ({ authenticate, history }) => {
                                         username = { user.username } 
                                         lastupdate = { UpdateDate }
                                         click = { ( username )=>PeopleCardMessageClick( username ) }
+                                        notification = { ( user.notification ) ? user.notification : null }
                                     />
                                 )
                             })
@@ -546,6 +569,7 @@ const MainPage = ({ authenticate, history }) => {
             }
         }
     }
+
 
     let post_area_jsx = null;
     if(post_list){

@@ -1,3 +1,5 @@
+@import '../../_variables';
+
 .people-list-card-container{
     height: 40px;
     padding: 20px 3%;
@@ -9,6 +11,7 @@
     background-color: rgb(219, 219, 219);
     cursor: context-menu;
     transition: 0.3s;
+    position: relative;
 
     &:hover{
         background-color: rgb(209, 208, 208);
@@ -40,4 +43,15 @@
             margin-top: 2px;
         }
     }
+};
+
+.notify-icon{
+    font-size: 15px;
+    color: $theme-color;
+    position: absolute;
+    top: 8px;
+    background-color: $theme-color;
+    border-radius: 50%;
+    right: 3%;
+    box-shadow: 0 0 20px $theme-color
 }

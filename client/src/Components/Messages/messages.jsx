@@ -45,7 +45,8 @@ const Messages = ({ ChangeMessageInput, MessageInputValue, RecentMessages, Profi
     return (
         <Fragment>
             <main className = 'main-messages-container' 
-                style = { { 
+                style = { 
+                          { 
                             filter: `blur(${blur})`,
                           } 
                         }
