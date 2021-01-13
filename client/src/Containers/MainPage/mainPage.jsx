@@ -1,9 +1,9 @@
-import React, { Fragment, Suspense, useEffect, useState } from 'react';
+import React, { Fragment, Suspense, useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import socket_client from 'socket.io-client';
+import { Route, Switch, withRouter } from 'react-router-dom';
 
 import '../../Components/PostContainer/post-container.scss';
-
 import SideBar from '../../Components/SiderBar/sidebar';
 import SidebarHeader from '../../Components/SiderBar/SideBar-Header/sidebar-header';
 import SidebarNav from '../../Components/SiderBar/Sidebar-Nav/sidebar-nav';
@@ -23,9 +23,10 @@ import ImageContainer from '../../Components/ImageContainer/image-container';
 import Dropdown from '../../Components/UI/Dropdown/dropdown';
 import RequestCard from '../../Components/RequestCard/request-card';
 import ImageConfig from '../../Components/Credentials/ImageConfig/image-config';
-import { Route, Switch, withRouter } from 'react-router';
 import HomeContainer from '../../Components/HomeContainer/home-container';
 import Logout from '../../Components/Credentials/Logout/logout';
+import NotificationCard from '../../Components/NotificationCard/notification-card';
+
 
 const AsyncMessageRoute = React.lazy(()=>{
     return import('../../Components/Messages/messages');
@@ -54,12 +55,13 @@ const MainPage = ({ authenticate, history, match }) => {
     const [ joined_room, SetJoinedRoom ] = useState( null );
     const [ nav_notification, SetNavNotification ] = useState( null );
     const [ direct_url_access, SetDirectURLAccess ] = useState( false );
+    const [ notification_list, SetNotificationList ] = useState( null );
 
     const TriggerDropdown = ()=>{
         SetDropdownInfo(!dropdown_info);
     }
 
-    // changeing the sidebar and request bar pointer div;
+    // changing the sidebar and request bar pointer div;
 
     const TriggerMessageNav = (ref)=>{
         ref.style.transition = '0.3s';
@@ -72,6 +74,7 @@ const MainPage = ({ authenticate, history, match }) => {
         ref.style.transform = "translateX(25%)";
         SetSideBarValue(0);
         LeaveJoinedRoom();
+        SetDirectURLAccess(false);
         history.push('/main-app');
     }
 
@@ -91,7 +94,7 @@ const MainPage = ({ authenticate, history, match }) => {
         SetProfileAlert(!profile_alert)
     }
 
-    const DeleteNotification = (sender)=>{
+    const DeleteNotification = useCallback((sender)=>{
         const dummy = [...people_list];
         const findSender = dummy.findIndex((element)=>{
             return element.username === sender;
@@ -110,7 +113,7 @@ const MainPage = ({ authenticate, history, match }) => {
             SetPeopleList(dummy);
             SetNavNotification( nav_notification_list );
         }
-    }
+    }, [ people_list, nav_notification ])
 
     const PeopleCardMessageClick = (username)=>{
         // socket emit to that person room
@@ -156,10 +159,12 @@ const MainPage = ({ authenticate, history, match }) => {
 
     const SendMessageHandler = (Match_name)=>{
         // axios request;
-        AddMessage( Match_name, messageInput, true );
-        socket.emit('receive-message-server', localStorage.getItem('Username'), Match_name, messageInput);
-        AddMessagetoBackend(Match_name);
-        SetMessageInput('');
+        if(messageInput.length >= 1){
+            AddMessage( Match_name, messageInput, true );
+            socket.emit('receive-message-server', localStorage.getItem('Username'), Match_name, messageInput);
+            AddMessagetoBackend(Match_name);
+            SetMessageInput('');
+        }
     }
 
     const LeaveJoinedRoom = ()=>{
@@ -340,19 +345,43 @@ const MainPage = ({ authenticate, history, match }) => {
         socket.emit('accept', localStorage.getItem('Username'), my_profile_pic, username);
     }
 
+    const SendSocketNotification = (username, profile)=>{
+        socket.emit('notification-server', localStorage.getItem('Username'), username, profile);
+    }
+
+    const AddNotificationBackend = (username, profile)=>{
+        const context = {
+            Sender: localStorage.getItem('Username'),
+            Username: username,
+            ProfilePicture: profile
+        }
+        axios.put('/add-notification', context);
+    }
+
     const AcceptMatchRequest = (e, profile_image, username)=>{
         // the username here is the person who requested
         RemoveRequestSectionBackend(username);
         RemoveRequestData();
         AddMatchData(profile_image, username);
         AddToMatchesBackend(username, profile_image);
-        SendSocketMatch(username)
+        SendSocketMatch(username);
+        SendSocketNotification(username, profile_image);
     }
 
     const RejectMatchRequest = (username)=>{
         // the username here is the person who requested
         RemoveRequestSectionBackend(username);
         RemoveRequestData();
+    }
+
+    const AddNotification = (sender, profile)=>{
+        if(notification_list){
+            const dummy = [...notification_list];
+            dummy.push({sender, profile});
+            SetNotificationList(dummy);
+        }else{
+            SetNotificationList({sender, profile});
+        }
     }
 
     const FetchMatches = ()=>{
@@ -482,7 +511,7 @@ const MainPage = ({ authenticate, history, match }) => {
         }
     }, [ temp_post_list, people_list ]);
 
-    const FetchDirectURLMessages = (username)=>{
+    const FetchDirectURLMessages = useCallback((username)=>{
         const dummy = [...people_list]
         const user_index = dummy.findIndex((element)=>{
             return element.username === username;
@@ -502,7 +531,7 @@ const MainPage = ({ authenticate, history, match }) => {
             // false username;
             history.push('/main-app');
         }
-    }
+    }, [ people_list, history, DeleteNotification, nav_notification ]);
 
     useEffect(()=>{
         if(history.location.pathname === "/"){
@@ -517,7 +546,7 @@ const MainPage = ({ authenticate, history, match }) => {
             }
         }
 
-    }, [ joined_room, history.location.pathname, people_list ])
+    }, [ joined_room, history.location.pathname, people_list, FetchDirectURLMessages ])
 
     useEffect(()=>{
         // socket receiers in client;
@@ -545,6 +574,10 @@ const MainPage = ({ authenticate, history, match }) => {
                 // Message Socket Receiver;
                 AddMessage(sender, message, false);
                 NotifyInPeoplaCard(sender);
+            })
+
+            socket.on('notification-client', ( from, profile_pic )=>{
+                AddNotification(from, profile_pic);
             })
 
             return ()=>{
@@ -633,7 +666,15 @@ const MainPage = ({ authenticate, history, match }) => {
             }else{
                 request_list_jsx = (
                     <RequestListContainer>
-
+                        {
+                            notification_list.map((notification, i)=>{
+                                return <NotificationCard 
+                                            key = { i }
+                                            username = { notification.sender }
+                                            profile_picture = { notification.profile }
+                                        />
+                            })
+                        }
                     </RequestListContainer>
                 );
             }

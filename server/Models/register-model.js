@@ -60,6 +60,14 @@ const Schema = new SchemaObject({
     ReactedProfiles: {
         type: [String],
         default: []
+    },
+    
+    Notification: {
+        type: [{sender: String, ProfilePicture: {
+            type: String,
+            data: Buffer
+        }}],
+        default: []
     }
 
 })

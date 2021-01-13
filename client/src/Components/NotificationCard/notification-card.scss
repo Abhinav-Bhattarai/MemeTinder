@@ -1,0 +1,31 @@
+.notification-card-container{
+    cursor: context-menu;
+    padding: 20px 3%;
+    display: flex;
+    background-color: rgb(219, 219, 219);
+    transition: 0.2s;
+    margin-top: 10px;
+    position: relative;
+
+    img{
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+    }
+
+    div{
+        display: flex;
+        flex-direction: column;
+
+        header{
+            font-weight: 500;
+            font-size: 18px;
+        }
+
+        footer{
+            color: grey;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    }
+}

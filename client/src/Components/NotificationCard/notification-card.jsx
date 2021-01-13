@@ -1,10 +1,16 @@
 import React, { Fragment } from 'react';
-import './notication-card.scss';
+import './notification-card.scss';
 
-const NotificationCard = () => {
+const NotificationCard = ({ sender, profile }) => {
     return (
         <Fragment>
-            
+            <main className='notification-card-container'>
+                <img src = { profile } alt='sender-profile'/>
+                <div>
+                    <header>{ sender }</header>
+                    <footer> has accepted your match request </footer>
+                </div>
+            </main>
         </Fragment>
     )
 }

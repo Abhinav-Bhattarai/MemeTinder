@@ -19,6 +19,7 @@ import PostRoute from './Routes/posts-route.js';
 import ProfileRouter from './Routes/profile-route.js';
 import ProfileConfirmRoute from './Routes/profile-confirm.js';
 import PostReactRoute from './Routes/change-reacted-profile.js';
+import NotificationRoute from './Routes/notifications.js';
 
 dotenv.config();
 
@@ -42,11 +43,9 @@ io.on('connection', (socket)=>{
 
     socket.on('join-room', (username)=>{
         socket.join(username)
-        console.log(`connected to ${username} room`)
     })
 
     socket.on('Send-Friend-Request', ( room, sender_name, sender_profile )=>{
-        console.log('friend-request-triggered')
         socket.broadcast.to(room).emit('client-request-finder', sender_name, sender_profile )
     })
 
@@ -56,6 +55,10 @@ io.on('connection', (socket)=>{
 
     socket.on('receive-message-server', (sender, receiver, message)=>{
         socket.broadcast.to(receiver).emit('receive-message-client', sender, message)
+    })
+
+    socket.on('notification-server', ( sender, room, profile )=>{
+        socket.broadcast.to(room).emit('notification-client', sender, profile);
     })
 
     socket.on('disconnect', ()=>{})
@@ -74,6 +77,7 @@ app.use('/post', PostRoute);
 app.use('/profile', ProfileRouter);
 app.use('/profile-confirm', ProfileConfirmRoute);
 app.use('/post-react', PostReactRoute);
+app.use('/add-notification', NotificationRoute)
 
 // DB connection
 mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(()=>{
