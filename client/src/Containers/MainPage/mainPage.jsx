@@ -535,19 +535,23 @@ const MainPage = ({ authenticate, history, match }) => {
     }, [ people_list, history, DeleteNotification, nav_notification ]);
 
     useEffect(()=>{
-        if(history.location.pathname === "/"){
-            if(joined_room !== null){
-                SetJoinedRoom(null);
-                SetDirectURLAccess(false);
+        if(profile_alert === false){
+            if(history.location.pathname === "/"){
+                if(joined_room !== null){
+                    SetJoinedRoom(null);
+                    SetDirectURLAccess(false);
+                }
             }
-        }else{
-            if(joined_room === null && people_list){
-                const username = history.location.pathname.split('/')[2];
-                FetchDirectURLMessages(username);
+            
+            else{
+                if(joined_room === null && people_list){
+                    const username = history.location.pathname.split('/')[2];
+                    FetchDirectURLMessages(username);
+                }
             }
         }
 
-    }, [ joined_room, history.location.pathname, people_list, FetchDirectURLMessages ])
+    }, [ joined_room, history.location.pathname, people_list, FetchDirectURLMessages, profile_alert ])
 
     useEffect(()=>{
         // socket receiers in client;

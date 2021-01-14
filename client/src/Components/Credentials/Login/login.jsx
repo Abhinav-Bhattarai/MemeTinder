@@ -33,7 +33,7 @@ const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password}) => {
 
     let username_error = null;
     let password_error = null;
-
+    let invalid_cred = null;
     // checking for error to add through jsx;
     if(ErrorContainer.length >= 1){
         let i = 0;
@@ -46,12 +46,19 @@ const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password}) => {
             }
             else if(i.error_type === 'Password'){
                 if(PasswordRef){
-                    PasswordRef.current.style.border = '1px solid red'
+                    PasswordRef.current.style.border = '1px solid red';
                 }
                 password_error = <Error error_msg={i.message}/>
+            }else{
+                if(UsernameRef && PasswordRef){
+                    UsernameRef.current.style.border = '1px solid red';
+                    PasswordRef.current.style.border = '1px solid red';
+                    invalid_cred = <div className='invalid-cred-error'>Invalid Credentials</div>
+                }
             }
         }
     }
+
 
     return (
         <Fragment>
@@ -63,6 +70,7 @@ const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password}) => {
                         fontSize: '18px'
                     }}>Login to Continue</div>
                 </header>
+                { invalid_cred }
                 <form onSubmit={ Logger }>
                     <main className='signup-input-container'>
                         <label>Username</label>

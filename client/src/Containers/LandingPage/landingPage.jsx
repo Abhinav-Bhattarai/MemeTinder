@@ -10,6 +10,7 @@ import LandingPageContext from './landingpage-context';
 
 import './landingPage.scss';
 import ForgetPassword from '../../Components/Credentials/Login/forget-password';
+import PasswordChange from '../../Components/Credentials/PasswordChange/password-change';
 
 const LandingPage = ({ authenticate }) => {
 
@@ -27,6 +28,9 @@ const LandingPage = ({ authenticate }) => {
     const [ signin_cred_error, SetSigninCredError ] = useState( [] );
     const [ signup_cred_error, SetSignupCredError ] = useState( [] );
     const [ forget_cred_error, SetForgetCredError ] = useState( null );
+    const [ new_password_popup, SetNewPasswordPopup ] = useState( false );
+    const [ new_password_password, SetNewPassword ] = useState( '' );
+    const [ new_password_confirm, SetPasswordConfirm ] = useState( '' );
 
     const SignupCardHandler = ()=>{
         SetSignupCard(!signup_card)
@@ -76,6 +80,39 @@ const LandingPage = ({ authenticate }) => {
         SetSignupGender(value)
     };
 
+    const ChangeNewPassword = (event)=>{
+        const value = event.target.value;
+        SetNewPassword(value);
+    }
+
+    const ChangeNewPasswordConfirm = (event)=>{
+        const value = event.target.value;
+        SetPasswordConfirm(value);
+    }
+
+    const SubmitNewPassword = (event)=>{
+        event.preventDefault();
+        if(new_password_password === new_password_confirm && new_password_password.length > 7){
+            const number_regex = /[0-9]/;
+            if(number_regex.exec(new_password_password) !== null){
+                const context = {
+                    Username: signin_username,
+                    Password: new_password_password,
+                    Confirm: new_password_confirm
+                }
+                axios.put('/forget', context).then((response)=>{
+                    const data = response.data;
+                    const required_data = {password_changed: true};
+                    if(JSON.stringify(data) === JSON.stringify(required_data)){
+                        SetNewPasswordPopup(false);
+                    }else{ 
+                        // error's;
+                    }
+                });
+            }
+        }
+    }
+
     const LoginCredentialSubmitHandler = (event)=>{
         event.preventDefault();
         
@@ -97,6 +134,9 @@ const LandingPage = ({ authenticate }) => {
 
                     if(JSON.stringify(data) === JSON.stringify(username_err) || JSON.stringify(data) === JSON.stringify(password_err)){
                         // error handling in the form bootstrap invalid one;
+                        const dummy = [];
+                        dummy.push({error_type: 'Invalid', message: 'Invalid Credentials'});
+                        SetSigninCredError(dummy);
                     }else{
                         // storing jwt token and other cred information;
                         localStorage.setItem('user-data', JSON.stringify(response.data.data));
@@ -203,7 +243,8 @@ const LandingPage = ({ authenticate }) => {
             axios.post('/forget', context).then((response)=>{
                 const condition = {access: true} 
                 if(JSON.stringify(response.data) === JSON.stringify(condition)){
-                    
+                    SetForgetCard(false);
+                    SetNewPasswordPopup(true);
                 }else{
                     SetForgetCredError('Wrong Number input');
                 }
@@ -230,14 +271,18 @@ const LandingPage = ({ authenticate }) => {
                         TriggerForgetPassword(true)
                     }
 
+                    else if(new_password_popup){
+                        SetNewPasswordPopup(false);
+                    }
+
                 }
             }>
                 <Navbar 
-                    blur = { (login_card || signup_card || forget_password_card) ? true : false }
+                    blur = { (login_card || signup_card || forget_password_card || new_password_popup) ? true : false }
                     TriggerLogin={ SetLoginCard }
                 />
                 <main className='background-image-container' style={
-                    (login_card || signup_card || forget_password_card) ? { height: '100%', filter: `blur(5px)` } : { height: '100%' }
+                    (login_card || signup_card || forget_password_card || new_password_popup) ? { height: '100%', filter: `blur(5px)` } : { height: '100%' }
                 }>
 
                     <img
@@ -246,13 +291,13 @@ const LandingPage = ({ authenticate }) => {
                     />
 
                 </main>
-                <main className='landingpage-middle-flex' style={(login_card || signup_card || forget_password_card) ? { filter: `blur(5px)` } : {  }}>
+                <main className='landingpage-middle-flex' style={(login_card || signup_card || forget_password_card || new_password_popup) ? { filter: `blur(5px)` } : {  }}>
                     <Logo type='LandingPage'/>
-                    <button id='middle-flex-btn' onClick={SignupCardHandler}>CREATE ACCOUNT</button>
+                    <button id='middle-flex-btn' onClick={ SignupCardHandler }>CREATE ACCOUNT</button>
                 </main>
             </main>
 
-            {(signup_card || login_card || forget_password_card)?
+            {(signup_card || login_card || forget_password_card || new_password_popup)?
             (
                 <LandingPageContext.Provider value={{
                     signup_username,
@@ -269,30 +314,53 @@ const LandingPage = ({ authenticate }) => {
                     ChangeSigninPassword: (e)=>ChangeSigninPassword(e),
                 }}>
     
-                    {(signup_card)?
-                    <Signup 
-                        ErrorContainer= { signup_cred_error } 
-                        SignupCardHandler= { SignupCardHandler } 
-                        Register= { SignupCredentialSubmitHandler }
-                        ChangeRadio = { (e)=>ChangeSignupGender(e) }
-                    />:null}
+                    {
+                        (signup_card)?
+                            <Signup 
+                                ErrorContainer= { signup_cred_error } 
+                                SignupCardHandler= { SignupCardHandler } 
+                                Register= { SignupCredentialSubmitHandler }
+                                ChangeRadio = { (e)=>ChangeSignupGender(e) }
+                            />
+                        :null
+                    
+                    }
 
-                    {(login_card)?
-                    <Login 
-                        ErrorContainer={ signin_cred_error } 
-                        LoginCardHandler={ LoginCardHandler } 
-                        Logger={ LoginCredentialSubmitHandler }
-                        forget_password={ (condition) => TriggerForgetPassword(condition) }
-                    />:null}
+                    {
+                        ( login_card )?
+                            <Login 
+                                ErrorContainer={ signin_cred_error } 
+                                LoginCardHandler={ LoginCardHandler } 
+                                Logger={ LoginCredentialSubmitHandler }
+                                forget_password={ (condition) => TriggerForgetPassword(condition) }
+                            />
+                        :null
+                    }
 
-                    {(forget_password_card)? 
-                    <ForgetPassword
-                        value= { forget_number } 
-                        set_value= { (e)=>ChangeForgetNumber(e) } 
-                        submit= { (e)=>FrogetPasswordSubmit(e) } 
-                        exit= { TriggerForgetPassword }
-                        error= { forget_cred_error } 
-                    />:null}
+                    {
+                        ( forget_password_card ) ? 
+                            <ForgetPassword
+                                value= { forget_number } 
+                                set_value= { (e)=>ChangeForgetNumber(e) } 
+                                submit= { (e)=>FrogetPasswordSubmit(e) } 
+                                exit= { TriggerForgetPassword }
+                                error= { forget_cred_error } 
+                            />:null
+
+                    }
+
+                    {
+                        ( new_password_popup ) ? 
+                            <PasswordChange
+                                password = { new_password_password }
+                                confirm = { new_password_confirm }
+                                ChangePasswordValue = { (e) => ChangeNewPassword(e) }
+                                ChangeConfirmValue = { (e) => ChangeNewPasswordConfirm(e) }
+                                SubmitChange = { (e) => SubmitNewPassword(e) }
+                                Cancel = { ()=> SetNewPasswordPopup(false) }
+                            />
+                        : null
+                    }
     
                 </LandingPageContext.Provider>
             )
