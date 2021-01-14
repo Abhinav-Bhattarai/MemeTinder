@@ -366,6 +366,7 @@ const MainPage = ({ authenticate, history, match }) => {
         AddToMatchesBackend(username, profile_image);
         SendSocketMatch(username);
         SendSocketNotification(username, profile_image);
+        AddNotificationBackend(username, profile_image);
     }
 
     const RejectMatchRequest = (username)=>{

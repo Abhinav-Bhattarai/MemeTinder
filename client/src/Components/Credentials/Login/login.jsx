@@ -16,7 +16,7 @@ const ExclamationIcon = ()=>{
     )
 }
 
-const Error = ({ error_msg })=>{
+export const Error = ({ error_msg })=>{
     return (
         <div className='error-message'>
             <ExclamationIcon/>
@@ -63,24 +63,24 @@ const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password}) => {
                         fontSize: '18px'
                     }}>Login to Continue</div>
                 </header>
-                <form onSubmit={Logger}>
+                <form onSubmit={ Logger }>
                     <main className='signup-input-container'>
                         <label>Username</label>
                         <div className='signup-input-rel'>
-                            <input type='username' spellCheck='false' autoFocus className='signup-input' onChange={Context.ChangeSigninUsername} value={Context.signin_username} ref={UsernameRef}/>
+                            <input type='username' spellCheck='false' autoFocus className='signup-input' onChange={ Context.ChangeSigninUsername } value={ Context.signin_username } ref={UsernameRef}/>
                         </div> 
                         {username_error}   
                         <label>Password</label>
                         <div className='signup-input-rel'>
-                            <input type='password' className='signup-input' onChange={Context.ChangeSigninPassword} value={Context.signin_password} ref={PasswordRef}/>
+                            <input type='password' className='signup-input' onChange={ Context.ChangeSigninPassword } value={ Context.signin_password } ref={PasswordRef}/>
                         </div>
                         {password_error}
                     </main>
                     <button className='signup-btn login-btn-form'>Login</button>
                 </form>
                 <div
-                 onClick={forget_password}
-                 style={{
+                 onClick = { forget_password.bind(this, false) }
+                 style = {{
                     display: 'block',
                     padding: '15px 3%',
                     textAlign: 'center',

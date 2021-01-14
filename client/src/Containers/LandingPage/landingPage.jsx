@@ -173,7 +173,7 @@ const LandingPage = ({ authenticate }) => {
     };
 
     const TriggerForgetPassword = (type)=>{
-        if(type !== true){
+        if(type === false && signin_username.length >= 4){
             // axios request to get pass-token;
             // triggering get request to receive the token and later comparing thenumber in the token for sort of OTP checking via Email;
             axios.get(`/forget/${signin_username}`).then((response)=>{
@@ -195,7 +195,7 @@ const LandingPage = ({ authenticate }) => {
     const FrogetPasswordSubmit = (event)=>{
         // this executes and checks the OTP verifications and access;
         event.preventDefault();
-        if(forget_number.length >= 4){
+        if(forget_number.length === 5){
             const context = {
                 token: localStorage.getItem('pass-token'),
                 number: forget_number
@@ -203,7 +203,7 @@ const LandingPage = ({ authenticate }) => {
             axios.post('/forget', context).then((response)=>{
                 const condition = {access: true} 
                 if(JSON.stringify(response.data) === JSON.stringify(condition)){
-    
+                    
                 }else{
                     SetForgetCredError('Wrong Number input');
                 }
@@ -233,11 +233,11 @@ const LandingPage = ({ authenticate }) => {
                 }
             }>
                 <Navbar 
-                    blur = { (login_card || signup_card) ? true : false }
+                    blur = { (login_card || signup_card || forget_password_card) ? true : false }
                     TriggerLogin={ SetLoginCard }
                 />
                 <main className='background-image-container' style={
-                    (login_card || signup_card) ? { height: '100%', filter: `blur(5px)` } : { height: '100%' }
+                    (login_card || signup_card || forget_password_card) ? { height: '100%', filter: `blur(5px)` } : { height: '100%' }
                 }>
 
                     <img
@@ -246,7 +246,7 @@ const LandingPage = ({ authenticate }) => {
                     />
 
                 </main>
-                <main className='landingpage-middle-flex' style={(login_card || signup_card) ? { filter: `blur(5px)` } : {  }}>
+                <main className='landingpage-middle-flex' style={(login_card || signup_card || forget_password_card) ? { filter: `blur(5px)` } : {  }}>
                     <Logo type='LandingPage'/>
                     <button id='middle-flex-btn' onClick={SignupCardHandler}>CREATE ACCOUNT</button>
                 </main>
@@ -282,7 +282,7 @@ const LandingPage = ({ authenticate }) => {
                         ErrorContainer={ signin_cred_error } 
                         LoginCardHandler={ LoginCardHandler } 
                         Logger={ LoginCredentialSubmitHandler }
-                        forget_password={ TriggerForgetPassword }
+                        forget_password={ (condition) => TriggerForgetPassword(condition) }
                     />:null}
 
                     {(forget_password_card)? 
