@@ -25,7 +25,7 @@ export const Error = ({ error_msg })=>{
     )
 } 
 
-const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password}) => {
+const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password, loader }) => {
 
     const Context = useContext(LandingPageContext);
     const UsernameRef = useRef(null);

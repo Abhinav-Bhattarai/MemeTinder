@@ -32,6 +32,9 @@ const LandingPage = ({ authenticate }) => {
     const [ new_password_password, SetNewPassword ] = useState( '' );
     const [ new_password_confirm, SetPasswordConfirm ] = useState( '' );
     const [ new_password_err, SetNewPasswordErr ] = useState( null );
+    const [ login_loader, SetLoginLoader ] = useState( false );
+    const [ signup_loader, SetSignupLoader ] = useState( false );
+    const [ password_change_loader, SetPasswordChangeLoader ] = useState( false );
 
     const SignupCardHandler = ()=>{
         SetSignupCard(!signup_card)
@@ -101,6 +104,7 @@ const LandingPage = ({ authenticate }) => {
                     Password: new_password_password,
                     Confirm: new_password_confirm
                 }
+                SetPasswordChangeLoader(true);
                 axios.put('/forget', context).then((response)=>{
                     const data = response.data;
                     const required_data = {password_changed: true};
@@ -108,6 +112,7 @@ const LandingPage = ({ authenticate }) => {
                         SetNewPasswordPopup(false);
                     }else{ 
                         // error's;
+                        SetPasswordChangeLoader(false);
                         SetNewPasswordErr('Cred');
                     }
                 });
@@ -119,7 +124,7 @@ const LandingPage = ({ authenticate }) => {
             if(new_password_password.length < 8){
                 SetNewPasswordErr('length');
             }
-            
+
             else if(new_password_confirm !== new_password_password){
                 SetNewPasswordErr('no match');
             }
@@ -138,6 +143,7 @@ const LandingPage = ({ authenticate }) => {
                     Username: signin_username,
                     Password: signin_password
                 }
+                SetLoginLoader(true);
                 axios.post('/login', context).then((response)=>{
                     const username_err = {error_type: 'Password', message: 'Password Do not match'};
 
@@ -149,6 +155,7 @@ const LandingPage = ({ authenticate }) => {
                         // error handling in the form bootstrap invalid one;
                         const dummy = [];
                         dummy.push({error_type: 'Invalid', message: 'Invalid Credentials'});
+                        SetLoginLoader(false);
                         SetSigninCredError(dummy);
                     }else{
                         // storing jwt token and other cred information;
@@ -171,7 +178,7 @@ const LandingPage = ({ authenticate }) => {
                 dummy.push({error_type: 'Password', message: 'Password must contain number and should be atleast 8 characters'})
             }
 
-            SetSigninCredError(dummy)
+            SetSigninCredError(dummy);
         }
     };
 
@@ -188,6 +195,7 @@ const LandingPage = ({ authenticate }) => {
                     Confirm: signup_confirm,
                     Gender: signup_gender
                 };
+                SetSignupLoader(true);
                 axios.post('/register', context).then((response)=>{
                     const error = {error_type: "Username", message: "Username Already exists"}
                     if(JSON.stringify(response.data) !== JSON.stringify(error)){
@@ -199,6 +207,7 @@ const LandingPage = ({ authenticate }) => {
                         authenticate(false);
                         // changing the parent class authentication state to true;
                     }else{
+                        SetSignupLoader(false);
                         SetSignupCredError([error])
                     }
                 })
@@ -238,10 +247,15 @@ const LandingPage = ({ authenticate }) => {
                     SetForgetCard(true);
                 }else{
                     // error about invalid username 
+                    const dummy = [];
+                    dummy.push({error_type: 'Username', message: 'Username not found'})
+                    SetSigninCredError(dummy);
                 }
             })
         }else{
-            SetForgetCard(false)
+            const dummy = [];
+            dummy.push({error_type: 'Username', message: 'Enter your username first'})
+            SetSigninCredError(dummy);
         }
     };
 
@@ -259,7 +273,7 @@ const LandingPage = ({ authenticate }) => {
                     SetForgetCard(false);
                     SetNewPasswordPopup(true);
                 }else{
-                    SetForgetCredError('Wrong OTP entered');
+                    SetForgetCredError('Wrong OTP entered, re-enter the OTP');
                 }
             })
         }else{
@@ -336,6 +350,7 @@ const LandingPage = ({ authenticate }) => {
                                 SignupCardHandler= { SignupCardHandler } 
                                 Register= { SignupCredentialSubmitHandler }
                                 ChangeRadio = { (e)=>ChangeSignupGender(e) }
+                                loader = { signup_loader }
                             />
                         :null
                     
@@ -348,6 +363,7 @@ const LandingPage = ({ authenticate }) => {
                                 LoginCardHandler={ LoginCardHandler } 
                                 Logger={ LoginCredentialSubmitHandler }
                                 forget_password={ (condition) => TriggerForgetPassword(condition) }
+                                loader = { login_loader }
                             />
                         :null
                     }
@@ -355,11 +371,11 @@ const LandingPage = ({ authenticate }) => {
                     {
                         ( forget_password_card ) ? 
                             <ForgetPassword
-                                value= { forget_number } 
-                                set_value= { (e)=>ChangeForgetNumber(e) } 
-                                submit= { (e)=>FrogetPasswordSubmit(e) } 
-                                exit= { TriggerForgetPassword }
-                                error= { forget_cred_error } 
+                                value = { forget_number } 
+                                set_value = { (e)=>ChangeForgetNumber(e) } 
+                                submit = { (e)=>FrogetPasswordSubmit(e) } 
+                                exit = { TriggerForgetPassword }
+                                error = { forget_cred_error } 
                             />:null
 
                     }
@@ -374,6 +390,7 @@ const LandingPage = ({ authenticate }) => {
                                 SubmitChange = { (e) => SubmitNewPassword(e) }
                                 Cancel = { ()=> SetNewPasswordPopup(false) }
                                 error = { new_password_err }
+                                loader = { password_change_loader }
                             />
                         : null
                     }

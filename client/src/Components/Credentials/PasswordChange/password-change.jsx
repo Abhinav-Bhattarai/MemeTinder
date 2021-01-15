@@ -3,7 +3,7 @@ import '../Signup/signup.scss';
 import { TimesIcon } from '../Signup/signup';
 import { Error } from '../Login/login';
 
-const PasswordChange = ({ SubmitChange, password, confirm, ChangePasswordValue, ChangeConfirmValue, Cancel, error }) => {
+const PasswordChange = ({ SubmitChange, password, confirm, ChangePasswordValue, ChangeConfirmValue, Cancel, error, loader }) => {
 
     const UsernameRef = useRef(null);
     const PasswordRef = useRef(null);

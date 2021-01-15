@@ -33,7 +33,7 @@ const Error = ({ error_msg })=>{
     )
 } 
 
-const Signup = ({SignupCardHandler, ErrorContainer, Register, ChangeRadio}) => {
+const Signup = ({ SignupCardHandler, ErrorContainer, Register, ChangeRadio, loader }) => {
 
     const Context = useContext(LandingPageContext);
     const UsernameRef = useRef(null);

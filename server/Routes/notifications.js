@@ -27,6 +27,8 @@ router.put('/', (req, res)=>{
         }else{
             return res.json({ no_username: true });
         }
+    }).catch(()=>{
+        return res.json({error: true});
     })
 })
 

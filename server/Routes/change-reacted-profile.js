@@ -13,6 +13,8 @@ router.put('/', (req, res)=>{
         response.save().then(()=>{
             return res.json({reacted: true});
         })
+    }).catch(()=>{
+        return res.json({error: true});
     })
 });
 

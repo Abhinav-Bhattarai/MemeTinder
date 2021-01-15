@@ -90,6 +90,8 @@ router.put('/', (req, res)=>{
                 })
             }
         }
+    }).catch(()=>{
+        return res.json({error: true});
     })
 })
 

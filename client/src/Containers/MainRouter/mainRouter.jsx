@@ -56,19 +56,24 @@ function MainRouter({ history }){
                 CheckJWT(token)
             }
         }
-    }, []);
+    }, [ authentication_status ]);
 
     useEffect(()=>{
         fetch_jsx();
     }, [ fetch_jsx ]);
 
-    // useEffect(()=>{
-    //     if(authentication_status === true){
-    //         if(!localStorage.getItem('Username') || !localStorage.getItem('auth-token')|| !localStorage('auth-status')){
-    //             ChangeAuthentication(true);
-    //         }
-    //     }
-    // });
+
+    useEffect(()=>{
+        if(authentication_status === true){
+            const localStorageList = JSON.parse(localStorage);
+            const Lengthcount = Object.keys(localStorageList);
+            if(Lengthcount.length <= 5){
+                localStorage.clear();
+                localStorage.setItem('auth-status', false);
+                SetAuthenticationStatus(false);
+            }
+        }
+    })
 
     return (
         <Fragment>

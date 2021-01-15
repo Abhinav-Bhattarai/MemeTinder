@@ -107,9 +107,11 @@ const MainPage = ({ authenticate, history, match }) => {
                 return element === sender;
             })
             nav_notification_list.splice(index, 1);
+
             if(nav_notification_list.length === 0){
                 SetNavNotification( null );
             }
+
             SetPeopleList(dummy);
             SetNavNotification( nav_notification_list );
         }
@@ -127,7 +129,7 @@ const MainPage = ({ authenticate, history, match }) => {
             const MessageInfo = { Username: username, Profile: dummy[user_index].Profile_Picture };
             SetMessageInfo(MessageInfo);
             SetRecentMessages(MessageData);
-            SetJoinedRoom( username );
+            SetJoinedRoom(username);
             if(nav_notification){
                 DeleteNotification(username);
             }
@@ -153,7 +155,6 @@ const MainPage = ({ authenticate, history, match }) => {
             Sender: localStorage.getItem('Username'),
             Receiver: receiver
         }
-
         axios.put('/message', context);
     }
 
@@ -216,13 +217,18 @@ const MainPage = ({ authenticate, history, match }) => {
     }
 
     const LeftClickHandler = ()=>{
-        // handles rejection;
+        // handles left swipe;
         const dummy = [...post_list];
         const FriendName = dummy[0].Username;
+        if(api_limiter === false && current_index === milestone){
+            FetchNewPost();
+        }else{
+            SetCurrentIndex(current_index + 1);
+        }
         dummy.splice(0, 1);
-        SetPostList( dummy );
-        SetCurrentIndex(current_index + 1);
+        SetPostList(dummy);
         SetReactionBackend(FriendName);
+
     };
 
     const CenterClickHandler = ()=>{ 
@@ -408,7 +414,7 @@ const MainPage = ({ authenticate, history, match }) => {
 
     const FetchNotifications = ()=>{
         axios.get(`/add-notification/${localStorage.getItem('Username')}`).then((response)=>{
-            SetNotificationList(response.data)
+            SetNotificationList(response.data);
         });
     }
 
@@ -706,8 +712,6 @@ const MainPage = ({ authenticate, history, match }) => {
         }
     }
 
-    console.log(notification_list_jsx);
-    console.log(request_list_jsx)
 
 
     let post_area_jsx = null;

@@ -8,6 +8,8 @@ router.get('/:Username', (req, res)=>{
     RegistrationModel.findOne({ Username: Username }).exec().then((response)=>{
         const ProfilePicture = response.ProfilePicture;
         return res.json(ProfilePicture);
+    }).catch(()=>{
+        return res.json({error: true});
     })
 })
 

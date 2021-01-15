@@ -33,6 +33,8 @@ router.put('/', (req, res)=>{
         }else{
             return res.json({ request_redundant: true });
         }
+    }).catch(()=>{
+        return res.json({error: true});
     })
 
 })
@@ -49,6 +51,8 @@ router.post('/', (req, res)=>{
         profile.save().then(()=>{
             return res.json({request_deleted: true});
         })
+    }).catch(()=>{
+        return res.json({error: true});
     })
 })
 

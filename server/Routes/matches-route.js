@@ -16,6 +16,8 @@ router.get('/:Username', (req, res)=>{
         }else{
             return res.json({error_type: 'Username', message: 'Wrong Username'});
         }
+    }).catch(()=>{
+        return res.json({error: true});
     })
 });
 
@@ -42,6 +44,8 @@ router.post('/', (req, res)=>{
         }else{
             return res.json({not_added_to_matches: true});
         }
+    }).catch(()=>{
+        return res.json({error: true});
     })
 });
 

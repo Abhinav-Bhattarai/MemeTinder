@@ -18,6 +18,8 @@ router.post('/:Username', (req, res)=>{
             }else{
                 return res.json({invalid_pictures: true})
             }
+        }else{
+            return res.json({error: true});
         }
     })
 })

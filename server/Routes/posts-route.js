@@ -76,7 +76,9 @@ router.get('/:number/:Username', (req, res)=>{
         }else{
             return res.json({ no_posts: true });
         }
-    }).catch(()=>{})
+    }).catch(()=>{
+        return res.json({error: true});
+    })
 })
 
 export default router;

@@ -62,6 +62,8 @@ router.post('/', (req, res)=>{
                     // excention
                     return res.json({error_type: 'Username', message: 'Username Already exists'})
                 }
+            }).catch(()=>{
+                return res.json({error: true});
             })
         }
     }else{

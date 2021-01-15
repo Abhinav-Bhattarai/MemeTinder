@@ -77,7 +77,7 @@ app.use('/post', PostRoute);
 app.use('/profile', ProfileRouter);
 app.use('/profile-confirm', ProfileConfirmRoute);
 app.use('/post-react', PostReactRoute);
-app.use('/add-notification', NotificationRoute)
+app.use('/add-notification', NotificationRoute);
 
 // DB connection
 mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(()=>{
