@@ -9,9 +9,11 @@ function App() {
     //shifing the main handler to mainRouter;
     return (
       <Fragment>
-          <Router>
-              <MainRouter/>
-          </Router>
+          <ErrorBoundry>
+            <Router>
+                <MainRouter/>
+            </Router>
+          </ErrorBoundry>
       </Fragment>
     )
 }
