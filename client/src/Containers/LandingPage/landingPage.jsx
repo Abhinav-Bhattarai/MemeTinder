@@ -159,7 +159,6 @@ const LandingPage = ({ authenticate }) => {
                         SetSigninCredError(dummy);
                     }else{
                         // storing jwt token and other cred information;
-                        localStorage.setItem('user-data', JSON.stringify(response.data.data));
                         localStorage.setItem('auth-token', response.data.token);
                         localStorage.setItem('auth-status', true);
                         localStorage.setItem('Username', response.data.data.Username);
@@ -200,7 +199,6 @@ const LandingPage = ({ authenticate }) => {
                     const error = {error_type: "Username", message: "Username Already exists"}
                     if(JSON.stringify(response.data) !== JSON.stringify(error)){
                         // storing jwt token, auth-status cred information;
-                        localStorage.setItem('user-data', JSON.stringify(response.data.data));
                         localStorage.setItem('auth-token', response.data.token);
                         localStorage.setItem('auth-status', true);
                         localStorage.setItem('Username', response.data.data.Username);

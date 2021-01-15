@@ -32,7 +32,7 @@ const AsyncMessageRoute = React.lazy(()=>{
     return import('../../Components/Messages/messages');
 })
 
-const MainPage = ({ authenticate, history, match }) => {
+const MainPage = ({ authenticate, history }) => {
 
     const [ people_list, SetPeopleList ] = useState( null );
     const [ requests, SetRequests ] = useState( null );
@@ -56,6 +56,7 @@ const MainPage = ({ authenticate, history, match }) => {
     const [ nav_notification, SetNavNotification ] = useState( null );
     const [ direct_url_access, SetDirectURLAccess ] = useState( false );
     const [ notification_list, SetNotificationList ] = useState( null );
+    const [ notification_alert, SetNotificationAlert ] = useState( false );
 
     const TriggerDropdown = ()=>{
         SetDropdownInfo(!dropdown_info);
@@ -82,6 +83,7 @@ const MainPage = ({ authenticate, history, match }) => {
         ref.style.transition = '0.3s';
         ref.style.transform = "translateX(160%)";
         SetRequestBarValue(1);
+        SetNotificationAlert(false);
     }
  
     const TriggerRequestNav = (ref)=>{
@@ -393,6 +395,9 @@ const MainPage = ({ authenticate, history, match }) => {
             SetNotificationList(dummy);
         }else{
             SetNotificationList([{sender, profile}]);
+        }
+        if(current_request_bar_value === 0){
+            SetNotificationAlert(true);
         }
     }
 
@@ -875,6 +880,7 @@ const MainPage = ({ authenticate, history, match }) => {
                 <RequestNav
                     TriggerNotificationNav={ (ref)=> TriggerNotificationNav(ref) }
                     TriggerRequestNav= { (ref)=>TriggerRequestNav(ref) }
+                    NavNotification = { notification_alert }
                 />
                 { ( !request_list_jsx && current_request_bar_value === 0 ) ? <LoadSpinner/> : request_list_jsx }
 

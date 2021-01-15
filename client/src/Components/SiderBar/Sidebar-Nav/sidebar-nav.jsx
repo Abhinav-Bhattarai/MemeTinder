@@ -3,7 +3,7 @@ import './sidebar-nav.scss';
 import { IconContext } from 'react-icons';
 import { FaDotCircle } from 'react-icons/fa';
 
-const NotifyIcon = ()=>{
+export const NotifyIcon = ()=>{
     return (
         <IconContext.Provider value={{ className: 'notify-icon-2' }}>
             <FaDotCircle/>

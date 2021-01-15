@@ -20,7 +20,7 @@ router.post('/:username', (req, res)=>{
         subject: 'WEBSITE CRASH',
         html: `<h1 style="margin: 10px auto; text-align: center;">CRASH</h1><div style="padding: 10px 2%; margin: 10px auto; font-size: 16px">${req.body.error}</div><a href="https://localhost:3000" style="width: 95%; display:block; margin:10px auto; padding:18px 4%; background-color: #ff374e; color:#fff; font-size:20px; border: none;  border-radius: 10px; margin-top:30px; text-align: center;">Look into Crash</a><div>Reported by: ${req.params.username}</div>`
 
-    }, (err, info)=>{})
+    }, ()=>{})
 
     return res.json({crash_reported: true});
 })
