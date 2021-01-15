@@ -283,7 +283,11 @@ const MainPage = ({ authenticate, history, match }) => {
         authenticate(true);
     };
 
-    const NotifyInPeoplaCard = (sender)=>{
+    const AddMessagePopupAudio = ()=>{
+        // add audio effect for new message;
+    }
+
+    const NotifyInPeopleCard = (sender)=>{
         if(joined_room !== sender){
             const dummy = [...people_list];
             const findSender = dummy.findIndex((element)=>{
@@ -301,6 +305,7 @@ const MainPage = ({ authenticate, history, match }) => {
                     SetNavNotification([sender]);
                 }   
             }
+            AddMessagePopupAudio();
         }
     }
 
@@ -381,7 +386,7 @@ const MainPage = ({ authenticate, history, match }) => {
             dummy.push({sender, profile});
             SetNotificationList(dummy);
         }else{
-            SetNotificationList({sender, profile});
+            SetNotificationList([{sender, profile}]);
         }
     }
 
@@ -399,6 +404,12 @@ const MainPage = ({ authenticate, history, match }) => {
                 SetPeopleList([]);
             }
         })
+    }
+
+    const FetchNotifications = ()=>{
+        axios.get(`/add-notification/${localStorage.getItem('Username')}`).then((response)=>{
+            SetNotificationList(response.data)
+        });
     }
 
     const FetchFriendrequest = ()=>{
@@ -456,6 +467,9 @@ const MainPage = ({ authenticate, history, match }) => {
 
         // this fetches my profile picture;
         GetProfilePic();
+
+        // fetch notifications;
+        FetchNotifications();
         
         // join my_sockek_room
         JoinSocketRoom();
@@ -578,7 +592,7 @@ const MainPage = ({ authenticate, history, match }) => {
             socket.on('receive-message-client', (sender, message)=>{
                 // Message Socket Receiver;
                 AddMessage(sender, message, false);
-                NotifyInPeoplaCard(sender);
+                NotifyInPeopleCard(sender);
             })
 
             socket.on('notification-client', ( from, profile_pic )=>{
@@ -644,47 +658,56 @@ const MainPage = ({ authenticate, history, match }) => {
     }
 
     let request_list_jsx = null;
-    if(requests){
+    if(requests && current_request_bar_value === 0){
         if( requests.length === 0 ){
             // use Default page
             request_list_jsx = <Nodata/>;
         }else{
             const request_list = [...requests];
-            if(current_request_bar_value === 0){
-                request_list_jsx = (
-                    <RequestListContainer>
-                        { 
-                            request_list.map((request, i)=>{
-                                return (
-                                    <RequestCard
-                                        key={i}
-                                        sender={ request.sender }
-                                        profile_picture= { request.ProfilePicture }
-                                        AcceptRequest={ (e, profile_image, username)=> AcceptMatchRequest(e, profile_image, username) }
-                                        DeclineRequest={ (e, username)=> RejectMatchRequest(e, username) }
-                                    />
-                                )
-                            })
-                        }
-                    </RequestListContainer>
-                );
-            }else{
-                request_list_jsx = (
-                    <RequestListContainer>
-                        {
-                            notification_list.map((notification, i)=>{
-                                return <NotificationCard 
-                                            key = { i }
-                                            username = { notification.sender }
-                                            profile_picture = { notification.profile }
-                                        />
-                            })
-                        }
-                    </RequestListContainer>
-                );
-            }
+            request_list_jsx = (
+                <RequestListContainer>
+                    { 
+                        request_list.map((request, i)=>{
+                            return (
+                                <RequestCard
+                                    key={i}
+                                    sender={ request.sender }
+                                    profile_picture= { request.ProfilePicture }
+                                    AcceptRequest={ (e, profile_image, username)=> AcceptMatchRequest(e, profile_image, username) }
+                                    DeclineRequest={ (e, username)=> RejectMatchRequest(e, username) }
+                                />
+                            )
+                        })
+                    }
+                </RequestListContainer>
+            );
         }
     }
+
+    let notification_list_jsx = null
+    if(notification_list && current_request_bar_value === 1){
+        if(notification_list.length === 0){
+            notification_list_jsx = <Nodata/>;
+        }else{
+            const notification_dummy = [...notification_list]
+            notification_list_jsx = (
+                <RequestListContainer>
+                    {
+                        notification_dummy.map((notification, i)=>{
+                            return <NotificationCard 
+                                        key = { i }
+                                        sender = { notification.sender }
+                                        profile = { notification.ProfilePicture }
+                                    />
+                        })
+                    }
+                </RequestListContainer>
+            );
+        }
+    }
+
+    console.log(notification_list_jsx);
+    console.log(request_list_jsx)
 
 
     let post_area_jsx = null;
@@ -849,7 +872,9 @@ const MainPage = ({ authenticate, history, match }) => {
                     TriggerNotificationNav={ (ref)=> TriggerNotificationNav(ref) }
                     TriggerRequestNav= { (ref)=>TriggerRequestNav(ref) }
                 />
-                { ( !request_list_jsx ) ? <LoadSpinner/> : request_list_jsx }
+                { ( !request_list_jsx && current_request_bar_value === 0 ) ? <LoadSpinner/> : request_list_jsx }
+
+                { ( notification_list_jsx && current_request_bar_value === 1 ) ? notification_list_jsx : null }
             </RequestBar>
 
             { ( profile_alert ) ? <ImageConfig RemoveProfileCard={ TriggerProfileAlert }/> : null }

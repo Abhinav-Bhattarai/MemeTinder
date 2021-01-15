@@ -31,6 +31,7 @@ const LandingPage = ({ authenticate }) => {
     const [ new_password_popup, SetNewPasswordPopup ] = useState( false );
     const [ new_password_password, SetNewPassword ] = useState( '' );
     const [ new_password_confirm, SetPasswordConfirm ] = useState( '' );
+    const [ new_password_err, SetNewPasswordErr ] = useState( null );
 
     const SignupCardHandler = ()=>{
         SetSignupCard(!signup_card)
@@ -107,8 +108,20 @@ const LandingPage = ({ authenticate }) => {
                         SetNewPasswordPopup(false);
                     }else{ 
                         // error's;
+                        SetNewPasswordErr('Cred');
                     }
                 });
+            }else{
+                SetNewPasswordErr('Number');
+            }
+        }else{
+
+            if(new_password_password.length < 8){
+                SetNewPasswordErr('length');
+            }
+            
+            else if(new_password_confirm !== new_password_password){
+                SetNewPasswordErr('no match');
             }
         }
     }
@@ -246,9 +259,11 @@ const LandingPage = ({ authenticate }) => {
                     SetForgetCard(false);
                     SetNewPasswordPopup(true);
                 }else{
-                    SetForgetCredError('Wrong Number input');
+                    SetForgetCredError('Wrong OTP entered');
                 }
             })
+        }else{
+            SetForgetCredError('The OTP length should be 5 characters');
         }
     };
 
@@ -358,6 +373,7 @@ const LandingPage = ({ authenticate }) => {
                                 ChangeConfirmValue = { (e) => ChangeNewPasswordConfirm(e) }
                                 SubmitChange = { (e) => SubmitNewPassword(e) }
                                 Cancel = { ()=> SetNewPasswordPopup(false) }
+                                error = { new_password_err }
                             />
                         : null
                     }
