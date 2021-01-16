@@ -1,15 +1,23 @@
 import express from 'express';
+import redis from 'redis';
+import RequestCache from '../Middleware/redis-request-cache.js';
 import RegisterModel from '../Models/register-model.js';
 
 const router = express.Router();
+const cache = redis.createClient();
 
-router.get('/:username', (req, res)=>{
-    const Username = req.params.username;
+router.get('/:Username', RequestCache, (req, res)=>{
+    const Username = req.params.Username;
     RegisterModel.find().where("Username").equals(Username).then((response)=>{
         if(response.length === 1){
-            return res.json({data: response[0].Requests});
+            cache.set(`friend-req/${Username}`, JSON.stringify(response[0].Requests), 'EX', 60*60, ()=>{
+                  return res.json({data: response[0].Requests});
+            })
+            
         }else{
-            return res.json({no_requests: true})
+            cache.set(`friend-req/${Username}`, JSON.stringify(response[0].Requests), 'EX', 60*60, ()=>{
+                return res.json({no_requests: true});
+            })
         }
     })
 })
@@ -28,7 +36,9 @@ router.put('/', (req, res)=>{
             receiver_data.push({sender: YourName, ProfilePicture:  YourProfile});
             receiver.Requests = receiver_data;
             receiver.save().then(()=>{
-                return res.json({ request_sent: true });
+                cache.set(`friend-req/${FriendName}`, JSON.stringify(receiver_data), 'EX', 60*60, ()=>{
+                    return res.json({ request_sent: true });
+                })
             })
         }else{
             return res.json({ request_redundant: true });
