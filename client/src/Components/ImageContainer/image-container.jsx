@@ -7,7 +7,7 @@ const ImageContainer = ({ ProfilePicture, Username, MainPost }) => {
             <main className='post-img-container'>
                 <img src={ ProfilePicture } draggable='false' alt='post' className='Mainpost'/>
                 <div className='post-desc'>
-                    <img src={ MainPost } draggable='false' alt='profilepic'/>
+                    <img src={ MainPost } draggable='false' alt='profilepic' height='65px' width='65px'/>
                     <div className='post-desc-name' style={{color: '#fff'}}>{ Username }</div>
                 </div>
             </main>

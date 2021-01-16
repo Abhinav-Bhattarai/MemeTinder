@@ -31,7 +31,7 @@ function MainRouter({ history }){
     }
 
     const CheckJWT = (token)=>{
-        axios.post('/check', { token }).then((response)=>{
+        axios.post('http://localhost:8000/check', { token }).then((response)=>{
             const data = response.data;
             const error = {access_denied: true}
             if(JSON.stringify(data) !== JSON.stringify(error)){

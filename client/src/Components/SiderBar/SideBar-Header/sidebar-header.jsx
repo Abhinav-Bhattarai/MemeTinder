@@ -27,10 +27,12 @@ const SidebarHeader = ({ profile_picture, TriggerDropdown, children }) => {
                 {
                     (profile_picture) ? 
                         <img 
-                            draggable='false'
-                            src={ profile_picture } 
-                            alt=' profile '
-                            onClick={ TriggerDropdown }
+                            draggable = 'false'
+                            src = { profile_picture } 
+                            alt = ' profile '
+                            onClick = { TriggerDropdown }
+                            height = '35px'
+                            width = '35px'
                         /> : 
                         <div className='temp-img'></div>
                 }

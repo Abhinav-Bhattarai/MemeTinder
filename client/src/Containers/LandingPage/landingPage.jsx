@@ -106,7 +106,7 @@ const LandingPage = ({ authenticate }) => {
                     Confirm: new_password_confirm
                 }
                 SetPasswordChangeLoader(true);
-                axios.put('/forget', context).then((response)=>{
+                axios.put('http://localhost:8000/forget', context).then((response)=>{
                     const data = response.data;
                     const required_data = {password_changed: true};
                     if(JSON.stringify(data) === JSON.stringify(required_data)){
@@ -145,7 +145,7 @@ const LandingPage = ({ authenticate }) => {
                     Password: signin_password
                 }
                 SetLoginLoader(true);
-                axios.post('/login', context).then((response)=>{
+                axios.post(`http://localhost:8000/login`, context).then((response)=>{
                     const username_err = {error_type: 'Password', message: 'Password Do not match'};
 
                     const password_err = {error_type: 'Username', message: 'No such Username registered'};
@@ -196,7 +196,7 @@ const LandingPage = ({ authenticate }) => {
                     Gender: signup_gender
                 };
                 SetSignupLoader(true);
-                axios.post('/register', context).then((response)=>{
+                axios.post('http://localhost:8000/register', context).then((response)=>{
                     const error = {error_type: "Username", message: "Username Already exists"}
                     if(JSON.stringify(response.data) !== JSON.stringify(error)){
                         // storing jwt token, auth-status cred information;
@@ -237,7 +237,7 @@ const LandingPage = ({ authenticate }) => {
         if(type === false && signin_username.length >= 4){
             // axios request to get pass-token;
             // triggering get request to receive the token and later comparing thenumber in the token for sort of OTP checking via Email;
-            axios.get(`/forget/${signin_username}`).then((response)=>{
+            axios.get(`http://localhost:8000/forget/${signin_username}`).then((response)=>{
                 const data = response.data;
                 const error = {error_type: 'Username', error: 'Username not found'}
                 if(JSON.stringify(data) !== JSON.stringify(error)){
@@ -266,7 +266,7 @@ const LandingPage = ({ authenticate }) => {
                 token: localStorage.getItem('pass-token'),
                 number: forget_number
             };
-            axios.post('/forget', context).then((response)=>{
+            axios.post('http://localhost:8000/forget', context).then((response)=>{
                 const condition = {access: true} 
                 if(JSON.stringify(response.data) === JSON.stringify(condition)){
                     SetForgetCard(false);

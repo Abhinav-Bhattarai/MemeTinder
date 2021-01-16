@@ -19,12 +19,13 @@ const RequestCard = ({ sender, profile_picture, AcceptRequest, DeclineRequest })
 
                 <header>
                     <img 
-                        src={ profile_picture }
-                        draggable='false'
-                        alt='default-req-card'
+                        src = { profile_picture }
+                        draggable = 'false'
+                        alt = 'default-req-card'
+                        width = '55px'
+                        height = '55px'
                         onMouseOver = { ()=> SetMoreDescPopup( true ) }
                         onMouseLeave = { ()=> SetMoreDescPopup( false ) }
-
                     />
                     <main className='request-card-desc'>
                         <div className='request-card-desc-name'>{ sender }</div>

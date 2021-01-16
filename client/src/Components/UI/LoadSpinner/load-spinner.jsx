@@ -4,7 +4,7 @@ import './load-spinner.scss';
 const LoadSpinner = () => {
     return (
         <Fragment>
-            <div className="loader">Loading...</div>
+            <div className="load">Loading...</div>
         </Fragment>
     )
 }

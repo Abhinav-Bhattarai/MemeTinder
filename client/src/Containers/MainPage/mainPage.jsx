@@ -26,6 +26,7 @@ import ImageConfig from '../../Components/Credentials/ImageConfig/image-config';
 import HomeContainer from '../../Components/HomeContainer/home-container';
 import Logout from '../../Components/Credentials/Logout/logout';
 import NotificationCard from '../../Components/NotificationCard/notification-card';
+// import NotificationAudio from '../../assets/notification.mp3';
 
 
 const AsyncMessageRoute = React.lazy(()=>{
@@ -157,7 +158,7 @@ const MainPage = ({ authenticate, history }) => {
             Sender: localStorage.getItem('Username'),
             Receiver: receiver
         }
-        axios.put('/message', context);
+        axios.put('http://localhost:8000/message', context);
     }
 
     const SendMessageHandler = (Match_name)=>{
@@ -180,13 +181,13 @@ const MainPage = ({ authenticate, history }) => {
             YourProfile: my_profile_pic,
             FriendName: friend_name,
         };
-        axios.put('/friend-requests', context);
+        axios.put('http://localhost:8000/friend-requests', context);
     };
 
     const FetchNewPost = ()=>{
 
         // Fetch new posts after reaching half value for the total post_array;
-        axios.get(`/post/${current_post_api_call + 1}/${localStorage.getItem('Username')}`).then((response)=>{
+        axios.get(`http://localhost:8000/post/${current_post_api_call + 1}/${localStorage.getItem('Username')}`).then((response)=>{
             const no_post = { no_posts: true }
             if(JSON.stringify(no_post) !== JSON.stringify(response.data)){
                 if(response.data.length >= 1){
@@ -215,7 +216,7 @@ const MainPage = ({ authenticate, history }) => {
             ReactedPersonName: FriendName
         } 
 
-        axios.put('/post-react', context);
+        axios.put('http://localhost:8000/post-react', context);
     }
 
     const LeftClickHandler = ()=>{
@@ -339,7 +340,7 @@ const MainPage = ({ authenticate, history }) => {
         const context = {
             MyName: localStorage.getItem('Username')
         }
-        axios.post('/friend-requests', context);
+        axios.post('http://localhost:8000/friend-requests', context);
     };
 
     const AddToMatchesBackend = (match_username, match_image)=>{
@@ -350,7 +351,7 @@ const MainPage = ({ authenticate, history }) => {
             YourProfilePic: my_profile_pic
         }
 
-        axios.post('/matches', context);
+        axios.post('http://localhost:8000/matches', context);
     }
 
     const SendSocketMatch = (username)=>{
@@ -368,7 +369,7 @@ const MainPage = ({ authenticate, history }) => {
             Username: username,
             ProfilePicture: profile
         }
-        axios.put('/add-notification', context);
+        axios.put('http://localhost:8000/add-notification', context);
     }
 
     const AcceptMatchRequest = (e, profile_image, username)=>{
@@ -402,7 +403,7 @@ const MainPage = ({ authenticate, history }) => {
     }
 
     const FetchMatches = ()=>{
-        axios.get(`/matches/${localStorage.getItem('Username')}`).then((response)=>{
+        axios.get(`http://localhost:8000/matches/${localStorage.getItem('Username')}`).then((response)=>{
             const error = {error_type: 'Username', message: 'Wrong Username'};
             const no_res = {no_matches: true};
             if(JSON.stringify(response.data) !== JSON.stringify(error)){
@@ -418,22 +419,22 @@ const MainPage = ({ authenticate, history }) => {
     }
 
     const FetchNotifications = ()=>{
-        axios.get(`/add-notification/${localStorage.getItem('Username')}`).then((response)=>{
+        axios.get(`http://localhost:8000/add-notification/${localStorage.getItem('Username')}`).then((response)=>{
             SetNotificationList(response.data);
         });
     }
 
     const FetchFriendrequest = ()=>{
-        axios.get(`/friend-requests/${ localStorage.getItem('Username') }`).then((response)=>{
+        axios.get(`http://localhost:8000/friend-requests/${ localStorage.getItem('Username') }`).then((response)=>{
             const error = {no_requests: true}
             if(JSON.stringify(response.data) !== JSON.stringify(error)){
-                SetRequests(response.data.data);
+                SetRequests(response.data);
             }
         })
     }
 
     const GetProfilePic = ()=>{
-        axios.get(`/profile/${localStorage.getItem('Username')}`).then((response)=>{
+        axios.get(`http://localhost:8000/profile/${localStorage.getItem('Username')}`).then((response)=>{
             if(response.data.length >= 1){
                 SetMyProfilePic(response.data);
             }else{
@@ -444,7 +445,7 @@ const MainPage = ({ authenticate, history }) => {
     };
     
     const FetchPosts = ()=>{
-        axios.get(`/post/0/${localStorage.getItem('Username')}`).then((response)=>{
+        axios.get(`http://localhost:8000/post/0/${localStorage.getItem('Username')}`).then((response)=>{
             const no_post = { no_posts: true }
             if(JSON.stringify(no_post) !== JSON.stringify(response.data)){
                 if(response.data.length >= 1){
@@ -460,7 +461,7 @@ const MainPage = ({ authenticate, history }) => {
     }
 
     const JoinSocketRoom = ()=>{
-        const io = socket_client.connect(process.env.PROXY);
+        const io = socket_client.connect("http://localhost:8000");
         io.emit('join-room', localStorage.getItem('Username'));
         SetSocket(io);
     }
@@ -615,7 +616,6 @@ const MainPage = ({ authenticate, history }) => {
             }
         }
     });
-
 
     let people_list_jsx = null;
     if(people_list){

@@ -23,7 +23,7 @@ const PeopleListCard = ({ profile_picture, username, lastupdate, click, notifica
             <main className='people-list-card-container' onClick={ ( click ) ? click.bind(this, username) : null }>
                 { (notification) ? <NotifyIcon/> : null }
                 { (recent) ? <NewIcon/> : null }
-                <img src={ profile_picture } draggable='false' alt='profile-pic'/>
+                <img src={ profile_picture } draggable='false' alt='profile-pic' width='55px' height='55px'/>
                 <div className='people-list-card-container-desc-area'>
                     <header>{ username }</header>
                     <footer>Matched_Date: { lastupdate }</footer>

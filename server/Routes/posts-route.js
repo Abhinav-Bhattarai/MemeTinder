@@ -70,16 +70,16 @@ router.get('/:number/:Username', RedisPostCache, (req, res)=>{
                             }
                         } 
                     }
-                    cache.set(`posts/${Username}`, JSON.stringify(main_data), 'EX', 60*60, ()=>{
+                    cache.set(`posts/${Username}`, JSON.stringify(main_data), ()=>{
                         return res.json(dummy_list);
                     })   
                 }else{
-                    cache.set(`posts/${Username}`, JSON.stringify(main_data), 'EX', 60*60, ()=>{
+                    cache.set(`posts/${Username}`, JSON.stringify(main_data), ()=>{
                         return res.json(main_data);
                     })
                 }
             }else{
-                cache.set(`posts/${Username}`, JSON.stringify(main_data), 'EX', 60*60, ()=>{
+                cache.set(`posts/${Username}`, JSON.stringify(main_data), ()=>{
                     return res.json(main_data);
                 })
             }

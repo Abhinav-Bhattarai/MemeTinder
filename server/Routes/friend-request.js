@@ -10,12 +10,12 @@ router.get('/:Username', RequestCache, (req, res)=>{
     const Username = req.params.Username;
     RegisterModel.find().where("Username").equals(Username).then((response)=>{
         if(response.length === 1){
-            cache.set(`friend-req/${Username}`, JSON.stringify(response[0].Requests), 'EX', 60*60, ()=>{
-                  return res.json({data: response[0].Requests});
+            cache.set(`friend-req/${Username}`, JSON.stringify(response[0].Requests), ()=>{
+                  return res.json(response[0].Requests);
             })
             
         }else{
-            cache.set(`friend-req/${Username}`, JSON.stringify(response[0].Requests), 'EX', 60*60, ()=>{
+            cache.set(`friend-req/${Username}`, JSON.stringify(response[0].Requests), ()=>{
                 return res.json({no_requests: true});
             })
         }
@@ -36,7 +36,7 @@ router.put('/', (req, res)=>{
             receiver_data.push({sender: YourName, ProfilePicture:  YourProfile});
             receiver.Requests = receiver_data;
             receiver.save().then(()=>{
-                cache.set(`friend-req/${FriendName}`, JSON.stringify(receiver_data), 'EX', 60*60, ()=>{
+                cache.set(`friend-req/${FriendName}`, JSON.stringify(receiver_data), ()=>{
                     return res.json({ request_sent: true });
                 })
             })
