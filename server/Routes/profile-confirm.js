@@ -1,5 +1,7 @@
 import express from 'express';
 import RegistrationModel from '../Models/register-model.js';
+import redis from 'redis';
+const cache = redis.createClient();
 
 const router = express.Router();
 
@@ -13,7 +15,9 @@ router.post('/:Username', (req, res)=>{
                 response.ProfilePicture = ProfilePicture;
                 response.MainPost = MainPost;
                 response.save().then(()=>{
-                    return res.json({profile_added: true});
+                    cache.set(`profile-pic/${Username}`, ProfilePicture, ()=>{
+                        return res.json({profile_added: true});
+                    })
                 })
             }else{
                 return res.json({invalid_pictures: true})

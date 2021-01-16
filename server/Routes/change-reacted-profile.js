@@ -1,5 +1,7 @@
 import express from 'express';
 import RegistrationModel from '../Models/register-model.js';
+import redis from 'redis';
+const cache = redis.createClient();
 
 const router = express.Router();
 
@@ -11,6 +13,7 @@ router.put('/', (req, res)=>{
         dummy.push(ReactedPersonName);
         response.ReactedProfiles = dummy.sort();
         response.save().then(()=>{
+            cache.del('posts');
             return res.json({reacted: true});
         })
     }).catch(()=>{

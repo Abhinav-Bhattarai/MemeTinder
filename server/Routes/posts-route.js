@@ -1,9 +1,13 @@
 import express from 'express';
+import RedisPostCache from '../Middleware/redis-post-cache.js';
 import RegistrationModel from '../Models/register-model.js';
+import redis from 'redis';
+
+const cache = redis.createClient();
 
 const router = express.Router();
 
-router.get('/:number/:Username', (req, res)=>{
+router.get('/:number/:Username', RedisPostCache, (req, res)=>{
     const number = parseInt(req.params.number);
     const Username = req.params.Username;
     
@@ -66,12 +70,18 @@ router.get('/:number/:Username', (req, res)=>{
                             }
                         } 
                     }
-                    return res.json(dummy_list);
+                    cache.set(`posts/${Username}`, JSON.stringify(main_data), 'EX', 60*60, ()=>{
+                        return res.json(dummy_list);
+                    })   
                 }else{
-                    return res.json(main_data);
+                    cache.set(`posts/${Username}`, JSON.stringify(main_data), 'EX', 60*60, ()=>{
+                        return res.json(main_data);
+                    })
                 }
             }else{
-                return res.json(main_data);
+                cache.set(`posts/${Username}`, JSON.stringify(main_data), 'EX', 60*60, ()=>{
+                    return res.json(main_data);
+                })
             }
         }else{
             return res.json({ no_posts: true });

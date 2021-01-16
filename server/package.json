@@ -8,7 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
     "client": "cd ../client && npm start",
-    "dev": "concurrently \"npm start\" \"npm run client\""
+    "redis": "cd C:/Program Files/Redis && redis-cli",
+    "server": "concurrently \"npm run redis\" \"npm start\"",
+    "dev": "concurrently \"npm start\" \"npm run client\" \"npm run redis\" "
   },
   "author": "Abhinav Bhattarai",
   "license": "MIT",

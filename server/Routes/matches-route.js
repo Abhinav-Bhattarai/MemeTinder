@@ -1,17 +1,24 @@
 import express from 'express';
 import UserModel from '../Models/user-model.js';
+import redis from 'redis';
+import MatchCache from '../Middleware/redis-match-cache.js';
 
+const cache = redis.createClient();
 const router = express.Router();
 
-router.get('/:Username', (req, res)=>{
+router.get('/:Username', MatchCache, (req, res)=>{
     const Username = req.params.Username ;
     UserModel.find().where("Username").equals(Username).then((response)=>{
         if(response.length === 1){
             const data = response[0].Matches;
             if(data.length >= 1){
-                return res.json({ data })
+                cache.set(`matches/${Username}`, JSON.stringify(data), ()=>{
+                    return res.json({ data })
+                })
             }else{
-                return res.json({no_matches: true});
+                cache.set(`matches/${Username}`, JSON.stringify({no_matches: true}), ()=>{
+                    return res.json({no_matches: true});
+                }) 
             }
         }else{
             return res.json({error_type: 'Username', message: 'Wrong Username'});
@@ -28,13 +35,21 @@ router.post('/', (req, res)=>{
     const YourProfilePic = req.body.YourProfilePic;
     UserModel.findOne({Username: YourName}).exec().then((sender_profile)=>{
         if(sender_profile){
-            sender_profile.Matches.push({ username: FriendName, Profile_Picture: FriendProfilePic })
+            const match_data = [...sender_profile.Matches];
+            match_data.push({ username: FriendName, Profile_Picture: FriendProfilePic });
+            sender_profile.Matches = match_data
             sender_profile.save().then(()=>{
             UserModel.findOne({ Username: FriendName }).exec().then((receiver_profile)=>{
                 if(receiver_profile){
-                    receiver_profile.Matches.push({ username: YourName, Profile_Picture: YourProfilePic })
+                    const receiver_match_data = [...receiver_profile.Matches];
+                    receiver_match_data.push({ username: YourName, Profile_Picture: YourProfilePic })
+                    receiver_profile.Matches = receiver_match_data
                     receiver_profile.save().then(()=>{
-                        return res.json({'matched': true});
+                        cache.set(`matches/${YourName}`, JSON.stringify(match_data), ()=>{
+                            cache.set(`matches/${FriendName}`, JSON.stringify(receiver_match_data), ()=>{
+                                return res.json({'matched': true});
+                            })
+                        })
                     })
                 }else{
                     return res.json({not_added_to_matches: true});
