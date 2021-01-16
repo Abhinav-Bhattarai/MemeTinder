@@ -8,3 +8,15 @@
     flex-direction: column;
     background-color: rgb(241, 241, 241);
 }
+
+@media all and (max-width: 950px){
+    .side-bar-container{
+        width: 38%;
+    }
+}
+
+@media all and (max-width: 650px){
+    .side-bar-container{
+        visibility: hidden;
+    }
+}

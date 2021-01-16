@@ -11,6 +11,7 @@ import LandingPageContext from './landingpage-context';
 import './landingPage.scss';
 import ForgetPassword from '../../Components/Credentials/Login/forget-password';
 import PasswordChange from '../../Components/Credentials/PasswordChange/password-change';
+import MobileLandingPage from '../MobileLandingPage/mobile-landing-page';
 
 const LandingPage = ({ authenticate }) => {
 
@@ -281,7 +282,7 @@ const LandingPage = ({ authenticate }) => {
 
     return (
         <Fragment>
-            <main onClick={
+            <main className='main-lp-container' onClick={
                 ()=>{
 
                     if(signup_card){
@@ -396,6 +397,7 @@ const LandingPage = ({ authenticate }) => {
                 </LandingPageContext.Provider>
             )
             :null}
+            <MobileLandingPage/>
         </Fragment>
     )
 }

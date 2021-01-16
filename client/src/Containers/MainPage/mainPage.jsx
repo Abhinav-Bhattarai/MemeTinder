@@ -65,13 +65,13 @@ const MainPage = ({ authenticate, history }) => {
     // changing the sidebar and request bar pointer div;
 
     const TriggerMessageNav = (ref)=>{
-        ref.style.transition = '0.3s';
+        ref.style.transition = 'transform 0.3s';
         ref.style.transform = "translateX(160%)";
         SetSideBarValue(1);
     }
 
     const TriggerMatchNav = (ref)=>{
-        ref.style.transition = '0.3s';
+        ref.style.transition = 'transform 0.3s';
         ref.style.transform = "translateX(25%)";
         SetSideBarValue(0);
         LeaveJoinedRoom();
@@ -80,14 +80,14 @@ const MainPage = ({ authenticate, history }) => {
     }
 
     const TriggerNotificationNav = (ref)=>{
-        ref.style.transition = '0.3s';
+        ref.style.transition = 'transform 0.3s';
         ref.style.transform = "translateX(160%)";
         SetRequestBarValue(1);
         SetNotificationAlert(false);
     }
  
     const TriggerRequestNav = (ref)=>{
-        ref.style.transition = '0.3s';
+        ref.style.transition = 'transform 0.3s';
         ref.style.transform = "translateX(25%)";
         SetRequestBarValue(0);
     }
@@ -614,7 +614,8 @@ const MainPage = ({ authenticate, history }) => {
                 socket.removeAllListeners();
             }
         }
-    })
+    });
+
 
     let people_list_jsx = null;
     if(people_list){
@@ -716,7 +717,6 @@ const MainPage = ({ authenticate, history }) => {
             );
         }
     }
-
 
 
     let post_area_jsx = null;

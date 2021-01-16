@@ -38,15 +38,35 @@
         font-size: 18px;
         color: white;
         margin-bottom: 150px;
-        transition: 0.3s;
+        transition: background 0.3s;
 
         &:focus{
             outline: none;
         }
 
         &:hover{   
-            background-color: rgb(250, 39, 39);
+            background-color: rgb(241, 53, 53);
         }
     }
 
+}
+
+@media all and (max-width: 868px){
+    .landingpage-middle-flex{
+        button{
+            width: 28%;
+        }
+    }
+}
+
+@media all and (max-width: 860px){
+    .main-lp-container{
+        visibility: hidden;
+    }
+
+    .landingpage-middle-flex{
+        button{
+            visibility: hidden;
+        }
+    }
 }

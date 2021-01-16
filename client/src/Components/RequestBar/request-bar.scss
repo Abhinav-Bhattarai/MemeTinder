@@ -8,3 +8,9 @@
     flex-direction: column;
     background-color: rgb(241, 241, 241);
 }
+
+@media all and (max-width: 950px){
+    .request-bar-container{
+        visibility: hidden;
+    }
+}

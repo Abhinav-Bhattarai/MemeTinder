@@ -7,4 +7,12 @@
     top: 0;
     height: 100%;
     background-color: $bg-color;
+    overflow: hidden;
+}
+
+@media all and (max-width: 950px){
+    .main-post-container{
+        width: 46% + 18%;
+        left: 38.5%;
+    }
 }

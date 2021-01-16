@@ -1,0 +1,9 @@
+.mobile-container{
+    visibility: hidden;   
+};
+
+@media all and (max-width: 860px){
+    .mobile-container{
+        visibility: visible;
+    }
+}
