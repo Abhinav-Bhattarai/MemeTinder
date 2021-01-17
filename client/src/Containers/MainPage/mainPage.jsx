@@ -26,7 +26,7 @@ import ImageConfig from '../../Components/Credentials/ImageConfig/image-config';
 import HomeContainer from '../../Components/HomeContainer/home-container';
 import Logout from '../../Components/Credentials/Logout/logout';
 import NotificationCard from '../../Components/NotificationCard/notification-card';
-// import NotificationAudio from '../../assets/notification.mp3';
+import NotificationAudio from '../../assets/notification.mp3';
 
 
 const AsyncMessageRoute = React.lazy(()=>{
@@ -141,6 +141,11 @@ const MainPage = ({ authenticate, history }) => {
         }
     }
 
+    const AudioPlay = ()=>{
+        const audio = new Audio(NotificationAudio);
+        audio.play().then(()=>{});
+    }
+
     const AddMessage = (Match_name, Message, self)=>{
         // adding message for real time and state update;
         const date = new Date(parseInt(Date.now())).toLocaleTimeString();
@@ -149,7 +154,7 @@ const MainPage = ({ authenticate, history }) => {
             return element.username === Match_name
         })
         dummy[match_index].Messages.push({data: Message, self, Date: date});
-        SetPeopleList(dummy);
+        SetPeopleList(dummy);        
     }
 
     const AddMessagetoBackend = (receiver)=>{
@@ -313,6 +318,7 @@ const MainPage = ({ authenticate, history }) => {
                 }else{
                     SetNavNotification([sender]);
                 }   
+                AudioPlay();
             }
             AddMessagePopupAudio();
         }
@@ -336,9 +342,10 @@ const MainPage = ({ authenticate, history }) => {
         SetPeopleList(match_data);
     };
 
-    const RemoveRequestSectionBackend = ()=>{
+    const RemoveRequestSectionBackend = (Username)=>{
         const context = {
-            MyName: localStorage.getItem('Username')
+            MyName: localStorage.getItem('Username'),
+            RequestName: Username
         }
         axios.post('http://localhost:8000/friend-requests', context);
     };

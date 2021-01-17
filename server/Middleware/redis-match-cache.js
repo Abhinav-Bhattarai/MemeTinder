@@ -2,7 +2,9 @@ import redis from 'redis';
 
 const cache = redis.createClient();
 
+
 const MatchCache = (req, res, next)=>{
+
     cache.get(`matches/${req.params.Username}`, (err, reply)=>{
         if(!err){
             if(reply){

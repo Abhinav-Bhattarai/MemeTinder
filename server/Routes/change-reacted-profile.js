@@ -13,8 +13,9 @@ router.put('/', (req, res)=>{
         dummy.push(ReactedPersonName);
         response.ReactedProfiles = dummy.sort();
         response.save().then(()=>{
-            cache.del('posts');
-            return res.json({reacted: true});
+            cache.del(`posts/${MyName}`, ()=>{
+                return res.json({reacted: true});
+            });
         })
     }).catch(()=>{
         return res.json({error: true});

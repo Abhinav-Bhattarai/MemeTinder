@@ -36,7 +36,7 @@ app.use(sanitizer());
 
 // disabling Origin change for DDOS prevention;
 app.use(cors({
-    origin: 'http://localhost:5000'
+    origin: ['http://localhost:5000', 'http://192.168.0.104:5000', 'https://localhost:3000', 'https://192.168.0.104:3000']
 }));
 
 // Socket Connection

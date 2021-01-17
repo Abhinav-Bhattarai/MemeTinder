@@ -15,6 +15,7 @@ router.post('/:Username', (req, res)=>{
                 response.ProfilePicture = ProfilePicture;
                 response.MainPost = MainPost;
                 response.save().then(()=>{
+                    cache.del(`profile-pic/${Username}`);
                     cache.set(`profile-pic/${Username}`, ProfilePicture, ()=>{
                         return res.json({profile_added: true});
                     })
