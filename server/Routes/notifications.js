@@ -1,13 +1,18 @@
 import express from 'express';
 import RegistrationModel from '../Models/register-model.js';
+import redis from 'redis';
+import NotificationCache from '../Middleware/redis-notification-cache.js';
 
+const cache = redis.createClient();
 const router = express.Router();
 
-router.get('/:Username', (req, res)=>{
+router.get('/:Username', NotificationCache, (req, res)=>{
     const Username = req.params.Username;
     RegistrationModel.findOne({Username}).exec().then((response)=>{
         if(response){
-            return res.json(response.Notification);
+            cache.set(`notification/${Username}`, JSON.stringify(response.Notification), ()=>{
+                return res.json(response.Notification);
+            })
         }
     })
 })
@@ -22,7 +27,9 @@ router.put('/', (req, res)=>{
             dummy.push({sender: Sender, ProfilePicture});
             response.Notification = dummy;
             response.save().then(()=>{
-                return res.json({ notification_added: true });
+                cache.set(`notification/${Username}`, JSON.stringify(dummy), ()=>{
+                    return res.json({ notification_added: true });
+                })
             })
         }else{
             return res.json({ no_username: true });

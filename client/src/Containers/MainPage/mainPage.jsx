@@ -180,13 +180,43 @@ const MainPage = ({ authenticate, history }) => {
         SetJoinedRoom( null );
     }
 
-    const SendMatchRequest = (friend_name)=>{
+    const TwoWayMatchHandler = (context)=>{
+        RemoveRequestData(context.FriendName);
+        AddToMatchesBackend(context.FriendName, context.FriendProfile);
+        RemoveRequestSectionBackend(context.FriendName);
+    }
+
+    const OneWayMatchHandler = (context)=>{
+        axios.put('http://localhost:8000/friend-requests', context);
+    }
+
+    const MatchTypeCheck = (username)=>{
+        const dummy = [...requests];
+        if(dummy.length >= 1){
+            const index = dummy.findIndex((element)=>{
+                return element.sender === username;
+            })
+            if(index !== -1){
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    const SendMatchRequest = (friend_name, friend_profile)=>{
         const context = {
             YourName: localStorage.getItem('Username'),
             YourProfile: my_profile_pic,
             FriendName: friend_name,
+            FriendProfile: friend_profile
         };
-        axios.put('http://localhost:8000/friend-requests', context);
+
+        if( MatchTypeCheck(friend_name) ){
+            TwoWayMatchHandler(context);
+        }else{
+            OneWayMatchHandler(context);
+        }
     };
 
     const FetchNewPost = ()=>{
@@ -244,6 +274,7 @@ const MainPage = ({ authenticate, history }) => {
         const dummy = [...post_list];
         // realtime request
         const FriendName = dummy[0].Username;
+        const FriendProfile = dummy[0].ProfilePicture;
         const MyName = localStorage.getItem('Username');
         socket.emit('Send-Friend-Request', FriendName, MyName, my_profile_pic);
 
@@ -254,7 +285,7 @@ const MainPage = ({ authenticate, history }) => {
         }
         dummy.splice(0, 1);
         SetPostList(dummy);
-        SendMatchRequest(FriendName);
+        SendMatchRequest(FriendName, FriendProfile);
         SetReactionBackend(FriendName);
     };
 
@@ -263,6 +294,7 @@ const MainPage = ({ authenticate, history }) => {
         const dummy = [...post_list];
         // realtime request
         const FriendName = dummy[0].Username;
+        const FriendProfile = dummy[0].ProfilePicture;
         const MyName = localStorage.getItem('Username');
         socket.emit('Send-Friend-Request', FriendName, MyName, my_profile_pic);
 
@@ -274,7 +306,7 @@ const MainPage = ({ authenticate, history }) => {
 
         dummy.splice(0, 1);
         SetPostList(dummy);
-        SendMatchRequest(FriendName);
+        SendMatchRequest(FriendName, FriendProfile);
         SetReactionBackend(FriendName);
 
     };
@@ -399,10 +431,10 @@ const MainPage = ({ authenticate, history }) => {
     const AddNotification = (sender, profile)=>{
         if(notification_list){
             const dummy = [...notification_list];
-            dummy.push({sender, profile});
+            dummy.push({sender, ProfilePicture: profile});
             SetNotificationList(dummy);
         }else{
-            SetNotificationList([{sender, profile}]);
+            SetNotificationList([{sender, ProfilePicture: cprofile}]);
         }
         if(current_request_bar_value === 0){
             SetNotificationAlert(true);
