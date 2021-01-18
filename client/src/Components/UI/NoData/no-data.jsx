@@ -5,8 +5,10 @@ const Nodata = ({ type }) => {
     return (
         <Fragment>
             <div className='no-data'>
-                <div className='no-data-box'></div>
-                <div className='no-data-remarks'> {(type === 'messages')? 'No Messages Found': 'No Matches Found'} </div>
+                {
+                    ( type === 'Notification' ) ? <div className='no-data-box no-data-circle'></div> : <div className='no-data-box'></div>
+                }
+                <div className='no-data-remarks'> { `No ${type} found` } </div>
             </div>
         </Fragment>
     )

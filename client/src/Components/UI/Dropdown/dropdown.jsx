@@ -3,6 +3,7 @@ import { IconContext } from 'react-icons';
 import { FaCog, FaLock, FaPowerOff } from 'react-icons/fa';
 import { BiBarChart, BiUser } from 'react-icons/bi';
 import './dropdown.scss';
+import { withRouter } from 'react-router';
 
 const Icon = ()=>{
     return (
@@ -52,7 +53,7 @@ const DeveloperIcon = ()=>{
     )
 }
 
-const Dropdown = ({ profile, TriggerDropdown, TriggerLogoutPopup }) => {
+const Dropdown = ({ profile, TriggerDropdown, TriggerLogoutPopup, history }) => {
     return (
         <Fragment>
             <main className='dropdown' onMouseLeave={ TriggerDropdown }>
@@ -65,15 +66,15 @@ const Dropdown = ({ profile, TriggerDropdown, TriggerLogoutPopup }) => {
                     </div>
                     <LockIcon/>
                 </header>
-                <nav className='dropdown-nav'>
+                <nav className='dropdown-nav' onClick={ ()=>history.push('/analytics') }>
                     <AnalyticsIcon/>
                     <div className='dropdown-nav-name'>Analytics</div>
                 </nav>
-                <nav className='dropdown-nav'>
+                <nav className='dropdown-nav' onClick={ ()=>history.push('/settings') }>
                     <SettingsIcon/>
                     <div className='dropdown-nav-name'>Settings</div>
                 </nav>
-                <nav className='dropdown-nav'>
+                <nav className='dropdown-nav' onClick = { ()=>history.push('/developer-info') }>
                     <DeveloperIcon/>
                     <div className='dropdown-nav-name'>Developer Info</div>
                 </nav>
@@ -86,4 +87,4 @@ const Dropdown = ({ profile, TriggerDropdown, TriggerLogoutPopup }) => {
     )
 }
 
-export default Dropdown;
+export default withRouter(Dropdown);

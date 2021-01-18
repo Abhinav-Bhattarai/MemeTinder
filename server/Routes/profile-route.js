@@ -10,9 +10,13 @@ router.get('/:Username', ProfilePictureCache, (req, res)=>{
     const Username = req.params.Username;
     RegistrationModel.findOne({ Username: Username }).exec().then((response)=>{
         const ProfilePicture = response.ProfilePicture;
-        cache.set(`profile-pic/${Username}`, ProfilePicture, ()=>{   
+        if(ProfilePicture.length >= 10){
+            cache.set(`profile-pic/${Username}`, ProfilePicture, ()=>{   
+                return res.json(ProfilePicture);
+            })
+        }else{
             return res.json(ProfilePicture);
-        })
+        }
     }).catch(()=>{
         return res.json({error: true});
     })

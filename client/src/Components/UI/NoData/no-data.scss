@@ -1,24 +1,44 @@
-@import '../../../_variables';
+@import "../../../_variables";
 
-.no-data{
-    width: 100%;
-    margin-top: 10px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+@keyframes scale {
+  from {
+    transform: scale(0.8);
+  }
 
-    &-box{
-        width: 60%;
-        height: 250px;
-        box-shadow: 10px 10px 10px 0 #ffc0cc;
-        background-image: linear-gradient(-90deg, #ff385c, #ff5638);
-        margin-bottom: 30px;
-    }
+  to {
+    transform: scale(1);
+  }
+}
 
-    &-remarks{
-        font-weight: 700;
-        font-size: 22px;
-    }
+.no-data {
+  width: 100%;
+  margin-top: 10px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &-box {
+    width: 60%;
+    height: 250px;
+    box-shadow: 10px 10px 10px 0 #ffc0cc;
+    background-image: linear-gradient(-90deg, #ff385c, #ff5638);
+    margin-bottom: 30px;
+    animation-name: scale;
+    animation-duration: 0.5s;
+  }
+
+  &-circle {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    box-shadow: 10px 10px 10px 0 #fcb0be;
+  }
+
+  &-remarks {
+    font-weight: 700;
+    font-size: 22px;
+  }
 }
