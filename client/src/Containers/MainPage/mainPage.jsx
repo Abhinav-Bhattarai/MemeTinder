@@ -33,35 +33,37 @@ import HomeContainer from "../../Components/HomeContainer/home-container";
 import Logout from "../../Components/Credentials/Logout/logout";
 import NotificationCard from "../../Components/NotificationCard/notification-card";
 import NotificationAudio from "../../assets/notification.mp3";
+import MatchAlert from "../../Components/UI/MatchAlert/match-alert";
 
 const AsyncMessageRoute = React.lazy(() => {
   return import("../../Components/Messages/messages");
 });
 
 const MainPage = ({ authenticate, history }) => {
-  const [people_list, SetPeopleList] = useState(null);
-  const [requests, SetRequests] = useState(null);
-  const [my_profile_pic, SetMyProfilePic] = useState(null);
-  const [post_list, SetPostList] = useState(null);
-  const [current_index, SetCurrentIndex] = useState(0);
-  const [current_sidebar_value, SetSideBarValue] = useState(0);
-  const [current_request_bar_value, SetRequestBarValue] = useState(0);
-  const [dropdown_info, SetDropdownInfo] = useState(false);
-  const [socket, SetSocket] = useState(null);
-  const [profile_alert, SetProfileAlert] = useState(false);
-  const [api_limiter, SetApiLimiter] = useState(false);
-  const [temp_post_list, SetTempPostList] = useState(null);
-  const [logout_popup, SetLogoutPopup] = useState(false);
-  const [messageInput, SetMessageInput] = useState("");
-  const [recent_messages, SetRecentMessages] = useState(null);
-  const [message_info, SetMessageInfo] = useState(null);
-  const [current_post_api_call, SetCurrentPostApiCall] = useState(0);
-  const [milestone, SetMileStone] = useState(0);
-  const [joined_room, SetJoinedRoom] = useState(null);
-  const [nav_notification, SetNavNotification] = useState(null);
-  const [direct_url_access, SetDirectURLAccess] = useState(false);
-  const [notification_list, SetNotificationList] = useState(null);
-  const [notification_alert, SetNotificationAlert] = useState(false);
+  const [ people_list, SetPeopleList ] = useState(null);
+  const [ requests, SetRequests ] = useState(null);
+  const [ my_profile_pic, SetMyProfilePic ] = useState(null);
+  const [ post_list, SetPostList ] = useState(null);
+  const [ current_index, SetCurrentIndex ] = useState(0);
+  const [ current_sidebar_value, SetSideBarValue ] = useState(0);
+  const [ current_request_bar_value, SetRequestBarValue ] = useState(0);
+  const [ dropdown_info, SetDropdownInfo ] = useState(false);
+  const [ socket, SetSocket ] = useState(null);
+  const [ profile_alert, SetProfileAlert ] = useState(false);
+  const [ api_limiter, SetApiLimiter ] = useState(false);
+  const [ temp_post_list, SetTempPostList ] = useState(null);
+  const [ logout_popup, SetLogoutPopup ] = useState(false);
+  const [ messageInput, SetMessageInput ] = useState("");
+  const [ recent_messages, SetRecentMessages ] = useState(null);
+  const [ message_info, SetMessageInfo ] = useState(null);
+  const [ current_post_api_call, SetCurrentPostApiCall ] = useState(0);
+  const [ milestone, SetMileStone ] = useState(0);
+  const [ joined_room, SetJoinedRoom ] = useState(null);
+  const [ nav_notification, SetNavNotification ] = useState(null);
+  const [ direct_url_access, SetDirectURLAccess ] = useState(false);
+  const [ notification_list, SetNotificationList ] = useState(null);
+  const [ notification_alert, SetNotificationAlert ] = useState(false);
+  const [ match_found_timeout, SetMatchFoundTimeout ] = useState(false);
 
   const TriggerDropdown = () => {
     SetDropdownInfo(!dropdown_info);
@@ -196,6 +198,7 @@ const MainPage = ({ authenticate, history }) => {
   };
 
   const TwoWayMatchHandler = (context) => {
+    SetMatchFoundTimeout(true);
     RemoveRequestData(context.FriendName);
     AddMatchData(context.FriendName, context.FriendProfile);
     AddToMatchesBackend(context.FriendName, context.FriendProfile);
@@ -679,6 +682,14 @@ const MainPage = ({ authenticate, history }) => {
     profile_alert,
   ]);
 
+  useEffect(()=>{
+    if(match_found_timeout){
+      setTimeout(()=>{
+        SetMatchFoundTimeout(false);
+      }, 2000);
+    }
+  })
+
   useEffect(() => {
     // socket receiers in client;
     if (socket) {
@@ -996,6 +1007,10 @@ const MainPage = ({ authenticate, history }) => {
       {profile_alert ? (
         <ImageConfig RemoveProfileCard={TriggerProfileAlert} />
       ) : null}
+
+      {
+        (match_found_timeout) ? <MatchAlert/> : null
+      }
     </Fragment>
   );
 };
