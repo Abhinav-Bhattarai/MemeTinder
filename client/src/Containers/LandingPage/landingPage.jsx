@@ -252,9 +252,14 @@ const LandingPage = ({ authenticate }) => {
                 }
             })
         }else{
-            const dummy = [];
-            dummy.push({error_type: 'Username', message: 'Enter your username first'})
-            SetSigninCredError(dummy);
+            if(type === true){
+                SetForgetCard(false);
+                SetSigninCredError([]);
+            }else{
+                const dummy = [];
+                dummy.push({error_type: 'Username', message: 'Enter your username first'})
+                SetSigninCredError(dummy);
+            }
         }
     };
 
@@ -301,6 +306,7 @@ const LandingPage = ({ authenticate }) => {
 
                     else if(new_password_popup){
                         SetNewPasswordPopup(false);
+                        SetSigninCredError([]);
                     }
 
                 }
@@ -373,7 +379,7 @@ const LandingPage = ({ authenticate }) => {
                                 value = { forget_number } 
                                 set_value = { (e)=>ChangeForgetNumber(e) } 
                                 submit = { (e)=>FrogetPasswordSubmit(e) } 
-                                exit = { TriggerForgetPassword }
+                                exit = { (type)=>TriggerForgetPassword(type) }
                                 error = { forget_cred_error } 
                             />:null
 
@@ -387,7 +393,11 @@ const LandingPage = ({ authenticate }) => {
                                 ChangePasswordValue = { (e) => ChangeNewPassword(e) }
                                 ChangeConfirmValue = { (e) => ChangeNewPasswordConfirm(e) }
                                 SubmitChange = { (e) => SubmitNewPassword(e) }
-                                Cancel = { ()=> SetNewPasswordPopup(false) }
+                                Cancel = { ()=> {
+                                                SetNewPasswordPopup(false);
+                                                SetSigninCredError([]);
+                                           } 
+                                         }
                                 error = { new_password_err }
                                 loader = { password_change_loader }
                             />

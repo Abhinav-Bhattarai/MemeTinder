@@ -16,7 +16,7 @@ const ForgetPassword = ({ value, set_value, submit, exit, error }) => {
         <Fragment>
             <main className='signup-container login-container forget-container'>
                 <header className='signup-header'>
-                    <span onClick={ exit }><TimesIcon/></span>
+                    <span onClick={ exit.bind(this, true) }><TimesIcon/></span>
                     <div style={{
                         fontWeight: '700',
                         fontSize: '18px'

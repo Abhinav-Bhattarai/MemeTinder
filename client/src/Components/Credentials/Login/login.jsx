@@ -2,6 +2,7 @@ import React, { Fragment, useContext, useRef } from 'react';
 import { IconContext } from 'react-icons';
 import { FaExclamationCircle } from 'react-icons/fa';
 import LandingPageContext from '../../../Containers/LandingPage/landingpage-context';
+import Spinner from '../../UI/Spinner/spinner';
 import { TimesIcon } from '../Signup/signup';
 import '../Signup/signup.scss';
 
@@ -84,22 +85,29 @@ const Login = ({LoginCardHandler, ErrorContainer, Logger, forget_password, loade
                         </div>
                         {password_error}
                     </main>
-                    <button className='signup-btn login-btn-form'>Login</button>
+                    <div className='login-btn-container-rel'>
+                        <button className='signup-btn login-btn-form'>
+                            Login
+                        </button>
+                        { (loader) ? <div className='spinner-abs'> <Spinner/> </div> : null}          
+                    </div>
                 </form>
                 <div
-                 onClick = { forget_password.bind(this, false) }
-                 style = {{
-                    display: 'block',
-                    padding: '15px 3%',
-                    textAlign: 'center',
-                    fontWeight: '500',
-                    color: '#000',
-                    backgroundColor: ' rgb(187, 186, 186)',
-                    margin: '5px auto 30px auto',
-                    width: '82%',
-                    borderRadius: '10px',
-                    cursor: 'pointer'
-                }}>Forgot password ?</div>
+                    onClick = { forget_password.bind(this, false) }
+                    style = {{
+                        display: 'block',
+                        padding: '15px 3%',
+                        textAlign: 'center',
+                        fontWeight: '500',
+                        color: '#000',
+                        backgroundColor: ' rgb(187, 186, 186)',
+                        margin: '5px auto 30px auto',
+                        width: '82%',
+                        borderRadius: '10px',
+                        cursor: 'pointer'
+                }}>
+                    Forgot password ?
+                </div>
             </main>
         </Fragment>
     )

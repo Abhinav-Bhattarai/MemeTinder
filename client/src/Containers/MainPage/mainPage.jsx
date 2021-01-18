@@ -434,7 +434,7 @@ const MainPage = ({ authenticate, history }) => {
             dummy.push({sender, ProfilePicture: profile});
             SetNotificationList(dummy);
         }else{
-            SetNotificationList([{sender, ProfilePicture: cprofile}]);
+            SetNotificationList([{sender, ProfilePicture: profile}]);
         }
         if(current_request_bar_value === 0){
             SetNotificationAlert(true);

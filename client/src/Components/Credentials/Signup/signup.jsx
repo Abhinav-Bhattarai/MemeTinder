@@ -3,6 +3,7 @@ import './signup.scss';
 import { IconContext } from 'react-icons';
 import { FaTimes, FaExclamationCircle } from 'react-icons/fa';
 import LandingPageContext from '../../../Containers/LandingPage/landingpage-context';
+import Spinner from '../../UI/Spinner/spinner';
 
 export const TimesIcon = ()=>{
     return (
@@ -133,7 +134,10 @@ const Signup = ({ SignupCardHandler, ErrorContainer, Register, ChangeRadio, load
                             </div>
                         </div>
                     </main>
-                    <button className='signup-btn'>Continue</button>
+                    <div className='login-btn-container-rel'>
+                        <button className='signup-btn'>Continue</button>
+                        { (loader) ? <div className='spinner-abs'> <Spinner/> </div> : null}   
+                    </div>
                 </form>                
             </main>
         </Fragment>
