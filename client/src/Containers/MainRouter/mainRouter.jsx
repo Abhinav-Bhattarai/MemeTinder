@@ -14,6 +14,10 @@ const AsyncMainPage = React.lazy(()=>{
     return import('../MainPage/mainPage')
 })
 
+const AsyncDeveloperInfo = React.lazy(()=>{
+    return import('../DeveloperInfo/developer-info');
+})
+
 function MainRouter({ history }){
 
     const [authentication_status, SetAuthenticationStatus] = useState(null);
@@ -79,11 +83,22 @@ function MainRouter({ history }){
         <Fragment>
             <MainPageGuard auth_status={authentication_status}>
                 <Switch>
+                    <Route path='/developer-info' exact render={()=>{
+                        return (
+                            <Suspense fallback={<LogoPage/>}>
+                                <AsyncDeveloperInfo
+                                    
+                                />
+                            </Suspense>
+                        )
+                    }}/>
+
                     <Route path='/mainPage' render={()=>{
                         return (<Suspense fallback={<LogoPage/>}>
                             <AsyncMainPage authenticate={ (status)=>ChangeAuthentication(status) }/>
                         </Suspense>)
                     }}/>
+
                     <Route render={()=>{
                         return (<Suspense fallback={<LogoPage/>}>
                             <AsyncMainPage authenticate={ (status)=>ChangeAuthentication(status) }/>

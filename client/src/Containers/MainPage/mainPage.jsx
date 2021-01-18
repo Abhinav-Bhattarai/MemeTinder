@@ -182,6 +182,7 @@ const MainPage = ({ authenticate, history }) => {
 
     const TwoWayMatchHandler = (context)=>{
         RemoveRequestData(context.FriendName);
+        AddMatchData(context.FriendName, context.FriendProfile);
         AddToMatchesBackend(context.FriendName, context.FriendProfile);
         RemoveRequestSectionBackend(context.FriendName);
     }
@@ -411,7 +412,7 @@ const MainPage = ({ authenticate, history }) => {
         axios.put('http://localhost:8000/add-notification', context);
     }
 
-    const AcceptMatchRequest = (e, profile_image, username)=>{
+    const AcceptMatchRequest = (profile_image, username)=>{
         // the username here is the person who requested
         RemoveRequestSectionBackend(username);
         RemoveRequestData();
@@ -447,7 +448,7 @@ const MainPage = ({ authenticate, history }) => {
             const no_res = {no_matches: true};
             if(JSON.stringify(response.data) !== JSON.stringify(error)){
                 if(JSON.stringify(response.data) !== JSON.stringify(no_res)){
-                    SetPeopleList(response.data.data);
+                    SetPeopleList(response.data);
                 }else{
                     SetPeopleList([]);
                 }
@@ -724,8 +725,8 @@ const MainPage = ({ authenticate, history }) => {
                                     key={i}
                                     sender={ request.sender }
                                     profile_picture= { request.ProfilePicture }
-                                    AcceptRequest={ (e, profile_image, username)=> AcceptMatchRequest(e, profile_image, username) }
-                                    DeclineRequest={ (e, username)=> RejectMatchRequest(e, username) }
+                                    AcceptRequest={ (profile_image, username)=> AcceptMatchRequest(profile_image, username) }
+                                    DeclineRequest={ (username)=> RejectMatchRequest(username) }
                                 />
                             )
                         })

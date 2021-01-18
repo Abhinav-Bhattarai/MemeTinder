@@ -52,6 +52,7 @@ router.put('/', (req, res)=>{
 router.post('/', (req, res)=>{
     const MyName = req.body.MyName;
     const RequestName = req.body.RequestName;
+    console.log(MyName, RequestName);
     RegisterModel.findOne({ Username: MyName }).exec().then((profile)=>{
         const Requests = [...profile.Requests];
         const index = Requests.findIndex((element)=>{
@@ -60,7 +61,7 @@ router.post('/', (req, res)=>{
         Requests.splice(index, 1);
         profile.Requests = Requests;
         profile.save().then(()=>{
-            cache.set(`friend-req/${MyName}`, Requests, ()=>{
+            cache.set(`friend-req/${MyName}`, JSON.stringify(Requests), ()=>{
                 return res.json({request_removed: true});
             })
         })
