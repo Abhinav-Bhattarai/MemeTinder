@@ -202,10 +202,14 @@ const MainPage = ({ authenticate, history }) => {
     SetJoinedRoom(null);
   };
 
+  const SetNewProfile = (profile)=>{
+    SetMyProfilePic(profile);
+  }
+
   const TwoWayMatchHandler = (context) => {
     SetMatchFoundTimeout(true);
     RemoveRequestData(context.FriendName);
-    AddMatchData(context.FriendName, context.FriendProfile);
+    AddMatchData(context.FriendProfile, context.FriendName);
     AddToMatchesBackend(context.FriendName, context.FriendProfile);
     RemoveRequestSectionBackend(context.FriendName);
   };
@@ -355,10 +359,6 @@ const MainPage = ({ authenticate, history }) => {
     authenticate(true);
   };
 
-  const AddMessagePopupAudio = () => {
-    // add audio effect for new message;
-  };
-
   const NotifyInPeopleCard = (sender) => {
     if (joined_room !== sender) {
       const dummy = [...people_list];
@@ -378,7 +378,6 @@ const MainPage = ({ authenticate, history }) => {
         }
         AudioPlay();
       }
-      AddMessagePopupAudio();
     }
   };
 
@@ -395,7 +394,7 @@ const MainPage = ({ authenticate, history }) => {
   const AddMatchData = (pp, username) => {
     // Add to match data array after accepting match request;
     const match_data = [...people_list];
-    const current_date = Date.now();
+    const current_date = Date.now().toString();
     match_data.unshift({
       username: username,
       Profile_Picture: pp,
@@ -691,7 +690,7 @@ const MainPage = ({ authenticate, history }) => {
     if(match_found_timeout){
       setTimeout(()=>{
         SetMatchFoundTimeout(false);
-      }, 2000);
+      }, 1000);
     }
   })
 
@@ -732,6 +731,8 @@ const MainPage = ({ authenticate, history }) => {
       };
     }
   });
+
+  console.log(people_list)
 
   let people_list_jsx = null;
   if (people_list) {
@@ -841,7 +842,7 @@ const MainPage = ({ authenticate, history }) => {
       const post_data = [...post_list];
       const required_data = post_data[0];
       post_area_jsx = (
-        <PostContainer blur={profile_alert || logout_popup ? "5px" : "0px"}>
+        <PostContainer blur={profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"}>
           <ImageContainer
             ProfilePicture={required_data.ProfilePicture}
             MainPost={required_data.MainPost}
@@ -856,7 +857,7 @@ const MainPage = ({ authenticate, history }) => {
       );
     } else {
       post_area_jsx = (
-        <NoPost blur={profile_alert || logout_popup ? "5px" : "0px"} />
+        <NoPost blur={profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"} />
       );
     }
   }
@@ -864,7 +865,7 @@ const MainPage = ({ authenticate, history }) => {
   return (
     <Fragment>
       <SideBar
-        blur={dropdown_info || profile_alert || logout_popup ? "5px" : "0px"}
+        blur={dropdown_info || profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"}
       >
         <SidebarHeader
           profile_picture={my_profile_pic}
@@ -908,7 +909,7 @@ const MainPage = ({ authenticate, history }) => {
               >
                 {message_info ? (
                   <AsyncMessageRoute
-                    blur={profile_alert || logout_popup ? "5px" : "0px"}
+                    blur={profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"}
                     MessageInputValue={messageInput}
                     ChangeMessageInput={(e) => ChangeMessageInput(e)}
                     RecentMessages={recent_messages}
@@ -937,7 +938,7 @@ const MainPage = ({ authenticate, history }) => {
                 >
                   {message_info ? (
                     <AsyncMessageRoute
-                      blur={profile_alert || logout_popup ? "5px" : "0px"}
+                      blur={profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"}
                       MessageInputValue={messageInput}
                       ChangeMessageInput={(e) => ChangeMessageInput(e)}
                       RecentMessages={recent_messages}
@@ -958,7 +959,7 @@ const MainPage = ({ authenticate, history }) => {
               return (
                 <Suspense fallback={<LogoPage />}>
                   <AsyncSettings
-                    blur={profile_alert || logout_popup ? "5px" : "0px"}
+                    blur={profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"}
                   />
                 </Suspense>
               );
@@ -987,7 +988,7 @@ const MainPage = ({ authenticate, history }) => {
         </main>
       )}
 
-      <RequestBar blur={profile_alert || logout_popup ? "5px" : "0px"}>
+      <RequestBar blur={profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"}>
         <RequestHeader />
         <RequestNav
           TriggerNotificationNav={(ref) => TriggerNotificationNav(ref)}
@@ -1006,12 +1007,13 @@ const MainPage = ({ authenticate, history }) => {
       </RequestBar>
 
       {profile_alert ? (
-        <ImageConfig RemoveProfileCard={TriggerProfileAlert} />
+        <ImageConfig RemoveProfileCard={TriggerProfileAlert} SetNewProfile={(profile)=>SetNewProfile(profile)} />
       ) : null}
 
       {
         (match_found_timeout) ? <MatchAlert/> : null
       }
+
     </Fragment>
   );
 };

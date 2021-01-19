@@ -12,7 +12,6 @@ router.post('/', (req, res)=>{
     const Username = req.body.Username;
     const Password = req.body.Password;
 
-    console.log(true);
     // checking for the existance of the user provided credential;
     RegisterModel.find().where('Username').equals(Username).then((response)=>{
         if(response.length === 1){

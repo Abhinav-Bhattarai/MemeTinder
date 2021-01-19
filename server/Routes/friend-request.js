@@ -1,12 +1,12 @@
 import express from 'express';
 import redis from 'redis';
-import RequestCache from '../Middleware/redis-request-cache.js';
+// import RequestCache from '../Middleware/redis-request-cache.js';
 import RegisterModel from '../Models/register-model.js';
 
 const router = express.Router();
 const cache = redis.createClient();
 
-router.get('/:Username', RequestCache, (req, res)=>{
+router.get('/:Username', (req, res)=>{
     const Username = req.params.Username;
     RegisterModel.find().where("Username").equals(Username).then((response)=>{
         if(response.length === 1){
@@ -15,7 +15,7 @@ router.get('/:Username', RequestCache, (req, res)=>{
             })
             
         }else{
-            cache.set(`friend-req/${Username}`, JSON.stringify(response[0].Requests), ()=>{
+            cache.set(`friend-req/${Username}`, JSON.stringify({no_requests: true}), ()=>{
                 return res.json({no_requests: true});
             })
         }
@@ -52,13 +52,8 @@ router.put('/', (req, res)=>{
 router.post('/', (req, res)=>{
     const MyName = req.body.MyName;
     const RequestName = req.body.RequestName;
-    console.log(MyName, RequestName);
     RegisterModel.findOne({ Username: MyName }).exec().then((profile)=>{
-        const Requests = [...profile.Requests];
-        const index = Requests.findIndex((element)=>{
-            return element.sender === RequestName;
-        });
-        Requests.splice(index, 1);
+        const Requests = profile.Requests.filter(element=> element.sender !== RequestName)
         profile.Requests = Requests;
         profile.save().then(()=>{
             cache.set(`friend-req/${MyName}`, JSON.stringify(Requests), ()=>{

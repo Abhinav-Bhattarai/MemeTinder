@@ -1,19 +1,19 @@
 import express from 'express';
 import UserModel from '../Models/user-model.js';
 import redis from 'redis';
-import MatchCache from '../Middleware/redis-match-cache.js';
+// import MatchCache from '../Middleware/redis-match-cache.js';
 
 const cache = redis.createClient();
 const router = express.Router();
 
-router.get('/:Username', MatchCache, (req, res)=>{
+router.get('/:Username', (req, res)=>{
     const Username = req.params.Username ;
     UserModel.find().where("Username").equals(Username).then((response)=>{
         if(response.length === 1){
             const data = response[0].Matches;
             if(data.length >= 1){
                 cache.set(`matches/${Username}`, JSON.stringify(data), ()=>{
-                    return res.json({ data })
+                    return res.json(data)
                 })
             }else{
                 cache.set(`matches/${Username}`, JSON.stringify({no_matches: true}), ()=>{
@@ -36,13 +36,13 @@ router.post('/', (req, res)=>{
     UserModel.findOne({Username: YourName}).exec().then((sender_profile)=>{
         if(sender_profile){
             const match_data = [...sender_profile.Matches];
-            match_data.push({ username: FriendName, Profile_Picture: FriendProfilePic });
+            match_data.push({ username: FriendName, Profile_Picture: FriendProfilePic,  LastInteraction: Date.now(), Messages: [] });
             sender_profile.Matches = match_data
             sender_profile.save().then(()=>{
             UserModel.findOne({ Username: FriendName }).exec().then((receiver_profile)=>{
                 if(receiver_profile){
                     const receiver_match_data = [...receiver_profile.Matches];
-                    receiver_match_data.push({ username: YourName, Profile_Picture: YourProfilePic })
+                    receiver_match_data.push({ username: YourName, Profile_Picture: YourProfilePic, LastInteraction: Date.now(), Messages: [] })
                     receiver_profile.Matches = receiver_match_data
                     receiver_profile.save().then(()=>{
                         cache.set(`matches/${YourName}`, JSON.stringify(match_data), ()=>{

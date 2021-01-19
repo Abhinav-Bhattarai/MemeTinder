@@ -1,0 +1,35 @@
+@import '../../../_variables';
+
+@keyframes glow{
+    from{
+        transform: scale(0.5);
+        filter: drop-shadow(10px $theme-color);
+    }
+    to{
+        transform: scale(1);
+    }
+}
+
+.love-icon{
+    font-size: 300px;
+    color: $theme-color;
+}
+
+.match-alert-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    left: 40%;
+    top: 21%;
+    animation-name: glow;
+    animation-duration: 0.3s;
+
+    div{
+        font-weight: 800;
+        color: #333;
+        font-size: 22px;
+        margin-top: 15px;
+    }
+}

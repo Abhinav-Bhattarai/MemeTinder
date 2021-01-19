@@ -6,7 +6,7 @@ import { Route, Switch, withRouter } from 'react-router';
 import ProfilePicture from './ProfilePicture/profile-picture';
 import MainPost from './MainPost/main-post';
 
-const ImageConfig = ({ history, RemoveProfileCard }) => {
+const ImageConfig = ({ history, RemoveProfileCard, SetNewProfile }) => {
 
     // state is manage from here;
     const [ profile_pic, SetProfilePic ] = useState( null );
@@ -43,6 +43,7 @@ const ImageConfig = ({ history, RemoveProfileCard }) => {
     const FinalizeProfile = (event)=>{
         event.preventDefault();
         if(profile_pic){
+            SetNewProfile(profile_pic);
             history.push('/forms/mainpost')
         }else{
             // error

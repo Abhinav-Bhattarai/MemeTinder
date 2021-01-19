@@ -23,7 +23,7 @@ const MessageHeader = ({ Username, ProfilePicture, history }) => {
             <header className='message-header'>
                 <span 
                     onClick={
-                        () => history.push('/main-app')
+                        () => history.push('/main')
                     }
                     style = {{ marginRight: '2%', marginTop: '5px' }}
 

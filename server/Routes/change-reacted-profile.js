@@ -13,9 +13,7 @@ router.put("/", (req, res) => {
   })
     .exec()
     .then((response) => {
-      const dummy = [...response.ReactedProfiles];
-      dummy.push(ReactedPersonName);
-      response.ReactedProfiles = dummy.sort();
+      response.ReactedProfiles.push(ReactedPersonName);
       response.save().then(() => {
         cache.del(`posts/${MyName}`, () => {
           return res.json({
