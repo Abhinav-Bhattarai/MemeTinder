@@ -1,38 +1,38 @@
-@import '../../../_variables';
+@import "../../../_variables";
 
-.main-post-container{
-    width: 46%;
-    position: fixed;
-    left: 28.5%;
-    top: 0;
-    height: 100%;
-    background-color: $bg-color;
+.main-post-container {
+  width: 46%;
+  position: fixed;
+  left: 28.5%;
+  top: 0;
+  height: 100%;
+  background-color: $bg-color;
 }
 
-.main-post-container-default{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+.main-post-container-default {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 
-    .no-post-message{
-        font-weight: 700;
-        margin-top: 30px;
-        font-size: 19px;
-        text-align: center;
-    }
+  .no-post-message {
+    font-weight: 700;
+    margin-top: 30px;
+    font-size: 19px;
+    text-align: center;
+  }
 }
 
-@media all and (max-width: 950px){
-    .main-post-container{
-        width: 46% + 18%;
-        left: 38.5%;
-    }
+@media all and (max-width: 950px) {
+  .main-post-container {
+    width: 46% + 18%;
+    left: 38.5%;
+  }
 }
 
-@media all and (max-width: 650px){
-    .main-post-container{
-        width: 100%;
-        left: 0;
-    }   
+@media all and (max-width: 650px) {
+  .main-post-container {
+    width: 100%;
+    left: 0;
+  }
 }

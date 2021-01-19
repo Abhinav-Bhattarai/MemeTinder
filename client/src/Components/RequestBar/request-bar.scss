@@ -1,16 +1,16 @@
-.request-bar-container{
-    display: flex;
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 25%;
-    height: 100%;
-    flex-direction: column;
-    background-color: rgb(241, 241, 241);
+.request-bar-container {
+  display: flex;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 25%;
+  height: 100%;
+  flex-direction: column;
+  background-color: rgb(241, 241, 241);
 }
 
-@media all and (max-width: 950px){
-    .request-bar-container{
-        visibility: hidden;
-    }
+@media all and (max-width: 950px) {
+  .request-bar-container {
+    visibility: hidden;
+  }
 }

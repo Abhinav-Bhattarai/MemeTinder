@@ -20,10 +20,6 @@ const AsyncMainPage = React.lazy(() => {
   return import("../MainPage/mainPage");
 });
 
-const AsyncDeveloperInfo = React.lazy(() => {
-  return import("../DeveloperInfo/developer-info");
-});
-
 function MainRouter({ history }) {
   const [authentication_status, SetAuthenticationStatus] = useState(null);
 
@@ -71,34 +67,10 @@ function MainRouter({ history }) {
     fetch_jsx();
   }, [fetch_jsx]);
 
-  // useEffect(()=>{
-  //     if(authentication_status === true){
-  //         const localStorageList = JSON.parse(localStorage);
-  //         const Lengthcount = Object.keys(localStorageList);
-  //         if(Lengthcount.length <= 5){
-  //             localStorage.clear();
-  //             localStorage.setItem('auth-status', false);
-  //             SetAuthenticationStatus(false);
-  //         }
-  //     }
-  // }, [ authentication_status ])
-
   return (
     <Fragment>
       <MainPageGuard auth_status={authentication_status}>
         <Switch>
-          <Route
-            path="/developer-info"
-            exact
-            render={() => {
-              return (
-                <Suspense fallback={<LogoPage />}>
-                  <AsyncDeveloperInfo />
-                </Suspense>
-              );
-            }}
-          />
-
           <Route
             path="/mainPage"
             render={() => {

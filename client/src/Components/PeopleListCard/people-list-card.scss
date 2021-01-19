@@ -1,71 +1,71 @@
-@import '../../_variables';
+@import "../../_variables";
 
-.people-list-card-container{
-    height: 40px;
-    padding: 20px 3%;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    margin-top: 5px;
-    background-color: rgb(219, 219, 219);
-    cursor: context-menu;
-    transition: 0.3s;
-    position: relative;
+.people-list-card-container {
+  height: 40px;
+  padding: 20px 3%;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 5px;
+  background-color: rgb(219, 219, 219);
+  cursor: context-menu;
+  transition: 0.3s;
+  position: relative;
 
-    &:hover{
-        background-color: rgb(209, 208, 208);
-    }
+  &:hover {
+    background-color: rgb(209, 208, 208);
+  }
 
-    img{
-        width: 55px;
-        height: 55px;
-        border-radius: 50%;
-    }
-
-    &-desc-area{
-        width: 60%;
-        margin-left: 5%;
-        display: flex;
-        flex-direction: column;
-
-        header{
-            font-weight: 500;
-            font-size: 23px;
-            padding: 2px 2%;
-            letter-spacing: 1.2px;
-        }
-
-        footer{
-            font-weight: 500;
-            font-size: 15px;
-            color: grey;
-            margin-top: 2px;
-        }
-    }
-};
-
-.notify-icon{
-    font-size: 15px;
-    color: $theme-color;
-    position: absolute;
-    top: 8px;
-    background-color: $theme-color;
+  img {
+    width: 55px;
+    height: 55px;
     border-radius: 50%;
-    right: 3%;
-    box-shadow: 0 0 20px $theme-color
+  }
+
+  &-desc-area {
+    width: 60%;
+    margin-left: 5%;
+    display: flex;
+    flex-direction: column;
+
+    header {
+      font-weight: 500;
+      font-size: 23px;
+      padding: 2px 2%;
+      letter-spacing: 1.2px;
+    }
+
+    footer {
+      font-weight: 500;
+      font-size: 15px;
+      color: grey;
+      margin-top: 2px;
+    }
+  }
 }
 
-.new-icon{
-    position: absolute;
-    top: 8px;
-    right: 3%;
-    width: 5%;
-    padding: 3px 2%;
-    border-radius: 20px;
-    font-size: 16px;
-    color: white;
-    font-weight: 500;
-    background-color: $theme-color;
-    box-shadow: 0 0 20px $theme-color
+.notify-icon {
+  font-size: 15px;
+  color: $theme-color;
+  position: absolute;
+  top: 8px;
+  background-color: $theme-color;
+  border-radius: 50%;
+  right: 3%;
+  box-shadow: 0 0 20px $theme-color;
+}
+
+.new-icon {
+  position: absolute;
+  top: 8px;
+  right: 3%;
+  width: 5%;
+  padding: 3px 2%;
+  border-radius: 20px;
+  font-size: 16px;
+  color: white;
+  font-weight: 500;
+  background-color: $theme-color;
+  box-shadow: 0 0 20px $theme-color;
 }

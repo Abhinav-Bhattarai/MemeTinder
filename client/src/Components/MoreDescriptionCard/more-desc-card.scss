@@ -1,32 +1,32 @@
 $bg: rgb(193, 193, 194);
 
-.desc-card{
+.desc-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: $bg;
+  transform: translateX(-258px);
+  padding: 5px 0%;
+  padding-top: 33px;
+  border-radius: 10px;
+  display: flex;
+  width: 80%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    transform: scale(1.8);
+    border: 2px solid white;
+  }
+
+  .pointer {
+    width: 20px;
+    height: 20px;
     position: absolute;
-    top: 0;
-    left: 0;
+    right: -9px;
+    top: 40%;
+    transform: rotate(45deg);
     background-color: $bg;
-    transform: translateX(-258px);
-    padding: 5px 0%;
-    padding-top: 33px;
-    border-radius: 10px;
-    display: flex;
-    width: 80%;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    img{
-        transform: scale(1.8);
-        border: 2px solid white;
-    };
-
-    .pointer{
-        width: 20px;
-        height: 20px;
-        position: absolute;
-        right: -9px;
-        top: 40%;
-        transform: rotate(45deg);
-        background-color: $bg;
-    }
+  }
 }

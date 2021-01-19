@@ -1,46 +1,45 @@
-@import '../../../_variables';
+@import "../../../_variables";
 
-.sidebar-nav{
-    display: flex;
-    align-items: center;
-    padding: 5px 2%;
+.sidebar-nav {
+  display: flex;
+  align-items: center;
+  padding: 5px 2%;
+  position: relative;
+
+  &-element {
+    cursor: context-menu;
+    width: 40%;
+    text-align: center;
+    margin: 0px 5%;
+    display: block;
+    font-size: 16px;
+    padding: 5px 1%;
+    font-weight: 700;
+    color: black;
+    text-decoration: none;
     position: relative;
+  }
 
-    &-element{
-        cursor: context-menu;
-        width: 40%;
-        text-align: center;
-        margin: 0px 5%;
-        display: block;
-        font-size: 16px;
-        padding: 5px 1%;
-        font-weight: 700;
-        color: black;
-        text-decoration: none;
-        position: relative;
-    }
-
-
-    .navbar-pointer{
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        padding: 1.5px 0;
-        background-color: $theme-color;
-        width: 35%;
-        transform: translateX(25%);
-    }
+  .navbar-pointer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 1.5px 0;
+    background-color: $theme-color;
+    width: 35%;
+    transform: translateX(25%);
+  }
 }
 
-.notify-icon-2{
-    font-size: 8px;
-    color: $theme-color;
-    position: absolute;
-    top: 4px;
-    background-color: $theme-color;
-    border-radius: 50%;
-    right: 14%;
-    box-shadow: 0 0 5px $theme-color
+.notify-icon-2 {
+  font-size: 8px;
+  color: $theme-color;
+  position: absolute;
+  top: 4px;
+  background-color: $theme-color;
+  border-radius: 50%;
+  right: 14%;
+  box-shadow: 0 0 5px $theme-color;
 }
 
 // .match-active{

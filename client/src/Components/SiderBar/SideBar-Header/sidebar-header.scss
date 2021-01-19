@@ -1,35 +1,36 @@
-@import '../../../_variables';
+@import "../../../_variables";
 
-.sidebar-header{
-    background-color: $theme-color;
-    padding: 15px 5%;
-    margin-bottom: 5px;
-    height: 38px;
-    display: flex;
-    align-items: center;
-    cursor: context-menu;
-    justify-content: space-between;
-    position: relative;
+.sidebar-header {
+  background-color: $theme-color;
+  padding: 15px 5%;
+  margin-bottom: 5px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  cursor: context-menu;
+  justify-content: space-between;
+  position: relative;
 
-    img{
-        width: 35px;
-        height: 35px;
-        border: 2px solid white;
-        border-radius: 50%;
-        cursor: pointer;
-    }
+  img {
+    width: 35px;
+    height: 35px;
+    border: 2px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+  }
 
-    &-name{
-        font-weight: 700;
-        font-size: 25px;
-        color: rgb(252, 238, 238);
-    }
+  &-name {
+    font-weight: 700;
+    font-size: 25px;
+    color: rgb(252, 238, 238);
+    margin: 0px auto;
+  }
 
-    .temp-img{
-        width: 35px;
-        height: 35px;
-        border: 2px solid white;
-        border-radius: 50%;
-        background-color:  white;
-    }
+  .temp-img {
+    width: 35px;
+    height: 35px;
+    border: 2px solid white;
+    border-radius: 50%;
+    background-color: white;
+  }
 }

@@ -1,26 +1,26 @@
-@import '../../../_variables';
+@import "../../../_variables";
 
-.message-input-footer{
-    position: absolute;
-    bottom: 15px;
-    left: 0;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.message-input-footer {
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    input{
-        width: 90%;
-        padding: 15px 3%;
-        font-weight: 500;
-        font-size: 15px;
-        height: auto;
-        border: none;
-        border-radius: 10px;
-        background-color: rgb(207, 207, 207);
+  input {
+    width: 90%;
+    padding: 15px 3%;
+    font-weight: 500;
+    font-size: 15px;
+    height: auto;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(207, 207, 207);
 
-        &:focus{
-            outline: none;
-        }
+    &:focus {
+      outline: none;
     }
-};
+  }
+}

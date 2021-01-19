@@ -34,9 +34,14 @@ import Logout from "../../Components/Credentials/Logout/logout";
 import NotificationCard from "../../Components/NotificationCard/notification-card";
 import NotificationAudio from "../../assets/notification.mp3";
 import MatchAlert from "../../Components/UI/MatchAlert/match-alert";
+import LogoPage from "../../Components/UI/LogoPage/logo-page";
 
 const AsyncMessageRoute = React.lazy(() => {
   return import("../../Components/Messages/messages");
+});
+
+const AsyncSettings = React.lazy(() => {
+  return import("../Settings/settings");
 });
 
 const MainPage = ({ authenticate, history }) => {
@@ -662,7 +667,7 @@ const MainPage = ({ authenticate, history }) => {
 
   useEffect(() => {
     if (profile_alert === false) {
-      if (history.location.pathname === "/") {
+      if (history.location.pathname === "/" || history.location.pathname === '/settings') {
         if (joined_room !== null) {
           SetJoinedRoom(null);
           SetDirectURLAccess(false);
@@ -947,19 +952,15 @@ const MainPage = ({ authenticate, history }) => {
           />
 
           <Route
+            path="/settings"
             exact
-            path="/home"
             render={() => {
               return (
-                <HomeContainer
-                  jsx={post_area_jsx}
-                  LeftClick={LeftClickHandler}
-                  RightClick={RightClickHandler}
-                  CenterClick={CenterClickHandler}
-                  post_list={post_list}
-                  current_sidebar_value={current_sidebar_value}
-                  current_index={0}
-                />
+                <Suspense fallback={<LogoPage />}>
+                  <AsyncSettings
+                    blur={profile_alert || logout_popup ? "5px" : "0px"}
+                  />
+                </Suspense>
               );
             }}
           />

@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import { IconContext } from 'react-icons';
 import { FaCog, FaLock, FaPowerOff } from 'react-icons/fa';
-import { BiBarChart, BiUser } from 'react-icons/bi';
 import './dropdown.scss';
 import { withRouter } from 'react-router';
 
@@ -37,22 +36,6 @@ const SettingsIcon = ()=>{
     )
 }
 
-const AnalyticsIcon = ()=>{
-    return (
-        <IconContext.Provider value={{ style: { border: '1px solid #fff', padding: '10px 10px', fontSize: '20px', borderRadius: '50%' } }}>
-            <BiBarChart/>
-        </IconContext.Provider>
-    )
-}
-
-const DeveloperIcon = ()=>{
-    return (
-        <IconContext.Provider value={{ style: { border: '1px solid #fff', padding: '10px 10px', fontSize: '20px', borderRadius: '50%' } }}>
-            <BiUser/>
-        </IconContext.Provider>
-    )
-}
-
 const Dropdown = ({ profile, TriggerDropdown, TriggerLogoutPopup, history }) => {
     return (
         <Fragment>
@@ -66,17 +49,10 @@ const Dropdown = ({ profile, TriggerDropdown, TriggerLogoutPopup, history }) => 
                     </div>
                     <LockIcon/>
                 </header>
-                <nav className='dropdown-nav' onClick={ ()=>history.push('/analytics') }>
-                    <AnalyticsIcon/>
-                    <div className='dropdown-nav-name'>Analytics</div>
-                </nav>
+
                 <nav className='dropdown-nav' onClick={ ()=>history.push('/settings') }>
                     <SettingsIcon/>
                     <div className='dropdown-nav-name'>Settings</div>
-                </nav>
-                <nav className='dropdown-nav' onClick = { ()=>history.push('/developer-info') }>
-                    <DeveloperIcon/>
-                    <div className='dropdown-nav-name'>Developer Info</div>
                 </nav>
                 <nav className='dropdown-nav' onClick={ TriggerLogoutPopup }>
                     <Icon/>
