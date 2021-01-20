@@ -1,12 +1,12 @@
 import express from 'express';
 import UserModel from '../Models/user-model.js';
 import redis from 'redis';
-// import MatchCache from '../Middleware/redis-match-cache.js';
+import MatchCache from '../Middleware/redis-match-cache.js';
 
 const cache = redis.createClient();
 const router = express.Router();
 
-router.get('/:Username', (req, res)=>{
+router.get('/:Username', MatchCache, (req, res)=>{
     const Username = req.params.Username ;
     UserModel.find().where("Username").equals(Username).then((response)=>{
         if(response.length === 1){
@@ -43,10 +43,10 @@ router.post('/', (req, res)=>{
                 if(receiver_profile){
                     const receiver_match_data = [...receiver_profile.Matches];
                     receiver_match_data.push({ username: YourName, Profile_Picture: YourProfilePic, LastInteraction: Date.now(), Messages: [] })
-                    receiver_profile.Matches = receiver_match_data
-                    receiver_profile.save().then(()=>{
-                        cache.set(`matches/${YourName}`, JSON.stringify(match_data), ()=>{
-                            cache.set(`matches/${FriendName}`, JSON.stringify(receiver_match_data), ()=>{
+                    receiver_profile.Matches = receiver_match_data;
+                    cache.set(`matches/${YourName}`, JSON.stringify(match_data), ()=>{
+                        cache.set(`matches/${FriendName}`, JSON.stringify(receiver_match_data), ()=>{
+                            receiver_profile.save().then(()=>{
                                 return res.json({'matched': true});
                             })
                         })

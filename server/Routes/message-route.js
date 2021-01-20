@@ -1,5 +1,7 @@
 import express from 'express';
 import UserModel from '../Models/user-model.js';
+import redis from 'redis';
+const caches = redis.createClient();
 
 const router = express.Router();
 
@@ -34,9 +36,13 @@ router.put('/', (req, res)=>{
                     return  element.username === Sender;
                 }) 
                 receiver_data.Matches[main_receiver_index].Messages.push(data_for_receiver);
-                receiver_data.save().then(()=>{
-                    return res.json({ message_added: true });
-                });
+                caches.set(`matches/${Sender}`, JSON.stringify(sender_data.Matches), ()=>{
+                    caches.set(`matches/${Receiver}`, JSON.stringify(receiver_data.Matches), ()=>{
+                        receiver_data.save().then(()=>{
+                            return res.json({ message_added: true });
+                        });
+                    })
+                })
             })
         })
     }).catch(()=>{

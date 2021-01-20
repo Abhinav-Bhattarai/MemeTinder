@@ -1,12 +1,12 @@
 import express from 'express';
 import redis from 'redis';
-// import RequestCache from '../Middleware/redis-request-cache.js';
+import RequestCache from '../Middleware/redis-request-cache.js';
 import RegisterModel from '../Models/register-model.js';
 
 const router = express.Router();
 const cache = redis.createClient();
 
-router.get('/:Username', (req, res)=>{
+router.get('/:Username', RequestCache, (req, res)=>{
     const Username = req.params.Username;
     RegisterModel.find().where("Username").equals(Username).then((response)=>{
         if(response.length === 1){
@@ -33,11 +33,11 @@ router.put('/', (req, res)=>{
             return element.sender === YourName;
         })
         if(data_redundancy === -1){
-            receiver_data.push({sender: YourName, ProfilePicture:  YourProfile});
+            receiver_data.push({sender: YourName, ProfilePicture: YourProfile});
             receiver.Requests = receiver_data;
-            receiver.save().then(()=>{
-                cache.set(`friend-req/${FriendName}`, JSON.stringify(receiver_data), ()=>{
-                    return res.json({ request_sent: true });
+            cache.set(`friend-req/${FriendName}`, JSON.stringify(receiver_data), ()=>{
+                receiver.save().then(()=>{
+                    return res.json({ request_sent: true });                    
                 })
             })
         }else{
@@ -55,11 +55,12 @@ router.post('/', (req, res)=>{
     RegisterModel.findOne({ Username: MyName }).exec().then((profile)=>{
         const Requests = profile.Requests.filter(element=> element.sender !== RequestName)
         profile.Requests = Requests;
-        profile.save().then(()=>{
-            cache.set(`friend-req/${MyName}`, JSON.stringify(Requests), ()=>{
+        console.log(profile.Requests);
+        cache.set(`friend-req/${MyName}`, JSON.stringify(profile.Requests), ()=>{
+            profile.save().then(()=>{
                 return res.json({request_removed: true});
             })
-        })
+        });
     }).catch(()=>{
         return res.json({error: true});
     })

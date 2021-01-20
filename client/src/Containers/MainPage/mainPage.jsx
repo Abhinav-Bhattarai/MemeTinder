@@ -300,6 +300,20 @@ const MainPage = ({ authenticate, history }) => {
     SetReactionBackend(FriendName);
   };
 
+  const CheckPreRequestFound = (name)=>{
+    const dummy = [...requests];
+    if(dummy.length >= 1){
+      const index = dummy.findIndex((element)=>{
+        return element.sender === name;
+      })
+      if(index !== -1){
+        return index;
+      }
+      return false;
+    }
+    return false
+  }
+
   const CenterClickHandler = () => {
     // Sends Friend request SuperLike
     const dummy = [...post_list];
@@ -461,6 +475,12 @@ const MainPage = ({ authenticate, history }) => {
     SendSocketMatch(username);
     SendSocketNotification(username, profile_image);
     AddNotificationBackend(username, profile_image);
+    const response = CheckPreRequestFound(username);
+    if(response !== false){
+      const dummy = [...post_list];
+      dummy.splice(response, 1);
+      SetPostList(dummy);
+    }
   };
 
   const RejectMatchRequest = (username) => {

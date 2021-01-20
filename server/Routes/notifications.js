@@ -26,10 +26,10 @@ router.put('/', (req, res)=>{
             const dummy = [...response.Notification];
             dummy.push({sender: Sender, ProfilePicture});
             response.Notification = dummy;
-            response.save().then(()=>{
-                cache.set(`notification/${Username}`, JSON.stringify(dummy), ()=>{
+            cache.set(`notification/${Username}`, JSON.stringify(dummy), ()=>{
+                response.save().then(()=>{
                     return res.json({ notification_added: true });
-                })
+                })     
             })
         }else{
             return res.json({ no_username: true });

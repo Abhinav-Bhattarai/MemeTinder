@@ -14,12 +14,12 @@ router.put("/", (req, res) => {
     .exec()
     .then((response) => {
       response.ReactedProfiles.push(ReactedPersonName);
-      response.save().then(() => {
-        cache.del(`posts/${MyName}`, () => {
+      cache.del(`posts/${MyName}`, () => {
+        response.save().then(() => {
           return res.json({
             reacted: true,
           });
-        });
+        }); 
       });
     })
     .catch(() => {
