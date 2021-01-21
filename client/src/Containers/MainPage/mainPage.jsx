@@ -39,10 +39,6 @@ const AsyncMessageRoute = React.lazy(() => {
   return import("../../Components/Messages/messages");
 });
 
-const AsyncSettings = React.lazy(() => {
-  return import("../Settings/settings");
-});
-
 const MainPage = ({ authenticate, history }) => {
   const [ people_list, SetPeopleList ] = useState(null);
   const [ requests, SetRequests ] = useState(null);
@@ -657,6 +653,7 @@ const MainPage = ({ authenticate, history }) => {
           SetApiLimiter(true);
         }
       } else {
+        SetPostList(dummy_list)
         SetTempPostList(null);
       }
     }
@@ -972,26 +969,6 @@ const MainPage = ({ authenticate, history }) => {
                       SendMessage={(username) => SendMessageHandler(username)}
                     />
                   ) : null}
-                </Suspense>
-              );
-            }}
-          />
-
-          <Route
-            path="/settings"
-            exact
-            render={() => {
-              return (
-                <Suspense fallback={
-                <main className="main-post-container">
-                  <LoadSpinner />
-                </main>}>
-
-                  <AsyncSettings
-                    blur={profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"}
-                    Profile={ my_profile_pic }
-                    ChangeProfile = { (profile)=>SetMyProfilePic(profile) }
-                  />
                 </Suspense>
               );
             }}

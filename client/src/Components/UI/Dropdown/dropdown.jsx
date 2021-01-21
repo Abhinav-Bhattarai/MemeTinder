@@ -1,8 +1,7 @@
 import React, { Fragment } from 'react';
 import { IconContext } from 'react-icons';
-import { FaCog, FaLock, FaPowerOff } from 'react-icons/fa';
+import { FaLock, FaPowerOff } from 'react-icons/fa';
 import './dropdown.scss';
-import { withRouter } from 'react-router';
 
 const Icon = ()=>{
     return (
@@ -28,15 +27,8 @@ const LockIcon = ()=>{
     )
 }
 
-const SettingsIcon = ()=>{
-    return (
-        <IconContext.Provider value={{ style: { border: '1px solid #fff', padding: '10px 10px', fontSize: '20px', borderRadius: '50%' } }}>
-            <FaCog/>
-        </IconContext.Provider>
-    )
-}
 
-const Dropdown = ({ profile, TriggerDropdown, TriggerLogoutPopup, history }) => {
+const Dropdown = ({ profile, TriggerDropdown, TriggerLogoutPopup }) => {
     return (
         <Fragment>
             <main className='dropdown' onMouseLeave={ TriggerDropdown }>
@@ -50,10 +42,6 @@ const Dropdown = ({ profile, TriggerDropdown, TriggerLogoutPopup, history }) => 
                     <LockIcon/>
                 </header>
 
-                <nav className='dropdown-nav' onClick={ ()=>history.push('/settings') }>
-                    <SettingsIcon/>
-                    <div className='dropdown-nav-name'>Settings</div>
-                </nav>
                 <nav className='dropdown-nav' onClick={ TriggerLogoutPopup }>
                     <Icon/>
                     <div className='dropdown-nav-name'>Logout</div>
@@ -63,4 +51,4 @@ const Dropdown = ({ profile, TriggerDropdown, TriggerLogoutPopup, history }) => 
     )
 }
 
-export default withRouter(Dropdown);
+export default Dropdown;
