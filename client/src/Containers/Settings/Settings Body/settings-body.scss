@@ -1,0 +1,76 @@
+@import '../../../_variables';
+
+.settings-body-container{
+
+    display: flex;
+    flex-direction: column;
+    
+    img{
+        margin: 20px auto;
+        height: 400px;
+        width: 400px;
+        border-radius: 50%;
+        border: 3px solid #333;
+        transition: filter 0.2s;
+        position: relative;
+
+        &:hover{
+            filter: blur(1px);
+        }
+    }
+
+    .settings-body-input-container{
+        padding: 10px 3%;
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+
+        label{
+            font-weight: 700;
+            font-size: 16px;
+            margin: 0 1%;
+            width: 25%;
+        }
+
+        input{
+            padding: 12px 3%;
+            border: none;
+            width: 80%;
+            background-color: rgb(197, 197, 197);
+            border: 1px solid grey;
+            border-radius: 2px;
+            font-size: 16px;
+
+            &:focus{
+                outline: none;
+                border: 1px solid midnightblue;
+            }
+        }
+        
+    }
+
+    button{
+        border: none;
+        display: block;
+        padding: 20px 3%;
+        width: 50%;
+        border-radius: 10px;
+        background-color: $theme-color;
+        color: white;
+        font-weight: 700;
+        margin: 10px auto;
+        transition: background 0.3s;
+
+        &:hover{
+            background-color: #e6415f;
+        }
+    }
+
+    .profile-conf-header{
+        font-weight: 700;
+        font-size: 23px;
+        text-align: center;
+        margin: 20px 0;
+        margin-bottom: 10px;
+    }
+}

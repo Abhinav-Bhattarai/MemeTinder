@@ -34,7 +34,6 @@ import Logout from "../../Components/Credentials/Logout/logout";
 import NotificationCard from "../../Components/NotificationCard/notification-card";
 import NotificationAudio from "../../assets/notification.mp3";
 import MatchAlert from "../../Components/UI/MatchAlert/match-alert";
-import LogoPage from "../../Components/UI/LogoPage/logo-page";
 
 const AsyncMessageRoute = React.lazy(() => {
   return import("../../Components/Messages/messages");
@@ -73,7 +72,6 @@ const MainPage = ({ authenticate, history }) => {
   const TriggerDropdown = () => {
     SetDropdownInfo(!dropdown_info);
   };
-
   // changing the sidebar and request bar pointer div;
 
   const TriggerMessageNav = (ref) => {
@@ -752,7 +750,6 @@ const MainPage = ({ authenticate, history }) => {
     }
   });
 
-  console.log(people_list)
 
   let people_list_jsx = null;
   if (people_list) {
@@ -977,9 +974,15 @@ const MainPage = ({ authenticate, history }) => {
             exact
             render={() => {
               return (
-                <Suspense fallback={<LogoPage />}>
+                <Suspense fallback={
+                <main className="main-post-container">
+                  <LoadSpinner />
+                </main>}>
+
                   <AsyncSettings
                     blur={profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"}
+                    Profile={ my_profile_pic }
+                    ChangeProfile = { (profile)=>SetMyProfilePic(profile) }
                   />
                 </Suspense>
               );

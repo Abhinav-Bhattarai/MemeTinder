@@ -1,0 +1,17 @@
+@import '../../../_variables';
+
+.settings-header{
+    display: flex;
+    align-items: center;
+    padding: 10px 2%;
+    background-color: $theme-color;
+    cursor: context-menu;
+    position: relative;
+
+    div{
+        font-size: 30px;
+        font-weight: 600;
+        color: white;
+        margin-left: 3%;
+    }
+}

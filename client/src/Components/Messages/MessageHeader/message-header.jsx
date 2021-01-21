@@ -4,7 +4,7 @@ import { IconContext } from 'react-icons';
 import { FaAngleLeft } from 'react-icons/fa';
 import { withRouter } from 'react-router';
 
-const BackIcon = ()=>{
+export const BackIcon = ()=>{
     return (
         <IconContext.Provider value={{
             style: {

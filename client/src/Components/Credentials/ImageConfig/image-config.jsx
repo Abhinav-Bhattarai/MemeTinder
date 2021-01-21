@@ -15,21 +15,25 @@ const ImageConfig = ({ history, RemoveProfileCard, SetNewProfile }) => {
     const main_input_ref = useRef( null );
 
     const ProfilePictureChange = (event)=>{
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onloadend = ()=>{
-            SetProfilePic( reader.result );
+        if(event.target.files){
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = ()=>{
+                SetProfilePic( reader.result );
+            }
+            reader.readAsDataURL(file);
         }
-        reader.readAsDataURL(file);
     }
 
     const MainPostChange = (event)=>{
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onloadend = ()=>{
-            SetMainPost( reader.result );
+        if(event.target.files){
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = ()=>{
+                SetMainPost( reader.result );
+            }
+            reader.readAsDataURL(file);
         }
-        reader.readAsDataURL(file);
     }
 
     const TriggerProfileRef = ()=>{
@@ -58,7 +62,7 @@ const ImageConfig = ({ history, RemoveProfileCard, SetNewProfile }) => {
                 ProfilePicture: profile_pic,
                 MainPost: main_post
             }
-            axios.post(`/profile-confirm/${localStorage.getItem('Username')}`, context).then(()=>{})
+            axios.post(`http://locahost:8000/profile-confirm/${localStorage.getItem('Username')}`, context).then(()=>{})
             RemoveProfileCard();
         }
     }
