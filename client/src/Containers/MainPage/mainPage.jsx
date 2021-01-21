@@ -606,23 +606,23 @@ const MainPage = ({ authenticate, history }) => {
     // Check for post of the matches and deleting that from the new post list;
     if (temp_post_list && people_list) {
       // O(n.log(n));
-      const post_list = [...temp_post_list]; // Username
-      const dummy_list = [...post_list]; // username
+      const post_list_dummy = [...temp_post_list]; // Username
+      const dummy_list = [...post_list_dummy]; // username
       const matches = [...people_list];
       let deletion_num = 0;
-      if (post_list.length >= 1 && matches.length >= 1) {
+      if (post_list_dummy.length >= 1 && matches.length >= 1) {
         let match = 0;
         // O(nlog(n)); WCS = 400 || BCS = O(1) === 1;
         for (match of matches) {
           let PostListLowerIndex = 0;
-          let PostListGreatestIndex = post_list.length - 1;
+          let PostListGreatestIndex = post_list_dummy.length - 1;
 
           while (PostListLowerIndex <= PostListGreatestIndex) {
             // Find the mid index
             const PostListMidIndex = Math.floor(
               (PostListLowerIndex + PostListGreatestIndex) / 2
             );
-            const MidIndexUsername = post_list[PostListMidIndex].Username;
+            const MidIndexUsername = post_list_dummy[PostListMidIndex].Username;
             // If element is present at mid, return True
             if (MidIndexUsername === match.username) {
               dummy_list.splice(PostListMidIndex - deletion_num, 1);
@@ -640,19 +640,27 @@ const MainPage = ({ authenticate, history }) => {
             }
           }
         }
-        SetPostList(dummy_list);
+        if(post_list){
+          const posts = [...post_list];
+          let new_posts = 0;
+          for (new_posts of dummy_list){
+            posts.push((new_posts));
+          };
+          SetPostList(posts);
+        }else{
+          SetPostList(dummy_list);
+        }
         SetTempPostList(null);
-        SetMileStone(Math.floor(dummy_list.length / 2) + 1);
+        SetMileStone(Math.floor(post_list.length / 2) + 1);
         SetCurrentIndex(0);
         if (dummy_list.length <= 20) {
           SetApiLimiter(true);
         }
       } else {
-        SetPostList(temp_post_list);
         SetTempPostList(null);
       }
     }
-  }, [temp_post_list, people_list]);
+  }, [temp_post_list, people_list, post_list]);
 
   const FetchDirectURLMessages = useCallback(
     (username) => {

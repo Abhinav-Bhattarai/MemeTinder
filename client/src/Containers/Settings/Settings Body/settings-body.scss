@@ -61,6 +61,10 @@
         margin: 10px auto;
         transition: background 0.3s;
 
+        &:focus{
+            outline: none;
+        }
+
         &:hover{
             background-color: #e6415f;
         }

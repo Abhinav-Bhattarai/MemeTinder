@@ -4,10 +4,13 @@ import Simplebar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
 import { AddIcon } from "../Settings Header/settings-header";
 import axios from "axios";
+import { withRouter } from 'react-router-dom';
 
-const SettingsBody = ({ Profile, ChangeProfile }) => {
+const SettingsBody = ({ Profile, ChangeProfile, history }) => {
   const InputRef = useRef(null);
   const [ new_profile, SetNewProfile ] = useState(Profile);
+  const [ profile_condition, SetProfileCondition ] = useState(false);
+  const [ username_condition, SetUsernameCondition ] = useState(false);
   const [ username, SetUsername ] = useState(localStorage.getItem("Username"));
 
   const ChangeNewProfile = (event) => {
@@ -16,6 +19,7 @@ const SettingsBody = ({ Profile, ChangeProfile }) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         SetNewProfile(reader.result);
+        SetProfileCondition(true);
       };
       reader.readAsDataURL(file);
     }
@@ -24,34 +28,26 @@ const SettingsBody = ({ Profile, ChangeProfile }) => {
   const UsernameChange = (event) => {
     const value = event.target.value;
     SetUsername(value);
+    if(localStorage.getItem('Username') !== value && value.length >= 4){
+      if(username_condition === false){
+        SetUsernameCondition(true);
+      }
+    }else{
+      SetUsernameCondition(false);
+    }
   };
 
   const SubmitChanges = (event)=>{
     event.preventDefault();
-    if(new_profile && localStorage.getItem('Username') !== username && username.length >= 4){
+    if(profile_condition || username_condition){
         const context = {
             ProfilePicture: new_profile,
             Username: username
         }
-        axios.put('http://localhost:8000/change-settings/both', context).then(()=>{
+        axios.put(`http://localhost:8000/change-settings/${localStorage.getItem('Username')}`, context).then(()=>{
             localStorage.setItem('Username', username);
             ChangeProfile(new_profile);
-        });
-    }
-    else if(new_profile){
-        const context = {
-            ProfilePicture: new_profile
-        }
-        axios.put('http://localhost:8000/change-settings/profile', context).then(()=>{
-            ChangeProfile(new_profile);
-        });
-    }
-    else if(localStorage.getItem('Username') !== username && username.length >= 4){
-        const context = {
-            Username: username
-        }
-        axios.put('http://localhost:8000/change-settings/username', context).then(()=>{
-            localStorage.setItem('Username', username);
+            history.push('/posts');
         });
     }
   }
@@ -97,4 +93,4 @@ const SettingsBody = ({ Profile, ChangeProfile }) => {
   );
 };
 
-export default SettingsBody;
+export default withRouter(SettingsBody);

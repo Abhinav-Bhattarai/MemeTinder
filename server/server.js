@@ -21,7 +21,7 @@ import ProfileConfirmRoute from './Routes/profile-confirm.js';
 import PostReactRoute from './Routes/change-reacted-profile.js';
 import NotificationRoute from './Routes/notifications.js';
 import CrashNotifyRoute from './Routes/crash-notification.js';
-import ChangeSettingsRoute from './Routes/change-settings.js';
+// import ChangeSettingsRoute from './Routes/change-settings.js';
 
 dotenv.config();
 
@@ -81,7 +81,7 @@ app.use('/profile-confirm', ProfileConfirmRoute);
 app.use('/post-react', PostReactRoute);
 app.use('/add-notification', NotificationRoute);
 app.use('/crash-notification', CrashNotifyRoute);
-app.use('/change-settings', ChangeSettingsRoute);
+// app.use('/change-settings', ChangeSettingsRoute);
 
 // DB connection
 mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(()=>{
