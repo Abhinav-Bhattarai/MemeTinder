@@ -1,0 +1,38 @@
+.video-outer-container {
+    position: fixed;
+    z-index: 20;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(53, 49, 49, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .video-inner-container{
+        position: relative;
+        width: 60%;
+        height: 100%;
+
+        .video-other{
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 10px;
+            width: 100%;
+            height: 100%;
+            background-color: #333;
+        }
+
+        .video-self{
+            position: absolute;
+            bottom: 0;
+            right: 2%;
+            width: 200px;
+            border-radius: 10px;
+            border: 2px solid #333;
+            background-color: #333;
+        }
+    }
+  }

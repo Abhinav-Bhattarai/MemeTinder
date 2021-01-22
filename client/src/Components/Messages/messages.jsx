@@ -1,12 +1,15 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import './messages.scss';
 import Message from './MessageContainer/Message/message';
 import MessageFooter from './MessageFooter/message-footer';
 import MessageHeader from './MessageHeader/message-header';
 import MessageContainer from './MessageContainer/message-container';
+import VideoContainer from './VideoContainer/video-container';
 
 const Messages = ({ ChangeMessageInput, MessageInputValue, RecentMessages, Profile, Username, blur, SendMessage }) => {
 
+    const [ video_call_popup, SetVideoCallPopup ] = useState(false);
+    console.log(video_call_popup)
     let jsx = null;
     if( RecentMessages && Profile && Username ){
         jsx = (
@@ -14,6 +17,7 @@ const Messages = ({ ChangeMessageInput, MessageInputValue, RecentMessages, Profi
                 <MessageHeader
                     Username = { Username }
                     ProfilePicture = { Profile }
+                    TriggerPhoneCall = { ()=> SetVideoCallPopup(!video_call_popup) }
                 />
 
                 <MessageContainer>
@@ -32,7 +36,7 @@ const Messages = ({ ChangeMessageInput, MessageInputValue, RecentMessages, Profi
                         ): null
                     }
                 </MessageContainer>
-
+    
                 <MessageFooter
                     MessageInputValue = { MessageInputValue }
                     MessageInputChanger = { ChangeMessageInput }
@@ -53,6 +57,13 @@ const Messages = ({ ChangeMessageInput, MessageInputValue, RecentMessages, Profi
             >
                 { jsx }
             </main>
+            {
+                (video_call_popup === true) ? (
+                    <VideoContainer>
+                        
+                    </VideoContainer>
+                ): null
+            }
         </Fragment>
     )
 }
