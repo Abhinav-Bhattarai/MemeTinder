@@ -8,8 +8,10 @@ import React, {
 import axios from "axios";
 import socket_client from "socket.io-client";
 import { Route, Switch, withRouter } from "react-router-dom";
+import Peer from "simple-peer";
 
 import "../../Components/PostContainer/post-container.scss";
+import VideoContainer from '../../Components/Messages/VideoContainer/video-container';
 import SideBar from "../../Components/SiderBar/sidebar";
 import SidebarHeader from "../../Components/SiderBar/SideBar-Header/sidebar-header";
 import SidebarNav from "../../Components/SiderBar/Sidebar-Nav/sidebar-nav";
@@ -34,36 +36,45 @@ import Logout from "../../Components/Credentials/Logout/logout";
 import NotificationCard from "../../Components/NotificationCard/notification-card";
 import NotificationAudio from "../../assets/notification.mp3";
 import MatchAlert from "../../Components/UI/MatchAlert/match-alert";
+import IncomingCallPage from "../../Components/IncomingCallHandler/incoming-call-page";
 
 const AsyncMessageRoute = React.lazy(() => {
   return import("../../Components/Messages/messages");
 });
 
 const MainPage = ({ authenticate, history }) => {
-  const [ people_list, SetPeopleList ] = useState(null);
-  const [ requests, SetRequests ] = useState(null);
-  const [ my_profile_pic, SetMyProfilePic ] = useState(null);
-  const [ post_list, SetPostList ] = useState(null);
-  const [ current_index, SetCurrentIndex ] = useState(0);
-  const [ current_sidebar_value, SetSideBarValue ] = useState(0);
-  const [ current_request_bar_value, SetRequestBarValue ] = useState(0);
-  const [ dropdown_info, SetDropdownInfo ] = useState(false);
-  const [ socket, SetSocket ] = useState(null);
-  const [ profile_alert, SetProfileAlert ] = useState(false);
-  const [ api_limiter, SetApiLimiter ] = useState(false);
-  const [ temp_post_list, SetTempPostList ] = useState(null);
-  const [ logout_popup, SetLogoutPopup ] = useState(false);
-  const [ messageInput, SetMessageInput ] = useState("");
-  const [ recent_messages, SetRecentMessages ] = useState(null);
-  const [ message_info, SetMessageInfo ] = useState(null);
-  const [ current_post_api_call, SetCurrentPostApiCall ] = useState(0);
-  const [ milestone, SetMileStone ] = useState(0);
-  const [ joined_room, SetJoinedRoom ] = useState(null);
-  const [ nav_notification, SetNavNotification ] = useState(null);
-  const [ direct_url_access, SetDirectURLAccess ] = useState(false);
-  const [ notification_list, SetNotificationList ] = useState(null);
-  const [ notification_alert, SetNotificationAlert ] = useState(false);
-  const [ match_found_timeout, SetMatchFoundTimeout ] = useState(false);
+  const [people_list, SetPeopleList] = useState(null);
+  const [requests, SetRequests] = useState(null);
+  const [my_profile_pic, SetMyProfilePic] = useState(null);
+  const [post_list, SetPostList] = useState(null);
+  const [current_index, SetCurrentIndex] = useState(0);
+  const [current_sidebar_value, SetSideBarValue] = useState(0);
+  const [current_request_bar_value, SetRequestBarValue] = useState(0);
+  const [dropdown_info, SetDropdownInfo] = useState(false);
+  const [socket, SetSocket] = useState(null);
+  const [profile_alert, SetProfileAlert] = useState(false);
+  const [api_limiter, SetApiLimiter] = useState(false);
+  const [temp_post_list, SetTempPostList] = useState(null);
+  const [logout_popup, SetLogoutPopup] = useState(false);
+  const [messageInput, SetMessageInput] = useState("");
+  const [recent_messages, SetRecentMessages] = useState(null);
+  const [message_info, SetMessageInfo] = useState(null);
+  const [current_post_api_call, SetCurrentPostApiCall] = useState(0);
+  const [milestone, SetMileStone] = useState(0);
+  const [joined_room, SetJoinedRoom] = useState(null);
+  const [nav_notification, SetNavNotification] = useState(null);
+  const [direct_url_access, SetDirectURLAccess] = useState(false);
+  const [notification_list, SetNotificationList] = useState(null);
+  const [notification_alert, SetNotificationAlert] = useState(false);
+  const [match_found_timeout, SetMatchFoundTimeout] = useState(false);
+
+  const [my_stream, SetMyStream] = useState(null);
+  const [peer_stream, SetPeerStream] = useState(null);
+  const [callincoming, SetCallIncoming] = useState(false);
+  const [caller_signal, SetCallerSignal] = useState(null);
+  const [caller_name, SetCallerName] = useState(null);
+  const [video_call_popup, SetVideoCallPopup] = useState(false);
+  const [callerProfile, SetCallerProfile] = useState(null);
 
   const TriggerDropdown = () => {
     SetDropdownInfo(!dropdown_info);
@@ -196,9 +207,9 @@ const MainPage = ({ authenticate, history }) => {
     SetJoinedRoom(null);
   };
 
-  const SetNewProfile = (profile)=>{
+  const SetNewProfile = (profile) => {
     SetMyProfilePic(profile);
-  }
+  };
 
   const TwoWayMatchHandler = (context) => {
     SetMatchFoundTimeout(true);
@@ -294,19 +305,19 @@ const MainPage = ({ authenticate, history }) => {
     SetReactionBackend(FriendName);
   };
 
-  const CheckPreRequestFound = (name)=>{
+  const CheckPreRequestFound = (name) => {
     const dummy = [...requests];
-    if(dummy.length >= 1){
-      const index = dummy.findIndex((element)=>{
+    if (dummy.length >= 1) {
+      const index = dummy.findIndex((element) => {
         return element.sender === name;
-      })
-      if(index !== -1){
+      });
+      if (index !== -1) {
         return index;
       }
       return false;
     }
-    return false
-  }
+    return false;
+  };
 
   const CenterClickHandler = () => {
     // Sends Friend request SuperLike
@@ -470,7 +481,7 @@ const MainPage = ({ authenticate, history }) => {
     SendSocketNotification(username, profile_image);
     AddNotificationBackend(username, profile_image);
     const response = CheckPreRequestFound(username);
-    if(response !== false){
+    if (response !== false) {
       const dummy = [...post_list];
       dummy.splice(response, 1);
       SetPostList(dummy);
@@ -636,14 +647,14 @@ const MainPage = ({ authenticate, history }) => {
             }
           }
         }
-        if(post_list){
+        if (post_list) {
           const posts = [...post_list];
           let new_posts = 0;
-          for (new_posts of dummy_list){
-            posts.push((new_posts));
-          };
+          for (new_posts of dummy_list) {
+            posts.push(new_posts);
+          }
           SetPostList(posts);
-        }else{
+        } else {
           SetPostList(dummy_list);
         }
         SetTempPostList(null);
@@ -653,7 +664,7 @@ const MainPage = ({ authenticate, history }) => {
           SetApiLimiter(true);
         }
       } else {
-        SetPostList(dummy_list)
+        SetPostList(dummy_list);
         SetTempPostList(null);
       }
     }
@@ -689,7 +700,10 @@ const MainPage = ({ authenticate, history }) => {
 
   useEffect(() => {
     if (profile_alert === false) {
-      if (history.location.pathname === "/" || history.location.pathname === '/settings') {
+      if (
+        history.location.pathname === "/" ||
+        history.location.pathname === "/settings"
+      ) {
         if (joined_room !== null) {
           SetJoinedRoom(null);
           SetDirectURLAccess(false);
@@ -709,13 +723,13 @@ const MainPage = ({ authenticate, history }) => {
     profile_alert,
   ]);
 
-  useEffect(()=>{
-    if(match_found_timeout){
-      setTimeout(()=>{
+  useEffect(() => {
+    if (match_found_timeout) {
+      setTimeout(() => {
         SetMatchFoundTimeout(false);
       }, 1000);
     }
-  })
+  });
 
   useEffect(() => {
     // socket receiers in client;
@@ -755,7 +769,124 @@ const MainPage = ({ authenticate, history }) => {
     }
   });
 
+  const FindCallerProfile = username => {
+    if(people_list){
+      const dummy = [...people_list];
+      const index = dummy.findIndex((element)=>{
+        return element.username === username
+      });
+      if(dummy !== -1){
+        SetCallerProfile(dummy[index].Profile_Picture)
+      }
+    }
+  }
 
+  useEffect(() => {
+    if(socket){
+      socket.on("call-incoming", (signal, from) => {
+        if(video_call_popup === false){
+          SetCallerSignal(signal);
+          SetCallerName(from);
+          FindCallerProfile(from);
+          SetCallIncoming(true);
+        }else{
+          socket.emit("call-busy", from);
+        }
+      });
+  
+      socket.on("client-busy", ()=>{
+        SetMyStream(null);
+        SetVideoCallPopup(false);
+      })
+  
+      return () => {
+        socket.removeAllListeners();
+      };
+    }
+  });
+
+  useEffect(() => {
+    if(video_call_popup){
+      navigator.mediaDevices
+      .getUserMedia({
+        video: {
+          frameRate: 30,
+          aspectRatio: 1.5,
+        },
+        audio: false,
+      })
+      .then((stream) => {
+        SetMyStream(stream);
+        CallPeer();
+      })
+      .catch(() => {
+        console.log("error");
+      });
+    }else{
+      SetMyStream(null);
+    }
+  }, [video_call_popup]);
+
+  const CallPeer = () => {
+    const peer = new Peer({
+      initiator: true,
+      trickle: false,
+      config: {
+        iceServers: [
+          {
+            urls: "stun:numb.viagenie.ca",
+            username: "sultan1640@gmail.com",
+            credential: "98376683",
+          },
+          {
+            urls: "turn:numb.viagenie.ca",
+            username: "sultan1640@gmail.com",
+            credential: "98376683",
+          },
+        ],
+      },
+      stream: my_stream,
+    });
+
+    peer.on("signal", (data) => {
+      const context = {
+        signalData: data,
+        from: localStorage.getItem("Username"),
+        to: joined_room,
+      };
+      socket.emit("call-user", context);
+    });
+
+    peer.on("stream", (stream) => {
+      SetPeerStream(stream);
+    });
+
+    socket.on("call-accepted", signalData => {
+      peer.signal(signalData);
+    });
+  };
+
+  const AcceptCallRequest = () => {
+    const peer = new Peer({
+      initiator: false,
+      trickle: false,
+      stream: my_stream,
+    });
+
+    peer.on("signal", (data) => {
+      socket.emit("accept-call", { signalData: data, to: caller_name });
+    });
+
+    peer.on("stream", (stream) => {
+      SetPeerStream(stream);
+    });
+
+    peer.signal(caller_signal);
+    SetCallIncoming(false);
+    SetVideoCallPopup(true);
+  };
+
+  // Main jsx Logic if else
   let people_list_jsx = null;
   if (people_list) {
     if (current_sidebar_value === 0) {
@@ -864,7 +995,11 @@ const MainPage = ({ authenticate, history }) => {
       const post_data = [...post_list];
       const required_data = post_data[0];
       post_area_jsx = (
-        <PostContainer blur={profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"}>
+        <PostContainer
+          blur={
+            profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"
+          }
+        >
           <ImageContainer
             ProfilePicture={required_data.ProfilePicture}
             MainPost={required_data.MainPost}
@@ -879,7 +1014,11 @@ const MainPage = ({ authenticate, history }) => {
       );
     } else {
       post_area_jsx = (
-        <NoPost blur={profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"} />
+        <NoPost
+          blur={
+            profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"
+          }
+        />
       );
     }
   }
@@ -887,7 +1026,11 @@ const MainPage = ({ authenticate, history }) => {
   return (
     <Fragment>
       <SideBar
-        blur={dropdown_info || profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"}
+        blur={
+          dropdown_info || profile_alert || logout_popup || match_found_timeout
+            ? "5px"
+            : "0px"
+        }
       >
         <SidebarHeader
           profile_picture={my_profile_pic}
@@ -931,13 +1074,18 @@ const MainPage = ({ authenticate, history }) => {
               >
                 {message_info ? (
                   <AsyncMessageRoute
-                    blur={profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"}
+                    blur={
+                      profile_alert || logout_popup || match_found_timeout
+                        ? "5px"
+                        : "0px"
+                    }
                     MessageInputValue={messageInput}
                     ChangeMessageInput={(e) => ChangeMessageInput(e)}
                     RecentMessages={recent_messages}
                     Username={message_info.Username}
                     Profile={message_info.Profile}
                     SendMessage={(username) => SendMessageHandler(username)}
+                    TriggerVideoCallPopup = { SetVideoCallPopup(true) }
                   />
                 ) : null}
               </Suspense>
@@ -960,7 +1108,11 @@ const MainPage = ({ authenticate, history }) => {
                 >
                   {message_info ? (
                     <AsyncMessageRoute
-                      blur={profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"}
+                      blur={
+                        profile_alert || logout_popup || match_found_timeout
+                          ? "5px"
+                          : "0px"
+                      }
                       MessageInputValue={messageInput}
                       ChangeMessageInput={(e) => ChangeMessageInput(e)}
                       RecentMessages={recent_messages}
@@ -996,7 +1148,11 @@ const MainPage = ({ authenticate, history }) => {
         </main>
       )}
 
-      <RequestBar blur={profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"}>
+      <RequestBar
+        blur={
+          profile_alert || logout_popup || match_found_timeout ? "5px" : "0px"
+        }
+      >
         <RequestHeader />
         <RequestNav
           TriggerNotificationNav={(ref) => TriggerNotificationNav(ref)}
@@ -1015,13 +1171,28 @@ const MainPage = ({ authenticate, history }) => {
       </RequestBar>
 
       {profile_alert ? (
-        <ImageConfig RemoveProfileCard={TriggerProfileAlert} SetNewProfile={(profile)=>SetNewProfile(profile)} />
+        <ImageConfig
+          RemoveProfileCard={TriggerProfileAlert}
+          SetNewProfile={(profile) => SetNewProfile(profile)}
+        />
       ) : null}
 
-      {
-        (match_found_timeout) ? <MatchAlert/> : null
-      }
+      {match_found_timeout ? <MatchAlert /> : null}
 
+      {video_call_popup === true ? (
+        <VideoContainer/>
+      ) : null}
+      
+      {
+        (callincoming) ? (
+          <IncomingCallPage
+            CallerName = { caller_name }
+            CallerProfile = { callerProfile }
+            AcceptRequest = { AcceptCallRequest }
+            DeclineRequest = { () => {} }
+          />
+        ) : null
+      }
     </Fragment>
   );
 };

@@ -47,6 +47,18 @@ io.on('connection', (socket)=>{
         socket.join(username)
     })
 
+    socket.on('call-user', (data)=>{
+        socket.broadcast.to(data.to).emit("call-incoming", data.signalData, data.from);
+    });
+
+    socket.on("accept-call", (data)=>{
+        socket.broadcast.to(data.to).emit("call-accepted", data.signalData)
+    })
+
+    socket.on("call-busy", to => {
+        socket.broadcast.to(to).emit("client-busy");
+    })
+
     socket.on('Send-Friend-Request', ( room, sender_name, sender_profile )=>{
         socket.broadcast.to(room).emit('client-request-finder', sender_name, sender_profile )
     })
