@@ -6,11 +6,11 @@ const VideoContainer = ({ my_stream, peer_stream }) => {
   const PeerVideoElement = useRef(null);
 
   useEffect(() => {
-    if (MyVideoElement) {
+    if (my_stream !== null && MyVideoElement) {
       MyVideoElement.current.srcObject = my_stream;
     }
 
-    if (PeerVideoElement) {
+    if (peer_stream !== null && PeerVideoElement) {
       PeerVideoElement.current.srcObject = peer_stream;
     }
   }, [my_stream, peer_stream]);
@@ -19,7 +19,7 @@ const VideoContainer = ({ my_stream, peer_stream }) => {
     <Fragment>
       <main className="video-outer-container">
         <main className="video-inner-container">
-          <video className="video-self" autoPlay ref={MyVideoElement} />
+          <video className="video-self" muted autoPlay ref={MyVideoElement} />
           <video className="video-other" autoPlay ref={PeerVideoElement} />
         </main>
       </main>

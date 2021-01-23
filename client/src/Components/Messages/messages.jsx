@@ -14,7 +14,7 @@ const Messages = ({ ChangeMessageInput, MessageInputValue, RecentMessages, Profi
                 <MessageHeader
                     Username = { Username }
                     ProfilePicture = { Profile }
-                    TriggerPhoneCall = { TriggerVideoCallPopup }
+                    TriggerPhoneCall = { ()=>TriggerVideoCallPopup() }
                 />
 
                 <MessageContainer>
