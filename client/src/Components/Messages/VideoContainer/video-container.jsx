@@ -4,7 +4,6 @@ import "./video-container.scss";
 const VideoContainer = ({ my_stream, peer_stream }) => {
   const MyVideoElement = useRef(null);
   const PeerVideoElement = useRef(null);
-
   useEffect(() => {
     if (my_stream !== null && MyVideoElement) {
       MyVideoElement.current.srcObject = my_stream;

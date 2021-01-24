@@ -22,7 +22,6 @@ import PostReactRoute from './Routes/change-reacted-profile.js';
 import NotificationRoute from './Routes/notifications.js';
 import CrashNotifyRoute from './Routes/crash-notification.js';
 // import ChangeSettingsRoute from './Routes/change-settings.js';
-
 dotenv.config();
 
 const app = express();
@@ -37,7 +36,7 @@ app.use(sanitizer());
 
 // disabling Origin change for DDOS prevention;
 app.use(cors({
-    origin: ['http://localhost:5000', 'http://192.168.0.104:5000', 'https://localhost:3000', 'https://192.168.0.103:3000']
+    origin: ['http://localhost:5000', 'http://192.168.0.104:5000', 'https://localhost:3000', 'https://192.168.0.104:3000']
 }));
 
 // Socket Connection
@@ -48,11 +47,10 @@ io.on('connection', (socket)=>{
     })
 
     socket.on('call-user', data => {
-        socket.broadcast.to(data.transmit_to).emit("call-incoming", data.signalData, data.from);
+        socket.broadcast.to(data.to).emit("call-incoming", data.sender);
     });
 
     socket.on("accept-call", data => {
-        console.log(data);
         socket.broadcast.to(data.transmit_to).emit("call-accepted", data.signalData)
     })
 

@@ -10,9 +10,10 @@
     "client": "cd ../client && npm start",
     "client-build": "cd ../client && npm run deploy",
     "redis": "cd C:/Program Files/Redis && redis-cli",
+    "peer": "peerjs --port 9000",
     "server": "concurrently \"npm run redis\" \"npm start\"",
-    "dev": "concurrently \"npm start\" \"npm run client\" \"npm run redis\"",
-    "prod": "concurrently \"npm start\" \"npm run client-build\" \"npm run redis\""
+    "dev": "concurrently \"npm start\" \"npm run client\" \"npm run redis\" \"npm run peer\" ",
+    "prod": "concurrently \"npm start\" \"npm run client-build\" \"npm run redis\" \"npm run peer\" "
   },
   "author": "Abhinav Bhattarai",
   "license": "MIT",
@@ -29,6 +30,7 @@
     "mongoose": "^5.11.8",
     "nodemailer": "^6.4.17",
     "nodemon": "^2.0.6",
+    "peer": "^0.6.1",
     "redis": "^3.0.2",
     "socket.io": "^2.3.0"
   }

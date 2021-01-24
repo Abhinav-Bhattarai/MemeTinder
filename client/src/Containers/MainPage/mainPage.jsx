@@ -8,7 +8,7 @@ import React, {
 import axios from "axios";
 import socket_client from "socket.io-client";
 import { Route, Switch, withRouter } from "react-router-dom";
-import Peer from "simple-peer";
+import Peer from 'peerjs';
 
 import "../../Components/PostContainer/post-container.scss";
 import VideoContainer from '../../Components/Messages/VideoContainer/video-container';
@@ -42,6 +42,11 @@ const AsyncMessageRoute = React.lazy(() => {
   return import("../../Components/Messages/messages");
 });
 
+var global_peer = new Peer(`${localStorage.getItem('Username')}`, {
+  port: '9000',
+  path: '/'
+});
+
 const MainPage = ({ authenticate, history }) => {
   const [people_list, SetPeopleList] = useState(null);
   const [requests, SetRequests] = useState(null);
@@ -71,11 +76,9 @@ const MainPage = ({ authenticate, history }) => {
   const [my_stream, SetMyStream] = useState(null);
   const [peer_stream, SetPeerStream] = useState(null);
   const [callincoming, SetCallIncoming] = useState(false);
-  const [caller_signal, SetCallerSignal] = useState(null);
   const [caller_name, SetCallerName] = useState(null);
   const [video_call_popup, SetVideoCallPopup] = useState(false);
   const [callerProfile, SetCallerProfile] = useState(null);
-  const [peer, SetPeer] = useState(null);
 
   const TriggerDropdown = () => {
     SetDropdownInfo(!dropdown_info);
@@ -769,7 +772,7 @@ const MainPage = ({ authenticate, history }) => {
     }
   });
 
-  const FindCallerProfile = username => {
+  const FindCallerProfile = useCallback( username => {
     if(people_list){
       const dummy = [...people_list];
       const index = dummy.findIndex((element)=>{
@@ -779,18 +782,22 @@ const MainPage = ({ authenticate, history }) => {
         SetCallerProfile(dummy[index].Profile_Picture)
       }
     }
-  }
+  }, [people_list]);
+
+  useEffect(()=>{ 
+    if(callincoming){
+      FindCallerProfile(caller_name);
+    }
+  }, [ callincoming, caller_name, FindCallerProfile ]);
 
   useEffect(() => {
     if(socket){
-      socket.on("call-incoming", (signal, from) => {
+      socket.on("call-incoming", caller => {
         if(video_call_popup === false){
-          SetCallerSignal(signal);
-          SetCallerName(from);
-          FindCallerProfile(from);
+          SetCallerName(caller);
           SetCallIncoming(true);
         }else{
-          socket.emit("call-busy", from);
+          socket.emit("call-busy", caller);
         }
       });
   
@@ -799,10 +806,15 @@ const MainPage = ({ authenticate, history }) => {
         SetVideoCallPopup(false);
       })
 
-      socket.on("call-accepted", signalData => {
-        peer.signal(signalData);
-        console.log(signalData, 'signalData call-action');
+      socket.on("call-accepted", () => {
+        
       });
+
+      global_peer.on("call", call => {
+        my_stream ? call.answer(my_stream) : SetMediaStream(false, stream => {
+          call.answer(stream);
+        })
+      })
 
       return () => {
         socket.removeAllListeners();
@@ -810,74 +822,45 @@ const MainPage = ({ authenticate, history }) => {
     }
   });
 
-  const CallAction = useCallback(()=>{
-    const peer = new Peer({
-      initiator: true,
-      trickle: false,
-      config: {
-        iceServers: [
-          {
-              urls: "stun:numb.viagenie.ca"
-          }
-        ]
+
+  const SetMediaStream = (type, TriggercallCallBack, AnswerCallBack)=>{
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        frameRate: 30,
+        aspectRatio: 1.5,
       },
-      stream: my_stream,
-    });
+      audio: true,
+    })
+    .then((stream) => {
+      SetMyStream(stream);
+      if(type === true){
+        TriggercallCallBack(stream)
+      }else{
+        AnswerCallBack(stream)
+      }
 
-    SetPeer(peer);
+  })}
 
-    peer.on("stream", stream => {
+  const TriggerCall = ()=>{
+    SetVideoCallPopup(true);
+  
+    SetMediaStream( true, stream => {
       console.log(stream, 'stream-data')
-      SetPeerStream(stream);
+      socket.emit("call-user", { to: joined_room, sender: localStorage.getItem('Username') });
+      global_peer.call(joined_room, stream).on("stream", ()=>{
+        SetPeerStream(stream);
+      });
     });
-
-    peer.on("signal", data => {
-      const context = {
-        signalData: data,
-        from: localStorage.getItem("Username"),
-        transmit_to: joined_room,
-      };
-      socket.emit("call-user", context);
-    });
-      
-  }, [my_stream, joined_room, socket])
-
-  useEffect(()=>{
-    if(video_call_popup && my_stream === null){
-      navigator.mediaDevices.getUserMedia({
-        video: {
-          frameRate: 30,
-          aspectRatio: 1.5,
-        },
-        audio: true,
-      })
-      .then((stream) => {
-        SetMyStream(stream);
-        CallAction();
-      }).catch(() => {});
-    }
-  }, [my_stream, video_call_popup, CallAction])
+  };
 
   const AcceptCallRequest = () => {
-    const peer = new Peer({
-      initiator: false,
-      trickle: false,
-      stream: my_stream
-    });
-
-    peer.on("signal", data => {
-      socket.emit("accept-call", { signalData: data, transmit_to: caller_name });
-    });
-
-    peer.on("stream", stream => {
-      console.log(stream, 'stream-data')
-      SetPeerStream(stream);
-    });
-
-    peer.signal(caller_signal);
     SetCallIncoming(false);
     SetVideoCallPopup(true);
   };
+
+  const DeclineCallRequest = () => {
+    SetCallIncoming(false);
+  }
 
   // Main jsx Logic if else
   let people_list_jsx = null;
@@ -1078,7 +1061,7 @@ const MainPage = ({ authenticate, history }) => {
                     Username={message_info.Username}
                     Profile={message_info.Profile}
                     SendMessage={(username) => SendMessageHandler(username)}
-                    TriggerVideoCallPopup = { () => SetVideoCallPopup(true) }
+                    TriggerVideoCallPopup = { TriggerCall }
                   />
                 ) : null}
               </Suspense>
@@ -1112,7 +1095,7 @@ const MainPage = ({ authenticate, history }) => {
                       Username={message_info.Username}
                       Profile={message_info.Profile}
                       SendMessage={(username) => SendMessageHandler(username)}
-                      TriggerVideoCallPopup = { () => SetVideoCallPopup(true) }
+                      TriggerVideoCallPopup = { TriggerCall }
                     />
                   ) : null}
                 </Suspense>
@@ -1186,7 +1169,7 @@ const MainPage = ({ authenticate, history }) => {
             CallerName = { caller_name }
             CallerProfile = { callerProfile }
             AcceptRequest = { AcceptCallRequest }
-            DeclineRequest = { () => {} }
+            DeclineRequest = { DeclineCallRequest }
           />
         ) : null
       }
