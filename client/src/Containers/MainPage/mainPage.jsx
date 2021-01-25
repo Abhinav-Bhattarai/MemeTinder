@@ -3,7 +3,7 @@ import React, {
   Suspense,
   useCallback,
   useEffect,
-  useState,
+  useState
 } from "react";
 import axios from "axios";
 import socket_client from "socket.io-client";
@@ -813,6 +813,9 @@ const MainPage = ({ authenticate, history }) => {
       global_peer.on("call", call => {
         my_stream ? call.answer(my_stream) : SetMediaStream(false, stream => {
           call.answer(stream);
+          call.on("stream", stream => {
+            SetPeerStream(stream);
+          })
         })
       })
 
@@ -845,7 +848,6 @@ const MainPage = ({ authenticate, history }) => {
     SetVideoCallPopup(true);
   
     SetMediaStream( true, stream => {
-      console.log(stream, 'stream-data')
       socket.emit("call-user", { to: joined_room, sender: localStorage.getItem('Username') });
       global_peer.call(joined_room, stream).on("stream", ()=>{
         SetPeerStream(stream);

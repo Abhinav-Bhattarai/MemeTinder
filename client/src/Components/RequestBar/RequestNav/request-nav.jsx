@@ -1,6 +1,24 @@
 import React, { Fragment, useRef } from 'react';
-import { NotifyIcon } from '../../SiderBar/Sidebar-Nav/sidebar-nav';
+import { IconContext } from 'react-icons';
+import { FaDotCircle } from 'react-icons/fa';
 import '../../SiderBar/Sidebar-Nav/sidebar-nav.scss';
+
+const NotifyIcon = ()=>{
+    return ()=>{
+        <IconContext.Provider value={{style: {
+            fontSize: '8px',
+            color: '#ff385c',
+            position: 'absolute',
+            top: '3px',
+            backgroundColor: '#ff385c',
+            borderRadius: '50%',
+            right: '11%',
+            boxShadow: '0 0 5px $theme-color'
+        }}}>
+            <FaDotCircle/>
+        </IconContext.Provider>
+    }
+}
 
 const RequestNav = ({ TriggerNotificationNav, TriggerRequestNav, NavNotification }) => {
 

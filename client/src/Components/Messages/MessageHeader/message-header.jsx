@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import './message-header.scss';
 import { IconContext } from 'react-icons';
-import { FaAngleLeft, FaPhone } from 'react-icons/fa';
+import { FaAngleLeft } from 'react-icons/fa';
 import { withRouter } from 'react-router';
 
 export const BackIcon = ()=>{
@@ -17,17 +17,17 @@ export const BackIcon = ()=>{
     )
 }
 
-const PhoneIcon = ()=>{
-    return (
-        <IconContext.Provider value={{style:{
-            fontSize: '25px',
-            color: '#fff',
-            marginLeft: 'auto'
-        }}}>
-            <FaPhone/>
-        </IconContext.Provider>
-    )
-}
+// const PhoneIcon = ()=>{
+//     return (
+//         <IconContext.Provider value={{style:{
+//             fontSize: '25px',
+//             color: '#fff',
+//             marginLeft: 'auto'
+//         }}}>
+//             <FaPhone/>
+//         </IconContext.Provider>
+//     )
+// }
 
 const MessageHeader = ({ Username, ProfilePicture, history, TriggerPhoneCall  }) => {
     return (
@@ -42,9 +42,9 @@ const MessageHeader = ({ Username, ProfilePicture, history, TriggerPhoneCall  })
                 > <BackIcon/> </span>
                 <img src= { ProfilePicture } alt= ' profile '/>
                 <div> { Username } </div>
-                <span onClick={ TriggerPhoneCall }>
+                {/* <span onClick={ TriggerPhoneCall }>
                     <PhoneIcon/>
-                </span>
+                </span> */}
             </header>
         </Fragment>
     )
