@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 import './notification-card.scss';
 
 const NotificationCard = ({ sender, profile }) => {
-    console.log(sender, profile);
     return (
         <Fragment>
             <main className='notification-card-container'>

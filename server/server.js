@@ -22,6 +22,7 @@ import PostReactRoute from './Routes/change-reacted-profile.js';
 import NotificationRoute from './Routes/notifications.js';
 import CrashNotifyRoute from './Routes/crash-notification.js';
 import MobileRegisterRoute from './Routes/mobile-register.js';
+import path from 'path';
 
 dotenv.config();
 
@@ -103,6 +104,11 @@ mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: tr
     console.log('Didnot connect to mongoDB')
 });
 
+if(process.env.NODE_ENV === "production"){
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+    })
+};
 // listener
 server.listen(PORT, ()=>{
     console.log('Listening to localhost:8000')

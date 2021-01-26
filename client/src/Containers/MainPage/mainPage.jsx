@@ -189,7 +189,7 @@ const MainPage = ({ authenticate, history }) => {
       Sender: localStorage.getItem("Username"),
       Receiver: receiver,
     };
-    axios.put("http://localhost:8000/message", context);
+    axios.put("/message", context);
   };
 
   const SendMessageHandler = (Match_name) => {
@@ -223,7 +223,7 @@ const MainPage = ({ authenticate, history }) => {
   };
 
   const OneWayMatchHandler = (context) => {
-    axios.put("http://localhost:8000/friend-requests", context);
+    axios.put("/friend-requests", context);
   };
 
   const MatchTypeCheck = (username) => {
@@ -259,7 +259,7 @@ const MainPage = ({ authenticate, history }) => {
     // Fetch new posts after reaching half value for the total post_array;
     axios
       .get(
-        `http://localhost:8000/post/${
+        `/post/${
           current_post_api_call + 1
         }/${localStorage.getItem("Username")}`
       )
@@ -291,7 +291,7 @@ const MainPage = ({ authenticate, history }) => {
       ReactedPersonName: FriendName,
     };
 
-    axios.put("http://localhost:8000/post-react", context);
+    axios.put("/post-react", context);
   };
 
   const LeftClickHandler = () => {
@@ -432,7 +432,7 @@ const MainPage = ({ authenticate, history }) => {
       MyName: localStorage.getItem("Username"),
       RequestName: Username,
     };
-    axios.post("http://localhost:8000/friend-requests", context);
+    axios.post("/friend-requests", context);
   };
 
   const AddToMatchesBackend = (match_username, match_image) => {
@@ -443,7 +443,7 @@ const MainPage = ({ authenticate, history }) => {
       YourProfilePic: my_profile_pic,
     };
 
-    axios.post("http://localhost:8000/matches", context);
+    axios.post("/matches", context);
   };
 
   const SendSocketMatch = (username) => {
@@ -471,7 +471,7 @@ const MainPage = ({ authenticate, history }) => {
       Username: username,
       ProfilePicture: profile,
     };
-    axios.put("http://localhost:8000/add-notification", context);
+    axios.put("/add-notification", context);
   };
 
   const AcceptMatchRequest = (profile_image, username) => {
@@ -512,7 +512,7 @@ const MainPage = ({ authenticate, history }) => {
 
   const FetchMatches = () => {
     axios
-      .get(`http://localhost:8000/matches/${localStorage.getItem("Username")}`)
+      .get(`/matches/${localStorage.getItem("Username")}/${localStorage.getItem('auth-token')}`)
       .then((response) => {
         const error = { error_type: "Username", message: "Wrong Username" };
         const no_res = { no_matches: true };
@@ -531,9 +531,9 @@ const MainPage = ({ authenticate, history }) => {
   const FetchNotifications = () => {
     axios
       .get(
-        `http://localhost:8000/add-notification/${localStorage.getItem(
+        `/add-notification/${localStorage.getItem(
           "Username"
-        )}`
+        )}/${localStorage.getItem('auth-token')}`
       )
       .then((response) => {
         SetNotificationList(response.data);
@@ -543,9 +543,9 @@ const MainPage = ({ authenticate, history }) => {
   const FetchFriendrequest = () => {
     axios
       .get(
-        `http://localhost:8000/friend-requests/${localStorage.getItem(
+        `/friend-requests/${localStorage.getItem(
           "Username"
-        )}`
+        )}/${localStorage.getItem('auth-token')}`
       )
       .then((response) => {
         const error = { no_requests: true };
@@ -557,7 +557,7 @@ const MainPage = ({ authenticate, history }) => {
 
   const GetProfilePic = () => {
     axios
-      .get(`http://localhost:8000/profile/${localStorage.getItem("Username")}`)
+      .get(`/profile/${localStorage.getItem("Username")}`)
       .then((response) => {
         if (response.data.length >= 1) {
           SetMyProfilePic(response.data);
@@ -570,7 +570,7 @@ const MainPage = ({ authenticate, history }) => {
 
   const FetchPosts = () => {
     axios
-      .get(`http://localhost:8000/post/0/${localStorage.getItem("Username")}`)
+      .get(`/post/0/${localStorage.getItem("Username")}`)
       .then((response) => {
         const no_post = { no_posts: true };
         if (JSON.stringify(no_post) !== JSON.stringify(response.data)) {
@@ -587,7 +587,7 @@ const MainPage = ({ authenticate, history }) => {
   };
 
   const JoinSocketRoom = () => {
-    const io = socket_client.connect("http://localhost:8000");
+    const io = socket_client.connect("");
     io.emit("join-room", localStorage.getItem("Username"));
     SetSocket(io);
   };

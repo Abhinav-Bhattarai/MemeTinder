@@ -108,7 +108,7 @@ const LandingPage = ({ authenticate }) => {
           Confirm: new_password_confirm,
         };
         SetPasswordChangeLoader(true);
-        axios.put("http://localhost:8000/forget", context).then((response) => {
+        axios.put("/forget", context).then((response) => {
           const data = response.data;
           const required_data = { password_changed: true };
           if (JSON.stringify(data) === JSON.stringify(required_data)) {
@@ -144,7 +144,7 @@ const LandingPage = ({ authenticate }) => {
           Password: signin_password,
         };
         SetLoginLoader(true);
-        axios.post(`http://localhost:8000/login`, context).then((response) => {
+        axios.post(`/login`, context).then((response) => {
           const username_err = {
             error_type: "Password",
             message: "Password Do not match",
@@ -221,7 +221,7 @@ const LandingPage = ({ authenticate }) => {
         };
         SetSignupLoader(true);
         axios
-          .post("http://localhost:8000/register", context)
+          .post("/register", context)
           .then((response) => {
             const error = {
               error_type: "Username",
@@ -277,7 +277,7 @@ const LandingPage = ({ authenticate }) => {
       // axios request to get pass-token;
       // triggering get request to receive the token and later comparing thenumber in the token for sort of OTP checking via Email;
       axios
-        .get(`http://localhost:8000/forget/${signin_username}`)
+        .get(`/forget/${signin_username}`)
         .then((response) => {
           const data = response.data;
           const error = { error_type: "Username", error: "Username not found" };
@@ -318,7 +318,7 @@ const LandingPage = ({ authenticate }) => {
         token: localStorage.getItem("pass-token"),
         number: forget_number,
       };
-      axios.post("http://localhost:8000/forget", context).then((response) => {
+      axios.post("/forget", context).then((response) => {
         const condition = { access: true };
         if (JSON.stringify(response.data) === JSON.stringify(condition)) {
           SetForgetCard(false);

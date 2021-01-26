@@ -2,16 +2,25 @@ import express from 'express';
 import redis from 'redis';
 import RequestCache from '../Middleware/redis-request-cache.js';
 import RegisterModel from '../Models/register-model.js';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 const cache = redis.createClient();
 
-router.get('/:Username', RequestCache, (req, res)=>{
+router.get('/:Username/:token', RequestCache, (req, res)=>{
     const Username = req.params.Username;
+    const token = req.params.token;
     RegisterModel.find().where("Username").equals(Username).then((response)=>{
         if(response.length === 1){
-            cache.set(`friend-req/${Username}`, JSON.stringify(response[0].Requests), ()=>{
-                  return res.json(response[0].Requests);
+            jwt.verify(token, process.env.JWT_AUTH_KEY, (err, verification) => {
+                console.log(verification);
+                if(!err){
+                    cache.set(`friend-req/${Username}`, JSON.stringify(response[0].Requests), ()=>{
+                        return res.json(response[0].Requests);
+                    })
+                }else{
+                    return res.json({access_denied:true});
+                }
             })
             
         }else{
