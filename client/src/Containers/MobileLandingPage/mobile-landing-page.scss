@@ -67,4 +67,10 @@
         }
       
     }
+
+    .submiited{
+        @extend .submit;
+        background-color: grey;
+        color: #333;
+    }
 }

@@ -6,10 +6,10 @@ class ErrorBoundry extends Component {
   state = { error: false };
 
   componentDidCatch(err) {
-    this.setState({ error: true });
     axios.post(`/crash-notification/${localStorage.getItem("Username")}`, {
-      fault: err,
+      fault: err
     });
+    this.setState({ error: true });
   }
 
   render() {

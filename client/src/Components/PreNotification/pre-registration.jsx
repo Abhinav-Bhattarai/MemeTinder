@@ -1,59 +1,55 @@
+import axios from "axios";
 import React, { Fragment, useState } from "react";
-import "./pre-registration.scss";
 import "../Credentials/Signup/signup.scss";
-import { TimesIcon } from "../Credentials/Signup/signup";
+import "./pre-registration.scss";
 
-const PreRegistration = () => {
+const PreRegistration = ({ CancelPopup }) => {
   const [fullname, SetFullname] = useState("");
   const [email, SetEmail] = useState("");
+
+  const SubmitPreRegistration = (event)=>{
+    event.preventDefault();
+    if(fullname.length >= 5 && email.length >= 11){
+      axios.post('/mobile', {Email: email}).then(() => {
+        SetFullname('');
+        SetEmail('');
+        localStorage.setItem('pre-registered', true);
+        CancelPopup();
+      })
+    }
+  }
 
   return (
     <Fragment>
       <main className="pre-registration-container">
-        <header className="signup-header">
-          <span>
-            <TimesIcon />
-          </span>
-          <div
-            style={{
-              fontWeight: "700",
-              fontSize: "18px",
-            }}
-          >
-            PRE-REGISTER
+        <header className="header">
+          <div id='name'>
+            PRE-REGISTRATION
           </div>
         </header>
-        <form>
+        <form onSubmit={ SubmitPreRegistration }>
           <main className="signup-input-container">
             <label>Fullname</label>
-            <div className="signup-input-rel">
-              <input
-                type="username"
-                spellCheck="false"
-                autoFocus
-                className="signup-input"
-                onChange={(event)=> SetFullname(event.target.value)}
-                value={fullname}
-              />
-            </div>
+            <input
+              type="username"
+              spellCheck="false"
+              autoFocus
+              className="signup-input"
+              onChange={(event)=> SetFullname(event.target.value)}
+              value={fullname}
+            />
         
             <label>Email</label>
-            <div className="signup-input-rel">
-              <input
-                type="password"
-                className="signup-input"
-                onChange={(event)=> SetEmail(event.target.value)}
-                value={email}
-              />
-            </div>
+            <input
+              type="password"
+              className="signup-input"
+              onChange={(event)=> SetEmail(event.target.value)}
+              value={email}
+            />
+           
           </main>
           <div className="login-btn-container-rel">
-            <button className="signup-btn login-btn-form">Login</button>
-            {/* {loader ? (
-              <div className="spinner-abs">
-                <Spinner />
-              </div>
-            ) : null} */}
+            <button className="signup-btn login-btn-form">SUBMIT</button>
           </div>
         </form>
       </main>

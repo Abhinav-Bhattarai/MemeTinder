@@ -1,10 +1,22 @@
-@import '../../_variables';
+@import "../../_variables";
 
-.pre-registration-container{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: $bg-color
+.pre-registration-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: $bg-color;
+
+  .header{
+      padding: 5px 3%;
+      margin-bottom: 10px;
+      text-align: center;  
+
+      #name{
+        font-weight: 700;
+        color: #333;
+        font-size: 22px;
+      }
+  }
 }

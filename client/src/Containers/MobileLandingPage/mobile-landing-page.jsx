@@ -34,11 +34,22 @@ const MobileLandingPage = () => {
           am currently working on Native apps for both Android and IOS devices.
         </div>
         <footer>Fill up the form for pre-notification</footer>
-        <main className="submit" onClick={() => SetPreRegistrationPopup(true)}>
-          Pre-Register
-        </main>
         {
-            (pre_registration_popup) ? <PreRegistration/> : null
+          (localStorage.getItem('pre-registered')) ? (
+            <main className='submitted'>
+              SUBMITTED
+            </main>
+          ) : 
+          <main className="submit" onClick={() => SetPreRegistrationPopup(true)}>
+            Pre-Register
+          </main>
+        }
+        {
+            (pre_registration_popup) ? 
+            <PreRegistration 
+              CancelPopup = { () => SetPreRegistrationPopup(false) }
+            /> 
+            : null
         }
       </main>
     </Fragment>

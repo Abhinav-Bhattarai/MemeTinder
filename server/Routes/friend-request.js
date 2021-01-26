@@ -55,7 +55,6 @@ router.post('/', (req, res)=>{
     RegisterModel.findOne({ Username: MyName }).exec().then((profile)=>{
         const Requests = profile.Requests.filter(element=> element.sender !== RequestName)
         profile.Requests = Requests;
-        console.log(profile.Requests);
         cache.set(`friend-req/${MyName}`, JSON.stringify(profile.Requests), ()=>{
             profile.save().then(()=>{
                 return res.json({request_removed: true});

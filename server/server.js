@@ -21,12 +21,14 @@ import ProfileConfirmRoute from './Routes/profile-confirm.js';
 import PostReactRoute from './Routes/change-reacted-profile.js';
 import NotificationRoute from './Routes/notifications.js';
 import CrashNotifyRoute from './Routes/crash-notification.js';
-// import ChangeSettingsRoute from './Routes/change-settings.js';
+import MobileRegisterRoute from './Routes/mobile-register.js';
+
 dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
 const io = socket(server);
+const PORT = process.env.PORT || 8000;
 
 // middleware
 app.use(bodyparser.json({limit: '50mb'}));
@@ -92,7 +94,7 @@ app.use('/profile-confirm', ProfileConfirmRoute);
 app.use('/post-react', PostReactRoute);
 app.use('/add-notification', NotificationRoute);
 app.use('/crash-notification', CrashNotifyRoute);
-// app.use('/change-settings', ChangeSettingsRoute);
+app.use('/mobile', MobileRegisterRoute);
 
 // DB connection
 mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(()=>{
@@ -102,6 +104,6 @@ mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: tr
 });
 
 // listener
-server.listen(parseInt(process.env.PORT), ()=>{
+server.listen(PORT, ()=>{
     console.log('Listening to localhost:8000')
 });
