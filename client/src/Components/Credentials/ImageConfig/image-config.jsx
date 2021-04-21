@@ -62,7 +62,7 @@ const ImageConfig = ({ history, RemoveProfileCard, SetNewProfile }) => {
                 ProfilePicture: profile_pic,
                 MainPost: main_post
             }
-            axios.post(`http://localhost:8000/profile-confirm/${localStorage.getItem('Username')}`, context);
+            axios.post(`/profile-confirm/${localStorage.getItem('Username')}`, context);
             RemoveProfileCard();
         }
     }

@@ -7,22 +7,16 @@ import jwt from 'jsonwebtoken';
 const cache = redis.createClient();
 const router = express.Router();
 
-router.get('/:Username/:token', MatchCache, (req, res)=>{
+router.get('/:Username', MatchCache, (req, res)=>{
     const Username = req.params.Username ;
-    const Token = req.params.token;
     UserModel.find().where("Username").equals(Username).then((response)=>{
+        console.log(response);
         if(response.length === 1){
             const data = response[0].Matches;
             if(data.length >= 1){
-                jwt.verify(Token, process.env.JWT_AUTH_KEY, (err, verification) => {
-                    if(!err){
-                        cache.set(`matches/${Username}`, JSON.stringify(data), ()=>{
-                            return res.json(data);
-                        });
-                    }else{
-                        return res.json({access_denied: true});
-                    }
-                })
+                cache.set(`matches/${Username}`, JSON.stringify(data), ()=>{
+                    return res.json(data);
+                });
             }else{
                 cache.set(`matches/${Username}`, JSON.stringify({no_matches: true}), ()=>{
                     return res.json({no_matches: true});

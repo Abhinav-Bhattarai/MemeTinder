@@ -22,7 +22,6 @@ import PostReactRoute from './Routes/change-reacted-profile.js';
 import NotificationRoute from './Routes/notifications.js';
 import CrashNotifyRoute from './Routes/crash-notification.js';
 import MobileRegisterRoute from './Routes/mobile-register.js';
-import path from 'path';
 
 dotenv.config();
 
@@ -39,7 +38,7 @@ app.use(sanitizer());
 
 // disabling Origin change for DDOS prevention;
 app.use(cors({
-    origin: ['http://localhost:5000', 'http://192.168.0.104:5000', 'https://localhost:3000', 'https://192.168.0.104:3000']
+    origin: ['http://localhost:5000', 'http://192.168.0.105:5000', 'https://localhost:3000', 'https://192.168.0.105:3000']
 }));
 
 // Socket Connection
@@ -103,12 +102,6 @@ mongoose.connect(process.env.URI, {useNewUrlParser: true, useUnifiedTopology: tr
 }).catch(()=>{
     console.log('Didnot connect to mongoDB')
 });
-
-if(process.env.NODE_ENV === "production"){
-    app.get("*", (req, res) => {
-        res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-    })
-};
 // listener
 server.listen(PORT, ()=>{
     console.log('Listening to localhost:8000')

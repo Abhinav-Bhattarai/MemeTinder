@@ -512,7 +512,7 @@ const MainPage = ({ authenticate, history }) => {
 
   const FetchMatches = () => {
     axios
-      .get(`/matches/${localStorage.getItem("Username")}/${localStorage.getItem('auth-token')}`)
+      .get(`/matches/${localStorage.getItem("Username")}`)
       .then((response) => {
         const error = { error_type: "Username", message: "Wrong Username" };
         const no_res = { no_matches: true };
@@ -533,7 +533,7 @@ const MainPage = ({ authenticate, history }) => {
       .get(
         `/add-notification/${localStorage.getItem(
           "Username"
-        )}/${localStorage.getItem('auth-token')}`
+        )}`
       )
       .then((response) => {
         SetNotificationList(response.data);
@@ -545,7 +545,7 @@ const MainPage = ({ authenticate, history }) => {
       .get(
         `/friend-requests/${localStorage.getItem(
           "Username"
-        )}/${localStorage.getItem('auth-token')}`
+        )}`
       )
       .then((response) => {
         const error = { no_requests: true };
@@ -650,6 +650,7 @@ const MainPage = ({ authenticate, history }) => {
             }
           }
         }
+        console.log(dummy_list);
         if (post_list) {
           const posts = [...post_list];
           let new_posts = 0;
@@ -661,7 +662,7 @@ const MainPage = ({ authenticate, history }) => {
           SetPostList(dummy_list);
         }
         SetTempPostList(null);
-        SetMileStone(Math.floor(post_list.length / 2) + 1);
+        post_list && SetMileStone(Math.floor(post_list.length / 2) + 1);
         SetCurrentIndex(0);
         if (dummy_list.length <= 20) {
           SetApiLimiter(true);

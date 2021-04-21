@@ -12,7 +12,7 @@
     "redis": "cd C:/Program Files/Redis && redis-cli",
     "peer": "peerjs --port 9000",
     "server": "concurrently \"npm run redis\" \"npm start\"",
-    "dev": "concurrently \"npm start\" \"npm run client\" \"npm run redis\" \"npm run peer\" ",
+    "dev": "concurrently \"npm start\" \"npm run client\" \"npm run redis\" ",
     "prod": "concurrently \"npm start\" \"npm run client-build\" \"npm run redis\" \"npm run peer\" "
   },
   "author": "Abhinav Bhattarai",
